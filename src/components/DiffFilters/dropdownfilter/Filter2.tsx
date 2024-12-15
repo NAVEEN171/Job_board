@@ -35,6 +35,8 @@ const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,Selectlocat
        }, [Selectlocationtypes]);
 
        useEffect(()=>{
+       
+
       
         let items=[...LocationTypes];
         items=items.filter((item)=>(item.toLowerCase().includes(locationvalue.toLowerCase())))
@@ -57,8 +59,11 @@ const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,Selectlocat
           let newlocations=[...Selectlocationtypes];
           newlocations=newlocations.filter((location)=>(location!==loc));
           setSelectlocationtypes(newlocations);
+          console.log("len :"+Selectlocationtypes.length)
+         
           let locations=[...locationtype];
           locations.push(loc);
+          locations.sort();
           setlocationtype(locations);
     
         }
@@ -73,6 +78,7 @@ const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,Selectlocat
     
             if(!locations.includes(last_ele)){
             locations.push(last_ele);
+            locations.sort();
             setlocationtype(locations);
             }
     

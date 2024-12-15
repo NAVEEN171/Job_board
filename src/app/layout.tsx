@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -14,11 +15,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+ 
+ 
   return (
     <html lang="en">
       
       <body
-        className={`new`}
+        className="new"
       >
         {children}
       </body>
