@@ -1,8 +1,10 @@
 'use client';
 
+
 import * as React from 'react';
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import { cn } from '@/lib/utils';
+
 
 interface DualRangeSliderProps extends React.ComponentProps<typeof SliderPrimitive.Root> {
   labelPosition?: 'top' | 'bottom';
@@ -22,7 +24,7 @@ const DualRangeSlider = React.forwardRef<React.ElementRef<typeof SliderPrimitive
         className={cn('relative flex w-full touch-none select-none  items-center', className)}
         {...props}
         onPointerDown={() => setIsInteracting(true)} // Detect when user starts dragging
-        onPointerUp={() => setIsInteracting(false)} // Detect when user stops dragging
+        onPointerUp={() => setTimeout(()=>{setIsInteracting(false)},300)} // Detect when user stops dragging
       >
         {/* Slider Track */}
         <SliderPrimitive.Track className="relative h-3 w-full grow overflow-hidden rounded-full bg-[#dfe8f4]">

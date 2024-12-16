@@ -1,3 +1,4 @@
+"use server";
 import ConnectToDB from "../../../utils/connections/mongoose"
 import mongoose from 'mongoose';
 

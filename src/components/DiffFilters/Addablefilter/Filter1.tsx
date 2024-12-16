@@ -1,4 +1,5 @@
 import React from 'react'
+import "../../../app/globals.css"
 
 type Filter1type={
     jobtitle:string[],
@@ -44,8 +45,8 @@ const Filter1:React.FC<Filter1type> = ({jobtitle,jobvalue,setjobvalue,setjobtitl
     
         }
   return (
-    <div className='filter-1'>
-    <div  onClick={()=>{changehandler("jobtitlediv","jobtitleinput")}} className="drop-down  border border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+    <div className='filter-1 filter  relative' data-closed="false">
+    <div  onClick={()=>{changehandler("jobtitlediv","jobtitleinput")}} className="drop-down z-10  border border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
       <div className='options-list-2 flex  gap-[10px] flex-wrap max-w-screen-sm	'>
       {jobtitle.map((job,index)=>(
         <div className='bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px] py-[5px] rounded-[5px]' key={index}>

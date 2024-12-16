@@ -5,6 +5,14 @@
 @tailwind components;
 @tailwind utilities;
 
+.filter-1,.filter-2,.filter-3{
+  height:fit-content;
+}
+
+
+
+
+
 
 
 body {
