@@ -18,12 +18,14 @@ type Filter2type={
     id2:string,
     dd1:string,
     dd2:string,
-    root:string
+    root:string,
+    activeDropdown:string | null,
+    setactiveDropdown:(value:string | null)=>void
 
 }
 
 
-const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,root,Selectlocationtypes,setSelectlocationtypes,locationvalue,setlocationvalue,LocationTypes,title,id1,id2,dd1,dd2}) => {
+const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,root,Selectlocationtypes,setSelectlocationtypes,locationvalue,setlocationvalue,LocationTypes,title,id1,id2,dd1,dd2,activeDropdown,setactiveDropdown}) => {
 
      useEffect(() => {
          const dropdownDiv = document.getElementById(dd1);
@@ -136,7 +138,7 @@ const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,root,Select
         }
 
   return (
-    <div className={`${root} filter   relative`} data-closed="false">
+    <div className={`${root} filter   relative`} onClick={()=>{setactiveDropdown(root)}} data-closed="false">
     <div id={dd1} onClick={(e)=>{changehandler(id1,id2)}}  className=' border  relative flex items-center gap-[5px]  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
       <div id={id1} className="w-[200px]  text-black-500 text-[1.2rem]">{title}</div>
       <div className='options-list flex  gap-[10px] flex-wrap max-w-[600px]'>
@@ -152,7 +154,7 @@ const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,root,Select
 
   
     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
-    <div  id={dd2} className='drop-down-list   hidden bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0  top-[55px] absolute shadow-custom' style={{zIndex:9999}}>
+   {activeDropdown===root && <div  id={dd2} className='drop-down-list    bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0  top-[55px] absolute shadow-custom' style={{zIndex:9999}}>
    <div className='switch-container text-[1.2rem]    p-[5px] '>
     <div className='switch-cont flex gap-[10px] p-[3px] justify-center items-center border-[1px] border-[#C8C8C8] rounded-[5px]'>
        <Switch /><div>Include Remote</div>
@@ -165,7 +167,7 @@ const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,root,Select
             <div className='drop-down-list-val w-auto px-[15px]'>{location}</div></div>
         ))
       }
-    </div>
+    </div>}
     </div>
     </div>
   )

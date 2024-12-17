@@ -6,10 +6,13 @@ type Filter1type={
     jobvalue:string,
     setjobvalue:(value:string)=>void
     setjobtitle:(value:string[])=>void,
-    title:string
+    title:string,
+    activeDropdown:string |null,
+    setactiveDropdown:(value:string|null)=>void,
+
 }
 
-const Filter1:React.FC<Filter1type> = ({jobtitle,jobvalue,setjobvalue,setjobtitle,title}) => {
+const Filter1:React.FC<Filter1type> = ({jobtitle,jobvalue,setjobvalue,setjobtitle,title,activeDropdown,setactiveDropdown}) => {
     
         const changehandler=(ID1:string,ID2:string)=>{
             let Jobtitlediv :HTMLElement=document.getElementById(ID1)!;
@@ -45,7 +48,7 @@ const Filter1:React.FC<Filter1type> = ({jobtitle,jobvalue,setjobvalue,setjobtitl
     
         }
   return (
-    <div className='filter-1 filter  relative' data-closed="false">
+    <div className='filter-1 filter  relative' onClick={()=>{setactiveDropdown("filter-1")}} data-closed="false">
     <div  onClick={()=>{changehandler("jobtitlediv","jobtitleinput")}} className="drop-down z-10  border border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
       <div className='options-list-2 flex  gap-[10px] flex-wrap max-w-screen-sm	'>
       {jobtitle.map((job,index)=>(

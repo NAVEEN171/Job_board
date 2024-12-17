@@ -56,6 +56,13 @@ const Dropdowndata:DropDowndatatype[]=[
     Namediv:"",
     Nameinput:"",
     DropDown:"drop-down-date",
+  },
+  {
+    name:"Experience",
+    root:"filter-6",
+    Namediv:"",
+    Nameinput:"",
+    DropDown:"experience-drop-down",
   }
 
   
@@ -77,80 +84,53 @@ const Filter = () => {
    const [Slideprevalue,setSlideprevalue]=useState("40K  -  900K");
    const [singleSlidervalue,setsingleSlidervalue]=useState<number[]>([7]);
    const [datepostedshower,setdatepostedshower]=useState<string>("7 days ago");
+   const [Experiencevalue,setExperiencevalue]=useState<number[]>([0,4]);
+   const [Experienceprevalue,setExperienceprevalue]=useState("0  -  4 years");
+
 
    const [dropdowncategory,setdropdowncategory]=useState<string[]>(jobCategories);
    const [Selectjobcategory,setSelectjobcategory]=useState<string[]>([]);
-   const jobtitleRef = useRef(jobtitle);
-   const SelectlocationtypesRef=useRef(Selectlocationtypes);
-   const SelectjobcategoryRef=useRef(Selectjobcategory);
+   const [activeDropdown,setactiveDropdown]=useState<string | null>(null)
+   
 
-   useEffect(()=>{
-   jobtitleRef.current=jobtitle;
-   },[jobtitle]
-  )
+
 
   useEffect(()=>{
-    SelectlocationtypesRef.current=Selectlocationtypes;
-    },[Selectlocationtypes]
-   )
-
-   useEffect(()=>{
-    SelectjobcategoryRef.current=Selectjobcategory;
-    },[Selectjobcategory]
-   )
-
-   const dropdownopen=(idx:number)=>{
-     let dropdowncontainer=document.getElementById(Dropdowndata[idx]?.DropDown);
-    
-     if(dropdowncontainer?.classList.contains("hidden")){
-      dropdowncontainer.classList.remove("hidden");
-    }
-
-   }
-
-   const titleopen=(name:string)=>{
     let jobtitlediv;
-    let jobtitleinput; 
-    
-    const con = [
-      { content: jobtitleRef }, // Spread jobtitle into an array if it's iterable
-      { content: SelectlocationtypesRef },
-      { content: SelectjobcategoryRef },
-      { content: null },
-      { content: null }
-    ];
-    
-    Dropdowndata.forEach((data,idx)=>{
-      console.log("values");
-      console.log(con);
-      console.log(idx);
-
-        if(name!==data.root && con[idx].content!==null && Array.isArray(con[idx].content?.current)  && con[idx].content.current.length===0){
-          console.log(data.root+" accessed ");
-                 jobtitlediv=document.getElementById(data.Namediv);
-                 jobtitleinput=document.getElementById(data.Nameinput);
-                 if(jobtitlediv?.classList.contains("hidden") && jobtitleinput){
-                       jobtitleinput.classList.add("hidden");
-                      jobtitlediv.classList.remove("hidden");
-                   }
-
-        }
-    })
-   }
-
-   const hideotherdropdowns=(val:string)=>{
-    let hidedropdown;
-    Dropdowndata.forEach((data)=>{
-         if(val!==data.root && data.DropDown!==""){
-          hidedropdown=document.getElementById(data.DropDown);
-          if(!(hidedropdown?.classList.contains("hidden")) && hidedropdown){
-              hidedropdown.classList.add("hidden");
+      let jobtitleinput; 
+      
+      const con = [
+        { content: jobtitle }, // Spread jobtitle into an array if it's iterable
+        { content: Selectlocationtypes },
+        { content: Selectjobcategory },
+        { content: null },
+        { content: null },
+        {content:null}
+      ];
+      
+      Dropdowndata.forEach((data,idx)=>{
+        console.log("values");
+        console.log(con);
+        console.log(idx);
+  
+          if(activeDropdown!==data.root && con[idx].content!==null && Array.isArray(con[idx].content)  && con[idx].content.length===0){
+            console.log(data.root+" accessed ");
+                   jobtitlediv=document.getElementById(data.Namediv);
+                   jobtitleinput=document.getElementById(data.Nameinput);
+                   if(jobtitlediv?.classList.contains("hidden") && jobtitleinput){
+                         jobtitleinput.classList.add("hidden");
+                        jobtitlediv.classList.remove("hidden");
+                     }
+  
           }
-         }
+      })
+  },[activeDropdown])
 
-    })
-         
-   }
+  useEffect(()=>{
+     setExperienceprevalue(`${Experiencevalue[0]}  -  ${Experiencevalue[1]} years`)
+  },[Experiencevalue])
+
+ 
 
 
 
@@ -167,55 +147,36 @@ const Filter = () => {
       let filter3=document.querySelector(".filter-3") as HTMLElement;
       let filter4=document.querySelector(".filter-4") as HTMLElement;
       let filter5=document.querySelector(".filter-5") as HTMLElement;
-      console.log(e.target);
-      console.log(jobtitleRef.current);
-      console.log(e.clientX,e.clientY);
-       if(e.target && filter1?.contains(e.target as HTMLElement) || filter1?.dataset?.closed==="true" ){
-        console.log("clicked on filter-1");
-        hideotherdropdowns("filter-1");
-        titleopen("filter-1");
-       
+      let filter6=document.querySelector(".filter-6") as HTMLElement;
 
-
+      
+       if(e.target && filter1?.contains(e.target as HTMLElement) || filter1?.dataset?.closed==="true"){
+              return;
 
        }
-      else if(e.target && filter2?.contains(e.target as HTMLElement) || filter2?.dataset?.closed==="true"){
-        console.log("clicked on filter-2");
-        dropdownopen(1);
-        hideotherdropdowns("filter-2");
-        titleopen("filter-2");
-
-        
+      else if(e.target && filter2?.contains(e.target as HTMLElement) ||  filter2?.dataset?.closed==="true"){
+       return;
 
        }
      else  if(e.target && filter3?.contains(e.target as HTMLElement) || filter3?.dataset?.closed==="true"){
-        console.log("clicked on filter-3");
-        dropdownopen(2);
-        hideotherdropdowns("filter-3");
-        titleopen("filter-3");
-
-
+       return;
        }
      else  if(e.target && filter4?.contains(e.target as HTMLElement) || filter4?.dataset?.closed==="true"){
-        console.log("clicked on filter-4");
-        dropdownopen(3);
-        hideotherdropdowns("filter-4");
-        titleopen("filter-4");
-
-
+       
+       return;
        }
      else  if(e.target && filter5?.contains(e.target as HTMLElement) || filter5?.dataset?.closed==="true"){
-        console.log("clicked on filter-5");
-        dropdownopen(4);
-        hideotherdropdowns("filter-5");
-        titleopen("filter-5");
-
-
+        
+       return;
        }
+       else  if(e.target && filter6?.contains(e.target as HTMLElement) || filter6?.dataset?.closed==="true"){
+        
+        return;
+        }
        else{
         console.log("clicked outside");
-        hideotherdropdowns("none");
-        titleopen("none");
+        
+        setactiveDropdown(null);
        }
        
        
@@ -264,7 +225,7 @@ const Filter = () => {
    
   return (
     <div className='filters-wrapper relative flex gap-[30px] flex-wrap w-[80%]'>
-      <Filter1 jobtitle={jobtitle} jobvalue={jobvalue} setjobtitle={setjobtitle} setjobvalue={setjobvalue} title="Job Title"/>
+      <Filter1 jobtitle={jobtitle} jobvalue={jobvalue} setjobtitle={setjobtitle}   activeDropdown={activeDropdown}  setactiveDropdown={setactiveDropdown} setjobvalue={setjobvalue} title="Job Title"/>
      <Filter2 
       locationvalue={locationvalue}
       setlocationvalue={setlocationvalue}
@@ -273,6 +234,8 @@ const Filter = () => {
       Selectlocationtypes={Selectlocationtypes}
       setSelectlocationtypes={setSelectlocationtypes}
       LocationTypes={LocationTypes}
+      activeDropdown={activeDropdown}
+        setactiveDropdown={setactiveDropdown}
       root="filter-2"
       title="Location Type"
       id1="locdiv"
@@ -288,7 +251,8 @@ const Filter = () => {
         Selectlocationtypes={Selectjobcategory}
         LocationTypes={jobCategories}
         root="filter-3"
-
+        activeDropdown={activeDropdown}
+        setactiveDropdown={setactiveDropdown}
         setSelectlocationtypes={setSelectjobcategory}
         title="Domain"
         id1="domainDiv"
@@ -296,13 +260,13 @@ const Filter = () => {
         dd1="domainDropdown"
         dd2="domainTypeList"
       />
-   <div className='filter-4 filter relative' data-closed="false" >
+   <div className='filter-4  filter relative' onClick={()=>{setactiveDropdown("filter-4")}} data-closed="false" >
   <div className='border relative flex items-center gap-[5px] border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
     <div className="w-[200px] text-black-500 text-[1.2rem]">Salary Range</div>
     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
       <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
     </svg>
-    <div id="salary-drop-down" className='drop-down-list drop-down-salary hidden rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom' style={{zIndex: 9999}}>
+   { activeDropdown==="filter-4" && <div id="salary-drop-down" className='drop-down-list drop-down-salary  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom' style={{zIndex: 9999}}>
 
       <div className='DualRangeslider-container flex flex-col gap-[20px]'>
         <div className='salary-desc flex justify-between'>
@@ -323,15 +287,15 @@ const Filter = () => {
           <div>Include No salary Info</div>
         </div>
       </div>
-    </div>
+    </div>}
   </div>
 </div>
 
-    <div className='filter-5 filter relative' data-closed="false" style={{position: 'relative'}}>
+    <div className='filter-5 filter relative' onClick={()=>{setactiveDropdown("filter-5")}} data-closed="false" style={{position: 'relative'}}>
       <div className='border relative flex items-center gap-[5px] border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
       <div className="w-[200px] text-black-500 text-[1.2rem]">Date Posted</div>
     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
-    <div id="drop-down-date" className='drop-down-list hidden rounded-md flex flex-col gap-[15px] py-[20px] px-[15px] rounded-mg bg-white absolute top-[55px] left-0 w-[350px] shadow-custom absolute' style={{ zIndex: 9999}}>
+   { activeDropdown==="filter-5" && <div id="drop-down-date" className='drop-down-list  rounded-md flex flex-col gap-[15px] py-[20px] px-[15px] rounded-mg bg-white absolute top-[55px] left-0 w-[350px] shadow-custom absolute' style={{ zIndex: 9999}}>
 
 <div className='Singleslider-container flex flex-col gap-[20px]'>
   <div className='salary-desc flex justify-between'>
@@ -350,9 +314,40 @@ const Filter = () => {
 
   </div>
  
+    </div>}
+      </div> 
+      
     </div>
+    <div className='filter-6  filter relative' onClick={()=>{setactiveDropdown("filter-6")}} data-closed="false" >
+  <div className='border relative flex items-center gap-[5px] border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
+    <div className="w-[200px] text-black-500 text-[1.2rem]">Experience </div>
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+      <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+    </svg>
+   { activeDropdown==="filter-6" && <div id="experience-drop-down" className='drop-down-list drop-down-experience  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom' style={{zIndex: 9999}}>
+
+      <div className='DualRangeslider-container flex flex-col gap-[20px]'>
+        <div className='salary-desc flex justify-between'>
+          <div>Experience</div>
+          <div>{Experienceprevalue}</div>
+        </div>
+        <DualRangeSlider
+          min={0}
+          max={10}
+          value={Experiencevalue}
+          onValueChange={setExperiencevalue}
+        />
+
       </div>
-    </div>
+      <div className='switch-container text-[1.2rem]'>
+        <div className='switch-cont flex gap-[10px] p-[3px] justify-center items-center border-[1px] border-[#C8C8C8] rounded-[5px]'>
+          <Switch />
+          <div>Include No YEO info</div>
+        </div>
+      </div>
+    </div>}
+  </div>
+</div>
     </div>
   )
 }
