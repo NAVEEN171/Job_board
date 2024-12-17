@@ -224,7 +224,7 @@ const Filter = () => {
     };
    
   return (
-    <div className='filters-wrapper relative flex gap-[30px] flex-wrap w-[80%]'>
+    <div className='filters-wrapper relative flex gap-[30px]  flex-wrap justify-center w-[100%]'>
       <Filter1 jobtitle={jobtitle} jobvalue={jobvalue} setjobtitle={setjobtitle}   activeDropdown={activeDropdown}  setactiveDropdown={setactiveDropdown} setjobvalue={setjobvalue} title="Job Title"/>
      <Filter2 
       locationvalue={locationvalue}
@@ -261,9 +261,9 @@ const Filter = () => {
         dd2="domainTypeList"
       />
    <div className='filter-4  filter relative' onClick={()=>{setactiveDropdown("filter-4")}} data-closed="false" >
-  <div className='border relative flex items-center gap-[5px] border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
+  <div className='border relative flex items-center border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
     <div className="w-[200px] text-black-500 text-[1.2rem]">Salary Range</div>
-    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+    <svg className="pl-[5px] box-content"  xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
       <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
     </svg>
    { activeDropdown==="filter-4" && <div id="salary-drop-down" className='drop-down-list drop-down-salary  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom' style={{zIndex: 9999}}>
@@ -292,9 +292,9 @@ const Filter = () => {
 </div>
 
     <div className='filter-5 filter relative' onClick={()=>{setactiveDropdown("filter-5")}} data-closed="false" style={{position: 'relative'}}>
-      <div className='border relative flex items-center gap-[5px] border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
+      <div className='border relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
       <div className="w-[200px] text-black-500 text-[1.2rem]">Date Posted</div>
-    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
+    <svg className="pl-[5px] box-content" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
    { activeDropdown==="filter-5" && <div id="drop-down-date" className='drop-down-list  rounded-md flex flex-col gap-[15px] py-[20px] px-[15px] rounded-mg bg-white absolute top-[55px] left-0 w-[350px] shadow-custom absolute' style={{ zIndex: 9999}}>
 
 <div className='Singleslider-container flex flex-col gap-[20px]'>
@@ -319,14 +319,14 @@ const Filter = () => {
       
     </div>
     <div className='filter-6  filter relative' onClick={()=>{setactiveDropdown("filter-6")}} data-closed="false" >
-  <div className='border relative flex items-center gap-[5px] border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
+  <div className='border relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
     <div className="w-[200px] text-black-500 text-[1.2rem]">Experience </div>
-    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+    <svg className="pl-[5px] box-content"  xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
       <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
     </svg>
    { activeDropdown==="filter-6" && <div id="experience-drop-down" className='drop-down-list drop-down-experience  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom' style={{zIndex: 9999}}>
 
-      <div className='DualRangeslider-container flex flex-col gap-[20px]'>
+      <div  className='DualRangeslider-container flex flex-col gap-[20px]'>
         <div className='salary-desc flex justify-between'>
           <div>Experience</div>
           <div>{Experienceprevalue}</div>

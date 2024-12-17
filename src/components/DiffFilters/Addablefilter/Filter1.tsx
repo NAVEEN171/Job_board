@@ -24,7 +24,22 @@ const Filter1:React.FC<Filter1type> = ({jobtitle,jobvalue,setjobvalue,setjobtitl
             }
             
         }
-        const clickHandler=(job:string)=>{
+        const clickHandler=(job:string,e:React.MouseEvent<HTMLDivElement>)=>{
+          let clickedelement = e.target as HTMLElement | null; // Ensure it's cast safely
+                    let closestFilter: HTMLElement | null = null; // Initialize to null explicitly
+          
+                 if (clickedelement) {
+                    closestFilter = clickedelement.closest(".filter") as HTMLElement | null;
+                  }
+          
+                if (closestFilter) {
+                    closestFilter.setAttribute("data-closed", "true");
+                  }
+                 window.setTimeout(() => {
+                    if (closestFilter) {
+                   closestFilter.setAttribute("data-closed", "false");
+                    }
+               }, 200);
             console.log(job);
                   let jobtitle_duplicate=[...jobtitle];
                   jobtitle_duplicate=jobtitle_duplicate.filter((jobs)=>{
@@ -48,13 +63,13 @@ const Filter1:React.FC<Filter1type> = ({jobtitle,jobvalue,setjobvalue,setjobtitl
     
         }
   return (
-    <div className='filter-1 filter  relative' onClick={()=>{setactiveDropdown("filter-1")}} data-closed="false">
+    <div className='filter-1 filter  relative max-w-[90%]' onClick={()=>{setactiveDropdown("filter-1")}} data-closed="false">
     <div  onClick={()=>{changehandler("jobtitlediv","jobtitleinput")}} className="drop-down z-10  border border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-      <div className='options-list-2 flex  gap-[10px] flex-wrap max-w-screen-sm	'>
+      <div className='options-list-2 flex  gap-[10px] flex-wrap max-w-[100%]	'>
       {jobtitle.map((job,index)=>(
         <div className='bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px] py-[5px] rounded-[5px]' key={index}>
           <div className='pl-[5px] py-[3px] line-height: normal font-roboto text-[900] text-[1.2rem]'>{job }</div>
-       <div className='wrongbutton  py-[3px] flex items-center line-height:normal  font-lato text-[1.1rem] h-auto text-[900] px-[5px]' onClick={()=>clickHandler(job)}> 
+       <div className='wrongbutton  py-[3px] flex items-center line-height:normal  font-lato text-[1.1rem] h-auto text-[900] px-[5px]' onClick={(e)=>clickHandler(job,e)}> 
       x</div></div>
       ))}
       </div>
