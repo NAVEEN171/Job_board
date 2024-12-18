@@ -27,18 +27,18 @@ type Filter2type={
 
 const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,root,Selectlocationtypes,setSelectlocationtypes,locationvalue,setlocationvalue,LocationTypes,title,id1,id2,dd1,dd2,activeDropdown,setactiveDropdown}) => {
 
-     useEffect(() => {
-         const dropdownDiv = document.getElementById(dd1);
-         const dropdownList = document.getElementById(dd2);
+    //  useEffect(() => {
+    //      const dropdownDiv = document.getElementById(dd1);
+    //      const dropdownList = document.getElementById(dd2);
      
-         if (dropdownDiv && dropdownList) {
-           const computedStyles = window.getComputedStyle(dropdownDiv);
-           const height = parseFloat(computedStyles.getPropertyValue("height"));
-           const diff = height - 42.4;
+    //      if (dropdownDiv && dropdownList) {
+    //        const computedStyles = window.getComputedStyle(dropdownDiv);
+    //        const height = parseFloat(computedStyles.getPropertyValue("height"));
+    //        const diff = height - 42.4;
      
-           dropdownList.style.top = `${55 + diff}px`;
-         }
-       }, [Selectlocationtypes]);
+    //        dropdownList.style.top = `${55 + diff}px`;
+    //      }
+    //    }, [Selectlocationtypes]);
 
        useEffect(()=>{
        
@@ -70,6 +70,7 @@ const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,root,Select
           locations=locations.filter((location)=>(location!==loc));
           setlocationtype(locations);
           let newlocations=[...Selectlocationtypes];
+         
           newlocations.push(loc);
           setSelectlocationtypes(newlocations);
           setlocationvalue("")
@@ -141,7 +142,7 @@ const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,root,Select
     <div className={`${root} filter   relative max-w-[90%]`} onClick={()=>{setactiveDropdown(root)}} data-closed="false">
     <div id={dd1} onClick={(e)=>{changehandler(id1,id2)}}  className=' border   relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
       <div id={id1} className="w-[200px]  text-black-500 text-[1.2rem]">{title}</div>
-      <div className='options-list flex   gap-[10px] flex-wrap max-w-[85%]'>
+      <div className='options-list flex    gap-[10px] flex-wrap max-w-[85%]'>
     {Selectlocationtypes.map((loc,index)=>(
       <div className='bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px] py-[5px] rounded-[5px]' key={index}>
         <div className='pl-[5px] py-[3px] line-height: normal font-roboto text-[900] text-[1.2rem]'>{loc }</div>
@@ -154,7 +155,7 @@ const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,root,Select
 
   
     <svg className='pl-[5px] box-content' xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
-   {activeDropdown===root && <div  id={dd2} className='drop-down-list    bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0  top-[55px] absolute shadow-custom' style={{zIndex:9999}}>
+   {activeDropdown===root && <div  id={dd2} className='drop-down-list top-full translate-y-4   bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0  top-[55px] absolute shadow-custom' style={{zIndex:9999}}>
    <div className='switch-container text-[1.2rem]    p-[5px] '>
     <div className='switch-cont flex gap-[10px] p-[3px] justify-center items-center border-[1px] border-[#C8C8C8] rounded-[5px]'>
        <Switch /><div>Include Remote</div>

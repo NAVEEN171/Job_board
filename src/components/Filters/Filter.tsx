@@ -2,6 +2,8 @@ import Image from 'next/image';
 import React,{useState,useEffect,useRef} from 'react'
 import "../../app/globals.css";
 import {LocationTypes} from "../../FiltersList/Locationtypes"
+import { Industries,industriesSubcategories } from '@/FiltersList/CategoryFilter';
+
 
 import Filter1 from '../DiffFilters/Addablefilter/Filter1';
 import Filter2 from '../DiffFilters/dropdownfilter/Filter2';
@@ -9,6 +11,8 @@ import { jobCategories } from '../../FiltersList/Jobcategories';
 import { DualRangeSlider } from '../DualRangeslider/Dualrange';
 import { Switch } from "@/components/ui/switch"
 import { SingleSlider } from '../Singleslider/Singleslider';
+import {EmploymentList} from "../../FiltersList/Employmentlist"
+import Industryfilter from '../DiffFilters/Industry_filter/Industryfilter';
 
 type DropDowndatatype={
   name:string,
@@ -63,7 +67,27 @@ const Dropdowndata:DropDowndatatype[]=[
     Namediv:"",
     Nameinput:"",
     DropDown:"experience-drop-down",
+  },
+  {
+    name:"Employment-type",
+    root:"filter-7",
+    Namediv:"EmploymenttypeDiv",
+    Nameinput:"EmploymenttypeInput",
+    DropDown:"EmploymentTypeList",
+  },
+  {
+    name:"Industry",
+    root:"filter-8",
+    Namediv:"IndustryDiv",
+    Nameinput:"IndustryInput",
+    DropDown:"Drop-down-Industry"
+   
   }
+  // title="Employment-type"
+  // id1="EmploymenttypeDiv"
+  // id2="EmploymenttypeInput"
+  // dd1="EmploymenttypeDropdown"
+  // dd2="EmploymentTypeList"
 
   
   
@@ -86,13 +110,19 @@ const Filter = () => {
    const [datepostedshower,setdatepostedshower]=useState<string>("7 days ago");
    const [Experiencevalue,setExperiencevalue]=useState<number[]>([0,4]);
    const [Experienceprevalue,setExperienceprevalue]=useState("0  -  4 years");
-
+   const [Employmenttypevalue,setEmploymenttypevalue]=useState<string>("");
+   const [EmpTypedropdown,setEmpTypedropdown]=useState<string[]>(EmploymentList);
+   const [selectedEmptype,setselectedEmptype]=useState<string[]>([]);
+   const [IndustryDropDown,setIndustryDropDown]=useState<string[]>(Industries);
+   const [IndustrySubcategory,setIndustrySubcategory]=useState<string[]>([])
+   const [SelectedIndustries,setSelectedIndustries]=useState<string[]>([]);
+   const [CurrentIndustryVal,setCurrentIndustryVal]=useState<string>("")
 
    const [dropdowncategory,setdropdowncategory]=useState<string[]>(jobCategories);
    const [Selectjobcategory,setSelectjobcategory]=useState<string[]>([]);
    const [activeDropdown,setactiveDropdown]=useState<string | null>(null)
    
-
+    
 
 
   useEffect(()=>{
@@ -105,7 +135,9 @@ const Filter = () => {
         { content: Selectjobcategory },
         { content: null },
         { content: null },
-        {content:null}
+        {content:null},
+        {content:selectedEmptype},
+        {content:SelectedIndustries}
       ];
       
       Dropdowndata.forEach((data,idx)=>{
@@ -148,7 +180,13 @@ const Filter = () => {
       let filter4=document.querySelector(".filter-4") as HTMLElement;
       let filter5=document.querySelector(".filter-5") as HTMLElement;
       let filter6=document.querySelector(".filter-6") as HTMLElement;
+      let filter7=document.querySelector(".filter-7") as HTMLElement;
+      let filter8=document.querySelector(".filter-8") as HTMLElement;
 
+
+      if(e.target && !(filter8?.contains(e.target as HTMLElement)) || !(filter8?.dataset?.closed==="true")){
+        setIndustrySubcategory([]);
+         }
       
        if(e.target && filter1?.contains(e.target as HTMLElement) || filter1?.dataset?.closed==="true"){
               return;
@@ -173,6 +211,14 @@ const Filter = () => {
         
         return;
         }
+        else  if(e.target && filter7?.contains(e.target as HTMLElement) || filter7?.dataset?.closed==="true"){
+       
+          return;
+          }
+          else  if(e.target && filter8?.contains(e.target as HTMLElement) || filter8?.dataset?.closed==="true"){
+        
+            return;
+            }
        else{
         console.log("clicked outside");
         
@@ -222,6 +268,8 @@ const Filter = () => {
       setsingleSlidervalue(value);
       setdatepostedshower(value+" days ago ")
     };
+
+     
    
   return (
     <div className='filters-wrapper relative flex gap-[30px]  flex-wrap justify-center w-[100%]'>
@@ -318,6 +366,20 @@ const Filter = () => {
       </div> 
       
     </div>
+    <Industryfilter
+        SelectedIndustries={SelectedIndustries}
+        setSelectedIndustries={setSelectedIndustries}
+        activeDropdown ={activeDropdown}
+        setactiveDropdown={setactiveDropdown}
+        setIndustrySubcategory={setIndustrySubcategory}
+        IndustrySubcategory={IndustrySubcategory}
+        CurrentIndustryVal={CurrentIndustryVal}
+        setCurrentIndustryVal={setCurrentIndustryVal}
+        setIndustryDropDown={setIndustryDropDown}
+        IndustryDropDown={IndustryDropDown}
+        industriesSubcategories={industriesSubcategories}
+        Industries={Industries}
+      />
     <div className='filter-6  filter relative' onClick={()=>{setactiveDropdown("filter-6")}} data-closed="false" >
   <div className='border relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]'>
     <div className="w-[200px] text-black-500 text-[1.2rem]">Experience </div>
@@ -348,7 +410,37 @@ const Filter = () => {
     </div>}
   </div>
 </div>
+{/* const [Employmenttypevalue,setEmploymenttypevalue]=useState<string>("");
+   const [EmpTypedropdown,setEmpTypedropdown]=useState<string[]>(EmploymentList);
+   const [selectedEmptype,setselectedEmptype]=useState<string[]>([]) */}
+     <Filter2
+        locationvalue={Employmenttypevalue}
+        setlocationvalue={setEmploymenttypevalue}
+        locationtype={EmpTypedropdown}
+        setlocationtype={setEmpTypedropdown}
+        Selectlocationtypes={selectedEmptype}
+        LocationTypes={EmploymentList}
+        root="filter-7"
+        activeDropdown={activeDropdown}
+        setactiveDropdown={setactiveDropdown}
+        setSelectlocationtypes={setselectedEmptype}
+        title="Employment-type"
+        id1="EmploymenttypeDiv"
+        id2="EmploymenttypeInput"
+        dd1="EmploymenttypeDropdown"
+        dd2="EmploymentTypeList"
+      />
+      {
+        /* id1:IndustryTitle
+        id2:IndustryInput
+        dd1:IndustryDiv
+        dd2:Drop-down-Industry
+        */
+      }
+      
+      
     </div>
+    
   )
 }
 
