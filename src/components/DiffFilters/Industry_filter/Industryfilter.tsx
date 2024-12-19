@@ -55,7 +55,7 @@ const Industryfilter:React.FC<IndustryFilterType> = ({SelectedIndustries,activeD
          
          let newlocations=[...SelectedIndustries];
          let changedstr=loc.replace(/\(Select All\)/g, '').trim()
-         if(newlocations.includes(loc)){
+         if(newlocations.includes(changedstr)){
             return;
          }
          newlocations.push(changedstr);

@@ -41,12 +41,27 @@ const Filter2:React.FC<Filter2type> = ({locationtype,setlocationtype,root,Select
     //    }, [Selectlocationtypes]);
 
        useEffect(()=>{
-       
+        let items;
+        if(locationvalue===""){
+          setlocationtype(LocationTypes);
+
+        }
+      else if(Selectlocationtypes.length>0){
+             items=[...locationtype];
+             items=items.filter((item)=>item.toLowerCase().includes(locationvalue.toLowerCase()));
+             setlocationtype(items);
+
+       }
+       else{
 
       
-        let items=[...LocationTypes];
-        items=items.filter((item)=>(item.toLowerCase().includes(locationvalue.toLowerCase())))
+         items=[...LocationTypes];
+
+        items=items.filter((item)=>(item.toLowerCase().includes(locationvalue.toLowerCase())));
         setlocationtype(items);
+
+       }
+
   
       },[locationvalue])
 

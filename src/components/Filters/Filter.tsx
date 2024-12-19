@@ -4,7 +4,6 @@ import "../../app/globals.css";
 import {LocationTypes} from "../../FiltersList/Locationtypes"
 import { Industries,industriesSubcategories } from '@/FiltersList/CategoryFilter';
 
-
 import Filter1 from '../DiffFilters/Addablefilter/Filter1';
 import Filter2 from '../DiffFilters/dropdownfilter/Filter2';
 import { jobCategories } from '../../FiltersList/Jobcategories';
@@ -13,6 +12,9 @@ import { Switch } from "@/components/ui/switch"
 import { SingleSlider } from '../Singleslider/Singleslider';
 import {EmploymentList} from "../../FiltersList/Employmentlist"
 import Industryfilter from '../DiffFilters/Industry_filter/Industryfilter';
+import { countryData } from '@/FiltersList/Locations';
+import Locationfilter from '../DiffFilters/Location_filter/Locationfilter';
+
 
 type DropDowndatatype={
   name:string,
@@ -82,16 +84,26 @@ const Dropdowndata:DropDowndatatype[]=[
     Nameinput:"IndustryInput",
     DropDown:"Drop-down-Industry"
    
+  },
+ 
+  {
+    name:"Location",
+    root:"filter-9",
+    Namediv:"LocationsearchDiv",
+    Nameinput:"LocationsearchInput",
+    DropDown:"LocationsearchDropdown"
   }
-  // title="Employment-type"
-  // id1="EmploymenttypeDiv"
-  // id2="EmploymenttypeInput"
-  // dd1="EmploymenttypeDropdown"
-  // dd2="EmploymentTypeList"
+ 
 
   
   
 ]
+
+type Locationtype={
+  country:string,
+  emoji:string,
+  index:number
+}
 
 
 
@@ -100,9 +112,11 @@ const Dropdowndata:DropDowndatatype[]=[
 const Filter = () => {
    const [jobtitle,setjobtitle]=useState<string[]>([]); //added options for jobtitle (addable filter)
    const [jobvalue,setjobvalue]=useState<string>("");//current typed value of the filter (addable filter)
+
    const [locationvalue,setlocationvalue]=useState<string>(""); // current typed value of the filter (dropdown filter)
    const [locationtype,setlocationtype]=useState<string[]>(LocationTypes); //drop down values (dropdown filter)
    const [Selectlocationtypes,setSelectlocationtypes]=useState<string[]>([]); //selected values from the dropdown (dropdown filter)
+
    const [searchjobcategory,setsearchjobcategory]=useState<string>("");
    const [sliderValue, setSliderValue] = useState<number[]>([40, 900]);
    const [Slideprevalue,setSlideprevalue]=useState("40K  -  900K");
@@ -120,9 +134,16 @@ const Filter = () => {
 
    const [dropdowncategory,setdropdowncategory]=useState<string[]>(jobCategories);
    const [Selectjobcategory,setSelectjobcategory]=useState<string[]>([]);
-   const [activeDropdown,setactiveDropdown]=useState<string | null>(null)
+   const [activeDropdown,setactiveDropdown]=useState<string | null>(null);
+
+   const [Locationdropdown,setLocationdropdown]=useState<Locationtype[]>(countryData.slice(0,7));
+   const [Locationvalue,setLocationvalue]=useState<string>("");
+   const [SelectedLocations,setSelectedLocations]=useState<Locationtype[]>([]);
+
    
-    
+    useEffect(()=>{
+       console.log(Locationdropdown)
+    },[Locationdropdown])
 
 
   useEffect(()=>{
@@ -137,7 +158,8 @@ const Filter = () => {
         { content: null },
         {content:null},
         {content:selectedEmptype},
-        {content:SelectedIndustries}
+        {content:SelectedIndustries},
+        {content:SelectedLocations}
       ];
       
       Dropdowndata.forEach((data,idx)=>{
@@ -182,6 +204,8 @@ const Filter = () => {
       let filter6=document.querySelector(".filter-6") as HTMLElement;
       let filter7=document.querySelector(".filter-7") as HTMLElement;
       let filter8=document.querySelector(".filter-8") as HTMLElement;
+      let filter9=document.querySelector(".filter-9") as HTMLElement;
+
 
 
       if(e.target && !(filter8?.contains(e.target as HTMLElement)) || !(filter8?.dataset?.closed==="true")){
@@ -219,6 +243,10 @@ const Filter = () => {
         
             return;
             }
+            else  if(e.target && filter9?.contains(e.target as HTMLElement) || filter9?.dataset?.closed==="true"){
+        
+              return;
+              }
        else{
         console.log("clicked outside");
         
@@ -429,6 +457,27 @@ const Filter = () => {
         id2="EmploymenttypeInput"
         dd1="EmploymenttypeDropdown"
         dd2="EmploymentTypeList"
+      />
+      
+   {/* const [Locationdropdown,setLocationdropdown]=useState<Locationtype[]>(countryData.slice(0,7));
+   const [Locationvalue,setLocationvalue]=useState<string>("");
+   const [SelectedLocations,setSelectedLocations]=useState<Locationtype[]>([]); */}
+     <Locationfilter
+        locationvalue={Locationvalue}
+        setlocationvalue={setLocationvalue}
+        locationtype={Locationdropdown}
+        setlocationtype={setLocationdropdown}
+        Selectlocationtypes={SelectedLocations}
+        LocationTypes={countryData}
+        root="filter-9"
+        activeDropdown={activeDropdown}
+        setactiveDropdown={setactiveDropdown}
+        setSelectlocationtypes={setSelectedLocations}
+        title="Location"
+        id1="LocationsearchDiv"
+        id2="LocationsearchInput"
+        dd1="LocationsearchDropdown"
+        dd2="LocationsearchList"
       />
       {
         /* id1:IndustryTitle
