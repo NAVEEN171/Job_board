@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { Switch } from '@/components/ui/switch';
+import React, { useEffect } from "react";
+import { Switch } from "@/components/ui/switch";
 import "../../../app/globals.css";
-import { countryData } from '@/FiltersList/Locations';
+import { countryData } from "@/FiltersList/Locations";
 
 type Locationtype = {
   country: string;
@@ -25,6 +25,8 @@ type Filter2type = {
   root: string;
   activeDropdown: string | null;
   setactiveDropdown: (value: string | null) => void;
+  updateSearchParams: (value: string[], val: string) => void;
+  changeSwitchState: (value: boolean) => void;
 };
 
 const Locationfilter: React.FC<Filter2type> = ({
@@ -42,62 +44,92 @@ const Locationfilter: React.FC<Filter2type> = ({
   dd1,
   dd2,
   activeDropdown,
-  setactiveDropdown
+  setactiveDropdown,
+  updateSearchParams,
+  changeSwitchState,
 }) => {
+  const titleModified = title.replace(/\s+/g, "");
+  useEffect(() => {
+    let newlocations = Selectlocationtypes.map((element) => element.country);
+    updateSearchParams(newlocations, titleModified);
+  }, [Selectlocationtypes]);
 
   useEffect(() => {
     let filteredLocations;
-    if(locationvalue===""){
-      setlocationtype(LocationTypes.slice(0,7));
+    if (locationvalue === "") {
+      setlocationtype(LocationTypes.slice(0, 7));
+    } else {
+      filteredLocations = LocationTypes.filter((item) =>
+        item.country.toLowerCase().includes(locationvalue.toLowerCase())
+      );
+
+      setlocationtype(filteredLocations);
     }
-   
-    else{
-     filteredLocations = LocationTypes.filter((item) =>
-      item.country.toLowerCase().includes(locationvalue.toLowerCase())
-    );
-     
-    setlocationtype(filteredLocations);
-  }
   }, [locationvalue]);
 
-  const setlocationhandler = (loc: Locationtype, e: React.MouseEvent<HTMLDivElement>) => {
+  const setlocationhandler = (
+    loc: Locationtype,
+    e: React.MouseEvent<HTMLDivElement>
+  ) => {
     const closestFilter = (e.target as HTMLElement).closest(".filter");
     if (closestFilter) closestFilter.setAttribute("data-closed", "true");
 
     setTimeout(() => {
       if (closestFilter) closestFilter.setAttribute("data-closed", "false");
     }, 200);
-    
 
-    setlocationtype(locationtype.filter((location) => location.country !== loc.country));
+    setlocationtype(
+      locationtype.filter((location) => location.country !== loc.country)
+    );
     setSelectlocationtypes([...Selectlocationtypes, loc]);
     setlocationvalue("");
   };
 
-  const clearhandler = (loc: Locationtype, e: React.MouseEvent<HTMLDivElement>) => {
+  const clearhandler = (
+    loc: Locationtype,
+    e: React.MouseEvent<HTMLDivElement>
+  ) => {
     const closestFilter = (e.target as HTMLElement).closest(".filter");
     if (closestFilter) closestFilter.setAttribute("data-closed", "true");
 
     setTimeout(() => {
       if (closestFilter) closestFilter.setAttribute("data-closed", "false");
     }, 200);
-   
-    setSelectlocationtypes(Selectlocationtypes.filter((location) => location.country !== loc.country));
-     let first7Regions=countryData.slice(0,7);
-  if( first7Regions && first7Regions.includes(loc)){
-    setlocationtype([...locationtype, loc].sort((a, b) => a.country.localeCompare(b.country)));
-  }
+
+    setSelectlocationtypes(
+      Selectlocationtypes.filter((location) => location.country !== loc.country)
+    );
+    let first7Regions = countryData.slice(0, 7);
+    if (first7Regions && first7Regions.includes(loc)) {
+      setlocationtype(
+        [...locationtype, loc].sort((a, b) =>
+          a.country.localeCompare(b.country)
+        )
+      );
+    }
   };
 
   const handlelocationback = (e: React.KeyboardEvent) => {
-    if (e.key === "Backspace" && Selectlocationtypes.length > 0 && locationvalue.length === 0) {
+    if (
+      e.key === "Backspace" &&
+      Selectlocationtypes.length > 0 &&
+      locationvalue.length === 0
+    ) {
       const duplicate = [...Selectlocationtypes];
       const last_ele = duplicate.pop();
 
       setSelectlocationtypes(duplicate);
-      let first7Regions=countryData.slice(0,7);
-      if (last_ele && !locationtype.includes(last_ele) && first7Regions.includes(last_ele) ) {
-        setlocationtype([...locationtype, last_ele].sort((a, b) => a.country.localeCompare(b.country)));
+      let first7Regions = countryData.slice(0, 7);
+      if (
+        last_ele &&
+        !locationtype.includes(last_ele) &&
+        first7Regions.includes(last_ele)
+      ) {
+        setlocationtype(
+          [...locationtype, last_ele].sort((a, b) =>
+            a.country.localeCompare(b.country)
+          )
+        );
       }
     }
   };
@@ -113,16 +145,25 @@ const Locationfilter: React.FC<Filter2type> = ({
   };
 
   return (
-    <div className={`${root} filter relative max-w-[90%]`} onClick={() => setactiveDropdown(root)} data-closed="false">
+    <div
+      className={`${root} filter relative max-w-[90%]`}
+      onClick={() => setactiveDropdown(root)}
+      data-closed="false"
+    >
       <div
         id={dd1}
         onClick={() => changehandler(id1, id2)}
         className="border relative flex items-center justify-between border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
       >
-        <div id={id1} className="w-[200px] text-black-500 text-[1.2rem]">{title}</div>
+        <div id={id1} className="w-[200px] text-black-500 text-[1.2rem]">
+          {title}
+        </div>
         <div className="options-list flex gap-[10px] flex-wrap max-w-[85%]">
           {Selectlocationtypes.map((loc, index) => (
-            <div key={index} className="bg-[#F0F1FA] h-auto flex items-center gap-[5px] px-[5px] py-[5px] rounded-[5px]">
+            <div
+              key={index}
+              className="bg-[#F0F1FA] h-auto flex items-center gap-[5px] px-[5px] py-[5px] rounded-[5px]"
+            >
               <div className="pl-[5px] py-[3px] text-[1.2rem] font-roboto text-[900]">{`${loc.emoji} ${loc.country}`}</div>
               <div
                 className="wrongbutton py-[3px] w-[24px] h-[24px] flex items-center text-[1.1rem] font-lato text-[900] px-[5px]"
@@ -141,7 +182,14 @@ const Locationfilter: React.FC<Filter2type> = ({
             placeholder="Type..."
           />
         </div>
-        <svg className="pl-[5px] box-content" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+        <svg
+          className="pl-[5px] box-content"
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#000000"
+        >
           <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
         </svg>
       </div>
@@ -154,7 +202,7 @@ const Locationfilter: React.FC<Filter2type> = ({
         >
           <div className="switch-container text-[1.2rem] p-[5px]">
             <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center border-[1px] border-[#C8C8C8] rounded-[5px]">
-              <Switch />
+              <Switch title="remote" changeSwitchState={changeSwitchState} />
               <div>Include Remote</div>
             </div>
           </div>
