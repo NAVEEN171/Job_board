@@ -182,7 +182,7 @@ const Filter2: React.FC<Filter2type> = ({
         <div id={id1} className="w-[200px]  text-black-500 text-[1.2rem]">
           {title}
         </div>
-        <div className="options-list flex    gap-[10px] flex-wrap max-w-[85%]">
+        <div className="options-list flex  w-fit   gap-[10px] flex-wrap max-w-[97%]">
           {Selectlocationtypes.map((loc, index) => (
             <div
               className="bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px] py-[5px] rounded-[5px]"

@@ -157,7 +157,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
         >
           Industry
         </div>
-        <div className="options-list flex   gap-[10px] flex-wrap max-w-[85%]">
+        <div className="options-list flex   gap-[10px] flex-wrap max-w-[97%]">
           {SelectedIndustries.map((loc, index) => (
             <div
               className="bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px] py-[5px] rounded-[5px]"

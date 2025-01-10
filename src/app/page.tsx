@@ -4,6 +4,7 @@ import Image from "next/image";
 import Navbar from "../components/Navbar/Navbar";
 import Herosection from "../components/Herosection/Herosection";
 import Filter from "../components/Filters/Filter";
+import JobListing from "@/components/JobListing/JobListing";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <div className="bottom-container w-full pb-[10px]">
           <Herosection />
           <Filter />
+          <JobListing />
         </div>
       </div>
     </div>

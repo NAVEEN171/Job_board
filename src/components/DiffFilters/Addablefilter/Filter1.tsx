@@ -102,6 +102,16 @@ const Filter1: React.FC<Filter1type> = ({
               </div>
             </div>
           ))}
+          <input
+            id="jobtitleinput"
+            value={jobvalue}
+            onKeyDown={handlepress}
+            onChange={(e) => {
+              setjobvalue(e.target.value);
+            }}
+            className="hidden w-[200px] text-black-500 text-[1.2rem] "
+            placeholder="Type..."
+          ></input>
         </div>
 
         <div
@@ -110,16 +120,6 @@ const Filter1: React.FC<Filter1type> = ({
         >
           {title}
         </div>
-        <input
-          id="jobtitleinput"
-          value={jobvalue}
-          onKeyDown={handlepress}
-          onChange={(e) => {
-            setjobvalue(e.target.value);
-          }}
-          className="hidden w-[200px] text-black-500 text-[1.2rem] "
-          placeholder="Type..."
-        ></input>
       </div>
     </div>
   );

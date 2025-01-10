@@ -37,3 +37,25 @@ button {
     --radius: 0.5rem;
   }
 }
+.loader {
+  width: 38px;
+  height: 38px;
+  border: 2px solid #f3f3f3; /* Light gray background */
+  border-top: 2px solid #3498db; /* Blue color for the top border */
+  border-radius: 50%;
+  position: absolute; /* To position it within the parent */
+
+  transform: translate(-50%, -50%);
+  animation: spin 2s linear infinite; /* Rotate the circle */
+  user-select: none;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); /* Start from 0 degrees */
+  }
+  100% {
+    transform: rotate(360deg); /* Rotate to 360 degrees */
+  }
+}

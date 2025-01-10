@@ -657,12 +657,12 @@ const Filter = () => {
           </Fragment>
         )}
       </div>
-      <div className="flex items-center justify-evenly">
+      <div className="flex items-center justify-between">
         <div
           onClick={() => {
             setAdvancedShow(!advancedShow);
           }}
-          className="flex h-fit w-fit relative gap-[10px] py-[10px] items-center border-[1px] border-[#C8C8C8] px-[15px]  rounded-[8px] hover:border-[#3a90ff]"
+          className="flex  h-fit w-fit relative gap-[10px] py-[10px] items-center border-[1px] border-[#C8C8C8] px-[15px]  rounded-[8px] hover:border-[#3a90ff]"
         >
           <Image
             src="/svgs/thunder.svg"
@@ -693,9 +693,19 @@ const Filter = () => {
           >
             <div
               id="Advancedtitle"
-              className="px-[20px]  text-black-500 text-[1.2rem]"
+              className="px-[10px] flex gap-[10px]  items-center text-black-500 text-[1.2rem]"
             >
               {selectadvancedOption}
+              <svg
+                className="pl-[5px] box-content"
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#000000"
+              >
+                <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+              </svg>
             </div>
           </div>
 
