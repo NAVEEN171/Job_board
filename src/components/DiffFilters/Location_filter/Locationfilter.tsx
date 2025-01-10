@@ -27,6 +27,7 @@ type Filter2type = {
   setactiveDropdown: (value: string | null) => void;
   updateSearchParams: (value: string[], val: string) => void;
   changeSwitchState: (value: boolean) => void;
+  remote: boolean;
 };
 
 const Locationfilter: React.FC<Filter2type> = ({
@@ -47,6 +48,7 @@ const Locationfilter: React.FC<Filter2type> = ({
   setactiveDropdown,
   updateSearchParams,
   changeSwitchState,
+  remote,
 }) => {
   const titleModified = title.replace(/\s+/g, "");
   useEffect(() => {
@@ -57,7 +59,7 @@ const Locationfilter: React.FC<Filter2type> = ({
   useEffect(() => {
     let filteredLocations;
     if (locationvalue === "") {
-      setlocationtype(LocationTypes.slice(0, 7));
+      setlocationtype(LocationTypes.slice(0, 8));
     } else {
       filteredLocations = LocationTypes.filter((item) =>
         item.country.toLowerCase().includes(locationvalue.toLowerCase())
@@ -146,7 +148,7 @@ const Locationfilter: React.FC<Filter2type> = ({
 
   return (
     <div
-      className={`${root} filter relative max-w-[90%]`}
+      className={`${root} filter h-fit relative max-w-[90%]`}
       onClick={() => setactiveDropdown(root)}
       data-closed="false"
     >
@@ -202,7 +204,11 @@ const Locationfilter: React.FC<Filter2type> = ({
         >
           <div className="switch-container text-[1.2rem] p-[5px]">
             <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center border-[1px] border-[#C8C8C8] rounded-[5px]">
-              <Switch title="remote" changeSwitchState={changeSwitchState} />
+              <Switch
+                initialChecked={remote}
+                title="remote"
+                changeSwitchState={changeSwitchState}
+              />
               <div>Include Remote</div>
             </div>
           </div>

@@ -1,49 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Permanent+Marker&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Permanent+Marker&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.filter-1,.filter-2,.filter-3{
-  height:fit-content;
+.filter-1,
+.filter-2,
+.filter-3 {
+  height: fit-content;
 }
-
-
-
-
-
-
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   box-sizing: border-box;
-  
 }
-.wrongbutton{
-  color:grey;
+.wrongbutton {
+  color: grey;
 }
-.wrongbutton:hover{
-  color:red !important;
-  cursor:pointer;
-
+.wrongbutton:hover {
+  color: red !important;
+  cursor: pointer;
 }
 
-
-button{
-  outline:none;
-  border:none;
+button {
+  outline: none;
+  border: none;
 }
 
-.filters-wrapper input{
-  outline:none;
-  border:none;
+.filters-wrapper input {
+  outline: none;
+  border: none;
 }
 
 @layer base {
   :root {
     --radius: 0.5rem;
-  
   }
-  
 }

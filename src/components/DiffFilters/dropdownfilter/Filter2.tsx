@@ -125,12 +125,15 @@ const Filter2: React.FC<Filter2type> = ({
 
     let newlocations = [...Selectlocationtypes];
     newlocations = newlocations.filter((location) => location !== loc);
+    console.log("array is ");
+    console.log(newlocations);
     setSelectlocationtypes(newlocations);
     console.log("len :" + Selectlocationtypes.length);
 
-    let locations = [...locationtype];
-    locations.push(loc);
-    locations.sort();
+    let locations = [...LocationTypes];
+    locations = locations.filter(
+      (location) => !newlocations.includes(location)
+    );
     setlocationtype(locations);
   };
 
@@ -144,13 +147,10 @@ const Filter2: React.FC<Filter2type> = ({
       let last_ele: any = duplicate.pop();
 
       setSelectlocationtypes(duplicate);
-      let locations = [...locationtype];
+      let locations = [...LocationTypes];
 
-      if (!locations.includes(last_ele)) {
-        locations.push(last_ele);
-        locations.sort();
-        setlocationtype(locations);
-      }
+      locations = locations.filter((location) => !duplicate.includes(location));
+      setlocationtype(locations);
     }
   };
 

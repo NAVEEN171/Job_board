@@ -20,6 +20,7 @@ import { countryData } from "@/FiltersList/Locations";
 import Locationfilter from "../DiffFilters/Location_filter/Locationfilter";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { AdvancedList } from "@/FiltersList/AdvancedList";
 
 type DropDowndatatype = {
   name: string;
@@ -104,6 +105,8 @@ type Locationtype = {
 };
 
 const Filter = () => {
+  const searchParams = useSearchParams();
+
   const [jobtitle, setjobtitle] = useState<string[]>([]); //added options for jobtitle (addable filter)
   const [jobvalue, setjobvalue] = useState<string>(""); //current typed value of the filter (addable filter)
 
@@ -147,6 +150,8 @@ const Filter = () => {
   const [SelectedLocations, setSelectedLocations] = useState<Locationtype[]>(
     []
   );
+  const [selectadvancedOption, setselectadvancedOption] =
+    useState<string>("Relevance & Date");
   const router = useRouter();
 
   const ChangeDoubleslider = (val: number[], name: string) => {
@@ -180,6 +185,28 @@ const Filter = () => {
   useEffect(() => {
     console.log(Locationdropdown);
   }, [Locationdropdown]);
+
+  useEffect(() => {
+    console.log(searchParams.get("JobTitle"));
+    let count = 0;
+    const AdvancedList: string[][] = [
+      ["Industries"],
+      ["Domain"],
+      ["Experience", "Include_no_yoe"],
+      ["Employment-type"],
+      ["Location", "remote"],
+      ["visa"],
+    ];
+    for (let i = 0; i < AdvancedList.length; i++) {
+      for (let j = 0; j < AdvancedList[i].length; j++) {
+        if (searchParams.get(AdvancedList[i][j])) {
+          count++;
+          break;
+        }
+      }
+    }
+    setadvancedFilterCount(count);
+  }, [searchParams]);
 
   useEffect(() => {
     let jobtitlediv;
@@ -227,9 +254,8 @@ const Filter = () => {
 
   const handleClick = (e: MouseEvent) => {
     console.log("clicked");
+    console.log(e.target);
 
-    let jobtitlediv = document.getElementById("jobtitlediv");
-    let jobtitleinput = document.getElementById("jobtitleinput");
     let filter1 = document.querySelector(".filter-1") as HTMLElement;
     let filter2 = document.querySelector(".filter-2") as HTMLElement;
     let filter3 = document.querySelector(".filter-3") as HTMLElement;
@@ -239,6 +265,7 @@ const Filter = () => {
     let filter7 = document.querySelector(".filter-7") as HTMLElement;
     let filter8 = document.querySelector(".filter-8") as HTMLElement;
     let filter9 = document.querySelector(".filter-9") as HTMLElement;
+    let filter10 = document.querySelector(".filter-10") as HTMLElement;
 
     if (
       (e.target && !filter8?.contains(e.target as HTMLElement)) ||
@@ -275,6 +302,11 @@ const Filter = () => {
     } else if (
       (e.target && filter6?.contains(e.target as HTMLElement)) ||
       filter6?.dataset?.closed === "true"
+    ) {
+      return;
+    } else if (
+      (e.target && filter10?.contains(e.target as HTMLElement)) ||
+      filter10?.dataset?.closed === "true"
     ) {
       return;
     } else if (
@@ -334,303 +366,360 @@ const Filter = () => {
   };
 
   return (
-    <div className="filters-wrapper relative flex gap-[30px]  flex-wrap justify-center w-[100%]">
-      <Filter1
-        jobtitle={jobtitle}
-        jobvalue={jobvalue}
-        setjobtitle={setjobtitle}
-        activeDropdown={activeDropdown}
-        setactiveDropdown={setactiveDropdown}
-        setjobvalue={setjobvalue}
-        title="Job Title"
-        updateSearchParams={updateSearchParams}
-      />
-      <Filter2
-        locationvalue={locationvalue}
-        setlocationvalue={setlocationvalue}
-        locationtype={locationtype}
-        setlocationtype={setlocationtype}
-        Selectlocationtypes={Selectlocationtypes}
-        setSelectlocationtypes={setSelectlocationtypes}
-        LocationTypes={LocationTypes}
-        activeDropdown={activeDropdown}
-        setactiveDropdown={setactiveDropdown}
-        root="filter-2"
-        title="Location Type"
-        id1="locdiv"
-        id2="locationinput"
-        dd1="locationdropdown"
-        dd2="locationtypelist"
-        updateSearchParams={updateSearchParams}
-      />
+    <div className="flex flex-col gap-[30px]">
+      <div className="filters-wrapper relative flex gap-[30px]  flex-wrap justify-center w-[100%]">
+        <Filter1
+          jobtitle={jobtitle}
+          jobvalue={jobvalue}
+          setjobtitle={setjobtitle}
+          activeDropdown={activeDropdown}
+          setactiveDropdown={setactiveDropdown}
+          setjobvalue={setjobvalue}
+          title="Job Title"
+          updateSearchParams={updateSearchParams}
+        />
+        <Filter2
+          locationvalue={locationvalue}
+          setlocationvalue={setlocationvalue}
+          locationtype={locationtype}
+          setlocationtype={setlocationtype}
+          Selectlocationtypes={Selectlocationtypes}
+          setSelectlocationtypes={setSelectlocationtypes}
+          LocationTypes={LocationTypes}
+          activeDropdown={activeDropdown}
+          setactiveDropdown={setactiveDropdown}
+          root="filter-2"
+          title="Location Type"
+          id1="locdiv"
+          id2="locationinput"
+          dd1="locationdropdown"
+          dd2="locationtypelist"
+          updateSearchParams={updateSearchParams}
+        />
 
-      <div
-        className="filter-5 filter relative"
-        onClick={() => {
-          setactiveDropdown("filter-5");
-        }}
-        data-closed="false"
-        style={{ position: "relative" }}
-      >
-        <div className="border relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-          <div className="w-[200px] text-black-500 text-[1.2rem]">
-            Date Posted
-          </div>
-          <svg
-            className="pl-[5px] box-content"
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#000000"
-          >
-            <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
-          </svg>
-          {activeDropdown === "filter-5" && (
-            <div
-              id="drop-down-date"
-              className="drop-down-list  rounded-md flex flex-col gap-[15px] py-[20px] px-[15px] rounded-mg bg-white absolute top-[55px] left-0 w-[350px] shadow-custom absolute"
-              style={{ zIndex: 9999 }}
-            >
-              <div className="Singleslider-container flex flex-col gap-[20px]">
-                <div className="salary-desc flex justify-between">
-                  <div className="">Date Posted</div>
-                  <div>{datepostedshower}</div>
-                </div>
-                <SingleSlider
-                  value={singleSlidervalue}
-                  onValueChange={handleSingleValueChange}
-                  onClick={() => {
-                    ChangeDate(singleSlidervalue[0]);
-                  }}
-                  min={0}
-                  max={90}
-                  step={1}
-                />
-              </div>
+        <div
+          className="filter-5 filter relative"
+          onClick={() => {
+            setactiveDropdown("filter-5");
+          }}
+          data-closed="false"
+          style={{ position: "relative" }}
+        >
+          <div className="border relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+            <div className="w-[200px] text-black-500 text-[1.2rem]">
+              Date Posted
             </div>
-          )}
-        </div>
-      </div>
-      <div
-        className="filter-4  filter relative"
-        onClick={() => {
-          setactiveDropdown("filter-4");
-        }}
-        data-closed="false"
-      >
-        <div className="border relative flex items-center border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-          <div className="w-[200px] text-black-500 text-[1.2rem]">
-            Salary Range
-          </div>
-          <svg
-            className="pl-[5px] box-content"
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#000000"
-          >
-            <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
-          </svg>
-          {activeDropdown === "filter-4" && (
-            <div
-              id="salary-drop-down"
-              className="drop-down-list drop-down-salary  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom"
-              style={{ zIndex: 9999 }}
+            <svg
+              className="pl-[5px] box-content"
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#000000"
             >
-              <div className="DualRangeslider-container flex flex-col gap-[20px]">
-                <div className="salary-desc flex justify-between">
-                  <div>salary</div>
-                  <div>{Slideprevalue}</div>
-                </div>
-                <DualRangeSlider
-                  min={0}
-                  max={1190}
-                  value={sliderValue}
-                  onValueChange={setSliderValue}
-                  onClick={() => {
-                    ChangeDoubleslider(sliderValue, "salary");
-                  }}
-                />
-              </div>
-              <div className="switch-container text-[1.2rem]">
-                <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center border-[1px] border-[#C8C8C8] rounded-[5px]">
-                  <Switch title="salary" changeSwitchState={setNoSalary} />
-                  <div>Include No salary Info</div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      {advancedShow && (
-        <Fragment>
-          <Industryfilter
-            SelectedIndustries={SelectedIndustries}
-            setSelectedIndustries={setSelectedIndustries}
-            activeDropdown={activeDropdown}
-            setactiveDropdown={setactiveDropdown}
-            setIndustrySubcategory={setIndustrySubcategory}
-            IndustrySubcategory={IndustrySubcategory}
-            CurrentIndustryVal={CurrentIndustryVal}
-            setCurrentIndustryVal={setCurrentIndustryVal}
-            setIndustryDropDown={setIndustryDropDown}
-            IndustryDropDown={IndustryDropDown}
-            industriesSubcategories={industriesSubcategories}
-            Industries={Industries}
-            updateSearchParams={updateSearchParams}
-          />
-          <Filter2
-            locationvalue={searchjobcategory}
-            setlocationvalue={setsearchjobcategory}
-            locationtype={dropdowncategory}
-            setlocationtype={setdropdowncategory}
-            Selectlocationtypes={Selectjobcategory}
-            LocationTypes={jobCategories}
-            root="filter-3"
-            activeDropdown={activeDropdown}
-            setactiveDropdown={setactiveDropdown}
-            setSelectlocationtypes={setSelectjobcategory}
-            title="Domain"
-            id1="domainDiv"
-            id2="domainInput"
-            dd1="domainDropdown"
-            dd2="domainTypeList"
-            updateSearchParams={updateSearchParams}
-          />
-          <div
-            className="filter-6  filter relative"
-            onClick={() => {
-              setactiveDropdown("filter-6");
-            }}
-            data-closed="false"
-          >
-            <div className="border relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-              <div className="w-[200px] text-black-500 text-[1.2rem]">
-                Experience{" "}
-              </div>
-              <svg
-                className="pl-[5px] box-content"
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#000000"
+              <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+            </svg>
+            {activeDropdown === "filter-5" && (
+              <div
+                id="drop-down-date"
+                className="drop-down-list  rounded-md flex flex-col gap-[15px] py-[20px] px-[15px] rounded-mg bg-white absolute top-[55px] left-0 w-[350px] shadow-custom absolute"
+                style={{ zIndex: 9999 }}
               >
-                <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
-              </svg>
-              {activeDropdown === "filter-6" && (
-                <div
-                  id="experience-drop-down"
-                  className="drop-down-list drop-down-experience  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom"
-                  style={{ zIndex: 9999 }}
-                >
-                  <div className="DualRangeslider-container flex flex-col gap-[20px]">
-                    <div className="salary-desc flex justify-between">
-                      <div>Experience</div>
-                      <div>{Experienceprevalue}</div>
-                    </div>
-                    <DualRangeSlider
-                      min={0}
-                      max={10}
-                      value={Experiencevalue}
-                      onValueChange={setExperiencevalue}
-                      onClick={() => {
-                        ChangeDoubleslider(Experiencevalue, "Experience");
-                      }}
-                    />
+                <div className="Singleslider-container flex flex-col gap-[20px]">
+                  <div className="salary-desc flex justify-between">
+                    <div className="">Date Posted</div>
+                    <div>{datepostedshower}</div>
                   </div>
-                  <div className="switch-container text-[1.2rem]">
-                    <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center border-[1px] border-[#C8C8C8] rounded-[5px]">
-                      <Switch
-                        title="Experience"
-                        changeSwitchState={setNoExperience}
-                      />
-                      <div>Include No YEO info</div>
-                    </div>
+                  <SingleSlider
+                    value={singleSlidervalue}
+                    onValueChange={handleSingleValueChange}
+                    onClick={() => {
+                      ChangeDate(singleSlidervalue[0]);
+                    }}
+                    min={0}
+                    max={90}
+                    step={1}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        <div
+          className="filter-4  filter relative"
+          onClick={() => {
+            setactiveDropdown("filter-4");
+          }}
+          data-closed="false"
+        >
+          <div className="border relative flex items-center border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+            <div className="w-[200px] text-black-500 text-[1.2rem]">
+              Salary Range
+            </div>
+            <svg
+              className="pl-[5px] box-content"
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#000000"
+            >
+              <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+            </svg>
+            {activeDropdown === "filter-4" && (
+              <div
+                id="salary-drop-down"
+                className="drop-down-list drop-down-salary  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom"
+                style={{ zIndex: 9999 }}
+              >
+                <div className="DualRangeslider-container flex flex-col gap-[20px]">
+                  <div className="salary-desc flex justify-between">
+                    <div>salary</div>
+                    <div>{Slideprevalue}</div>
+                  </div>
+                  <DualRangeSlider
+                    min={0}
+                    max={1190}
+                    value={sliderValue}
+                    onValueChange={setSliderValue}
+                    onClick={() => {
+                      ChangeDoubleslider(sliderValue, "salary");
+                    }}
+                  />
+                </div>
+                <div className="switch-container text-[1.2rem]">
+                  <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center border-[1px] border-[#C8C8C8] rounded-[5px]">
+                    <Switch
+                      initialChecked={NoSalary}
+                      title="Include_no_salary"
+                      changeSwitchState={setNoSalary}
+                    />
+                    <div>Include No salary Info</div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-          {/* const [Employmenttypevalue,setEmploymenttypevalue]=useState<string>("");
+        </div>
+        {advancedShow && (
+          <Fragment>
+            <Industryfilter
+              SelectedIndustries={SelectedIndustries}
+              setSelectedIndustries={setSelectedIndustries}
+              activeDropdown={activeDropdown}
+              setactiveDropdown={setactiveDropdown}
+              setIndustrySubcategory={setIndustrySubcategory}
+              IndustrySubcategory={IndustrySubcategory}
+              CurrentIndustryVal={CurrentIndustryVal}
+              setCurrentIndustryVal={setCurrentIndustryVal}
+              setIndustryDropDown={setIndustryDropDown}
+              IndustryDropDown={IndustryDropDown}
+              industriesSubcategories={industriesSubcategories}
+              Industries={Industries}
+              updateSearchParams={updateSearchParams}
+            />
+            <Filter2
+              locationvalue={searchjobcategory}
+              setlocationvalue={setsearchjobcategory}
+              locationtype={dropdowncategory}
+              setlocationtype={setdropdowncategory}
+              Selectlocationtypes={Selectjobcategory}
+              LocationTypes={jobCategories}
+              root="filter-3"
+              activeDropdown={activeDropdown}
+              setactiveDropdown={setactiveDropdown}
+              setSelectlocationtypes={setSelectjobcategory}
+              title="Domain"
+              id1="domainDiv"
+              id2="domainInput"
+              dd1="domainDropdown"
+              dd2="domainTypeList"
+              updateSearchParams={updateSearchParams}
+            />
+            <div
+              className="filter-6  filter relative"
+              onClick={() => {
+                setactiveDropdown("filter-6");
+              }}
+              data-closed="false"
+            >
+              <div className="border relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+                <div className="w-[200px] text-black-500 text-[1.2rem]">
+                  Experience{" "}
+                </div>
+                <svg
+                  className="pl-[5px] box-content"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#000000"
+                >
+                  <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+                </svg>
+                {activeDropdown === "filter-6" && (
+                  <div
+                    id="experience-drop-down"
+                    className="drop-down-list drop-down-experience  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom"
+                    style={{ zIndex: 9999 }}
+                  >
+                    <div className="DualRangeslider-container flex flex-col gap-[20px]">
+                      <div className="salary-desc flex justify-between">
+                        <div>Experience</div>
+                        <div>{Experienceprevalue}</div>
+                      </div>
+                      <DualRangeSlider
+                        min={0}
+                        max={10}
+                        value={Experiencevalue}
+                        onValueChange={setExperiencevalue}
+                        onClick={() => {
+                          ChangeDoubleslider(Experiencevalue, "Experience");
+                        }}
+                      />
+                    </div>
+                    <div className="switch-container text-[1.2rem]">
+                      <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center border-[1px] border-[#C8C8C8] rounded-[5px]">
+                        <Switch
+                          initialChecked={NoExperience}
+                          title="Include_no_yeo"
+                          changeSwitchState={setNoExperience}
+                        />
+                        <div>Include No YEO info</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* const [Employmenttypevalue,setEmploymenttypevalue]=useState<string>("");
    const [EmpTypedropdown,setEmpTypedropdown]=useState<string[]>(EmploymentList);
    const [selectedEmptype,setselectedEmptype]=useState<string[]>([]) */}
-          <Filter2
-            locationvalue={Employmenttypevalue}
-            setlocationvalue={setEmploymenttypevalue}
-            locationtype={EmpTypedropdown}
-            setlocationtype={setEmpTypedropdown}
-            Selectlocationtypes={selectedEmptype}
-            LocationTypes={EmploymentList}
-            root="filter-7"
-            activeDropdown={activeDropdown}
-            setactiveDropdown={setactiveDropdown}
-            setSelectlocationtypes={setselectedEmptype}
-            title="Employment-type"
-            id1="EmploymenttypeDiv"
-            id2="EmploymenttypeInput"
-            dd1="EmploymenttypeDropdown"
-            dd2="EmploymentTypeList"
-            updateSearchParams={updateSearchParams}
-          />
+            <Filter2
+              locationvalue={Employmenttypevalue}
+              setlocationvalue={setEmploymenttypevalue}
+              locationtype={EmpTypedropdown}
+              setlocationtype={setEmpTypedropdown}
+              Selectlocationtypes={selectedEmptype}
+              LocationTypes={EmploymentList}
+              root="filter-7"
+              activeDropdown={activeDropdown}
+              setactiveDropdown={setactiveDropdown}
+              setSelectlocationtypes={setselectedEmptype}
+              title="Employment-type"
+              id1="EmploymenttypeDiv"
+              id2="EmploymenttypeInput"
+              dd1="EmploymenttypeDropdown"
+              dd2="EmploymentTypeList"
+              updateSearchParams={updateSearchParams}
+            />
 
-          {/* const [Locationdropdown,setLocationdropdown]=useState<Locationtype[]>(countryData.slice(0,7));
+            {/* const [Locationdropdown,setLocationdropdown]=useState<Locationtype[]>(countryData.slice(0,7));
    const [Locationvalue,setLocationvalue]=useState<string>("");
    const [SelectedLocations,setSelectedLocations]=useState<Locationtype[]>([]); */}
-          <Locationfilter
-            locationvalue={Locationvalue}
-            setlocationvalue={setLocationvalue}
-            locationtype={Locationdropdown}
-            setlocationtype={setLocationdropdown}
-            Selectlocationtypes={SelectedLocations}
-            LocationTypes={countryData}
-            root="filter-9"
-            activeDropdown={activeDropdown}
-            setactiveDropdown={setactiveDropdown}
-            setSelectlocationtypes={setSelectedLocations}
-            title="Location"
-            id1="LocationsearchDiv"
-            id2="LocationsearchInput"
-            dd1="LocationsearchDropdown"
-            dd2="LocationsearchList"
-            updateSearchParams={updateSearchParams}
-            changeSwitchState={setRemote}
-          />
-          {/* id1:IndustryTitle
+            <Locationfilter
+              locationvalue={Locationvalue}
+              setlocationvalue={setLocationvalue}
+              locationtype={Locationdropdown}
+              setlocationtype={setLocationdropdown}
+              Selectlocationtypes={SelectedLocations}
+              LocationTypes={countryData}
+              root="filter-9"
+              activeDropdown={activeDropdown}
+              setactiveDropdown={setactiveDropdown}
+              setSelectlocationtypes={setSelectedLocations}
+              title="Location"
+              id1="LocationsearchDiv"
+              id2="LocationsearchInput"
+              dd1="LocationsearchDropdown"
+              dd2="LocationsearchList"
+              updateSearchParams={updateSearchParams}
+              changeSwitchState={setRemote}
+              remote={remote}
+            />
+            {/* id1:IndustryTitle
         id2:IndustryInput
         dd1:IndustryDiv
         dd2:Drop-down-Industry
         */}
-          <div className="border border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-            <div className="switch-container text-[1.2rem]">
-              <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center ">
-                <Switch title="visa" changeSwitchState={setVisa} />
-                <div>Visa Sponsored</div>
+            <div className="border h-fit border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+              <div className="switch-container text-[1.2rem]">
+                <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center ">
+                  <Switch
+                    initialChecked={visa}
+                    title="visa"
+                    changeSwitchState={setVisa}
+                  />
+                  <div>Visa Sponsored</div>
+                </div>
               </div>
             </div>
+          </Fragment>
+        )}
+      </div>
+      <div className="flex items-center justify-evenly">
+        <div
+          onClick={() => {
+            setAdvancedShow(!advancedShow);
+          }}
+          className="flex h-fit w-fit relative gap-[10px] py-[10px] items-center border-[1px] border-[#C8C8C8] px-[15px]  rounded-[8px] hover:border-[#3a90ff]"
+        >
+          <Image
+            src="/svgs/thunder.svg"
+            width={30}
+            height={30}
+            alt="thunder"
+          ></Image>
+          <div className="font-inter font-semibold text-[18px]">
+            Advanced Filters
           </div>
-        </Fragment>
-      )}
-
-      <div
-        onClick={() => {
-          setAdvancedShow(!advancedShow);
-        }}
-        className="flex relative gap-[10px] py-[10px] items-center border-[1px] border-[#C8C8C8] px-[15px]  rounded-[8px] hover:border-[#3a90ff]"
-      >
-        <Image
-          src="/svgs/thunder.svg"
-          width={30}
-          height={30}
-          alt="thunder"
-        ></Image>
-        <div className="font-inter font-semibold text-[18px]">
-          Advanced Filters
+          <div className="absolute -top-[10px]  h-[20px] w-[20px]  -right-[10px] bg-[#3a90ff] flex items-center justify-center    text-white z-40 rounded-full ">
+            <div className="leading-none">{advancedFilterCount}</div>
+          </div>
         </div>
-        <div className="absolute -top-[10px]  h-[20px] w-[20px]  -right-[10px] bg-[#3a90ff] flex items-center justify-center    text-white z-40 rounded-full ">
-          <div className="leading-none">{advancedFilterCount}</div>
+        <div className="text-[18px] font-medium">
+          Land your <span className="text-[#3a90ff]">Dream Job</span>
+        </div>
+        <div
+          className={`filter-10 filter   relative max-w-[90%]`}
+          onClick={() => {
+            setactiveDropdown("filter-10");
+          }}
+          data-closed="false"
+        >
+          <div
+            id={"Advanceddiv"}
+            className=" border   relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
+          >
+            <div
+              id="Advancedtitle"
+              className="px-[20px]  text-black-500 text-[1.2rem]"
+            >
+              {selectadvancedOption}
+            </div>
+          </div>
+
+          {activeDropdown === "filter-10" && (
+            <div
+              id={"Advanceddropdown"}
+              className="drop-down-list top-full translate-y-4   bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0  top-[55px] absolute shadow-custom"
+              style={{ zIndex: 9999 }}
+            >
+              {AdvancedList.map((location, index) => (
+                <div
+                  onClick={(e) => {
+                    setselectadvancedOption(location);
+                  }}
+                  key={index + "loc"}
+                  className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  text-[1.2rem] text-[600]"
+                >
+                  <div className="drop-down-list-val w-auto px-[15px]">
+                    {location}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
