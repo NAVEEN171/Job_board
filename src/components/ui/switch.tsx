@@ -22,38 +22,40 @@ const Switch = React.forwardRef<
   ) => {
     const [checked, setChecked] = React.useState(initialChecked);
     const router = useRouter();
+    console.log("ok");
+
     const handlePopState = () => {
       const params = new URLSearchParams(window.location.search);
-  
-      
-        if (params.has(title)) {
-          let currentList = params.get(title);
-          console.log("paramsList is ");
-  
-          console.log(currentList);
-          changechecked(currentList==="true");
-                    
+
+      if (params.has(title)) {
+        let currentList = params.get(title);
+        console.log("paramsList is ");
+
+        console.log(currentList);
+        changechecked(currentList === "true");
+      } else {
+        setChecked(false);
+        if (changeSwitchState) {
+          changeSwitchState(false);
         }
-        else{
-          setChecked(false);
-          if (changeSwitchState) {
-            changeSwitchState(false);
-          }
-        
-        } 
+      }
+    };
 
-        };
-
-     React.useEffect(() => {
-        
-      
-        // Only attaches the listener for popstate events
-        window.addEventListener('popstate', handlePopState);
-      
-        return () => {
-          window.removeEventListener('popstate', handlePopState);
-        };
-      }, []);
+    React.useEffect(() => {
+      // Only attaches the listener for popstate events
+      window.addEventListener("popstate", handlePopState);
+      const searchparams = new URLSearchParams(window.location.search);
+      console.log("gotcha");
+      console.log(searchparams);
+      if (searchparams.has(title)) {
+        let currentList = searchparams.get(title);
+        console.log("current list is", currentList);
+        setChecked(currentList === "true");
+      }
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+      };
+    }, []);
 
     const ChangeSwitchData = (val: boolean, name: string) => {
       const params = new URLSearchParams(window.location.search);

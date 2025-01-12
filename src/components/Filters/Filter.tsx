@@ -153,6 +153,7 @@ const Filter = () => {
   );
   const [selectadvancedOption, setselectadvancedOption] =
     useState<string>("Relevance & Date");
+  const [initialRender, setinitialRender] = useState(false);
 
   const getLatestValues = useMemo(
     () => ({
@@ -178,8 +179,58 @@ const Filter = () => {
     [visa, NoExperience, NoSalary, remote]
   );
 
+  const checkAdvancedParams = (): boolean => {
+    const AdvancedParamsList = [
+      "Experience",
+      "Industries",
+      "Employment-type",
+      "Domain",
+      "Location",
+      "visa",
+      "remote",
+      "Include_no_yeo",
+    ];
+    const searchparams = new URLSearchParams(window.location.search);
+    for (let i = 0; i < AdvancedParamsList.length; i++) {
+      if (searchparams.has(AdvancedParamsList[i])) {
+        return true;
+      }
+    }
+    return false;
+  };
   useEffect(() => {
-    if (!advancedShow) {
+    const check = checkAdvancedParams();
+
+    if (check && !advancedShow) {
+      setAdvancedShow(true);
+
+      console.log("I am running first hahah");
+      const params = new URLSearchParams(window.location.search);
+
+      const paramList = Object.keys(getLatestValues);
+      paramList.pop();
+      const paramfunctions = [
+        setSelectedIndustries,
+        setSelectjobcategory,
+        setselectedEmptype,
+      ];
+      let currentList = [];
+      paramList.forEach((param, idx) => {
+        if (params.has(param)) {
+          currentList = params.get(param)?.split(",")!;
+          console.log(currentList);
+          console.log(paramfunctions[idx]);
+          paramfunctions[idx](currentList);
+        }
+      });
+    }
+    setinitialRender(true);
+  }, []);
+
+  useEffect(() => {
+    console.log("advancedshow is", advancedShow);
+    if (!advancedShow && initialRender) {
+      console.log("I am second haha");
       const params = new URLSearchParams(window.location.search);
 
       const paramList = Object.keys(getLatestValues);
