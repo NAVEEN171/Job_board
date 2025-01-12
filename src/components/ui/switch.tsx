@@ -22,6 +22,38 @@ const Switch = React.forwardRef<
   ) => {
     const [checked, setChecked] = React.useState(initialChecked);
     const router = useRouter();
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+  
+      
+        if (params.has(title)) {
+          let currentList = params.get(title);
+          console.log("paramsList is ");
+  
+          console.log(currentList);
+          changechecked(currentList==="true");
+                    
+        }
+        else{
+          setChecked(false);
+          if (changeSwitchState) {
+            changeSwitchState(false);
+          }
+        
+        } 
+
+        };
+
+     React.useEffect(() => {
+        
+      
+        // Only attaches the listener for popstate events
+        window.addEventListener('popstate', handlePopState);
+      
+        return () => {
+          window.removeEventListener('popstate', handlePopState);
+        };
+      }, []);
 
     const ChangeSwitchData = (val: boolean, name: string) => {
       const params = new URLSearchParams(window.location.search);

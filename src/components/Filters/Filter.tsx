@@ -21,6 +21,7 @@ import Locationfilter from "../DiffFilters/Location_filter/Locationfilter";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { AdvancedList } from "@/FiltersList/AdvancedList";
+import { createPostponedAbortSignal } from "next/dist/server/app-render/dynamic-rendering";
 
 type DropDowndatatype = {
   name: string;
@@ -152,6 +153,37 @@ const Filter = () => {
   );
   const [selectadvancedOption, setselectadvancedOption] =
     useState<string>("Relevance & Date");
+
+    type paramstype={
+      param:string,
+      values:string[],
+      func:(val:string[])=>void,
+    }
+    const intialBooleanStates=[
+      {val:visa,func:setVisa,param:"visa"},
+      {val:NoExperience,func:setNoExperience,param:"Include_no_yeo"},
+      {val:NoSalary,func:setNoSalary,param:"Include_no_salary"},
+      {val:remote,func:setRemote,param:"remote"},
+    ]
+    type booleanstatetype={
+         val:boolean,
+         func:(value:boolean)=>void,
+         param:string
+    }
+  
+    const booleanStates=useRef(intialBooleanStates);
+
+    useEffect(()=>{
+      const currentState=[...booleanStates.current];
+      currentState[0].val=visa;
+      currentState[1].val=NoExperience;
+      currentState[2].val=NoSalary;
+      currentState[3].val=remote;
+
+      booleanStates.current=currentState;
+
+    },[visa,NoExperience,NoSalary,remote])
+
   const router = useRouter();
 
   const ChangeDoubleslider = (val: number[], name: string) => {
@@ -185,6 +217,8 @@ const Filter = () => {
   useEffect(() => {
     console.log(Locationdropdown);
   }, [Locationdropdown]);
+
+ 
 
   useEffect(() => {
     console.log(searchParams.get("JobTitle"));
@@ -246,6 +280,61 @@ const Filter = () => {
     });
   }, [activeDropdown]);
 
+  const handlePopState = () => {
+    const params = new URLSearchParams(window.location.search);
+
+
+      console.log(booleanStates);
+      if (params.has("Experience")) {
+        let currentList = params.get("Experience")?.split("-");
+        console.log("paramsList is ");
+        if(currentList){
+        const numList=currentList.map(Number);
+        setExperiencevalue(numList);
+        }
+
+        console.log(currentList);
+
+        
+        }
+        if (params.has("salary")) {
+          let currentList = params.get("salary")?.split("-");
+          console.log("paramsList is ");
+          if(currentList){
+          const numList=currentList.map(Number);
+          setSliderValue(numList);
+          }
+  
+          console.log(currentList);
+  
+          
+          }
+        if (params.has("datePosted")) {
+          let currentList = params.get("datePosted");
+          console.log("paramsList is ");
+          if(currentList){
+          const numList=[parseInt(currentList)];
+          console.log(numList)
+          setsingleSlidervalue(numList);
+          }
+  
+          console.log(currentList);
+  
+          
+          }
+  };
+
+  useEffect(() => {
+    
+  
+    // Only attaches the listener for popstate events
+    window.addEventListener('popstate', handlePopState);
+  
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
   useEffect(() => {
     setExperienceprevalue(
       `${Experiencevalue[0]}  -  ${Experiencevalue[1]} years`
@@ -254,7 +343,6 @@ const Filter = () => {
 
   const handleClick = (e: MouseEvent) => {
     console.log("clicked");
-    console.log(e.target);
 
     let filter1 = document.querySelector(".filter-1") as HTMLElement;
     let filter2 = document.querySelector(".filter-2") as HTMLElement;
@@ -266,20 +354,24 @@ const Filter = () => {
     let filter8 = document.querySelector(".filter-8") as HTMLElement;
     let filter9 = document.querySelector(".filter-9") as HTMLElement;
     let filter10 = document.querySelector(".filter-10") as HTMLElement;
+   
 
     if (
       (e.target && !filter8?.contains(e.target as HTMLElement)) ||
       !(filter8?.dataset?.closed === "true")
-    ) {
+    )
+     {
       setIndustrySubcategory([]);
     }
-
+    
     if (
       (e.target && filter1?.contains(e.target as HTMLElement)) ||
       filter1?.dataset?.closed === "true"
     ) {
       return;
-    } else if (
+    }         
+   
+     else if (
       (e.target && filter2?.contains(e.target as HTMLElement)) ||
       filter2?.dataset?.closed === "true"
     ) {
@@ -324,7 +416,7 @@ const Filter = () => {
       filter9?.dataset?.closed === "true"
     ) {
       return;
-    } else {
+    }  else {
       console.log("clicked outside");
 
       setactiveDropdown(null);

@@ -3,7 +3,7 @@ import {
   industriesSubcategories,
 } from "@/FiltersList/CategoryFilter";
 import type { Subcategorytype } from "@/FiltersList/CategoryFilter";
-import React, { useEffect } from "react";
+import React, { useEffect,useRef,useState } from "react";
 
 type stringfunc = (val: string[]) => void;
 
@@ -38,10 +38,66 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
   updateSearchParams,
 }) => {
   const titleModified = "Industries";
+  const Selectedvalues=useRef(SelectedIndustries);
+    const locationdroptype=useRef(IndustryDropDown);
+  
+    const divRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     updateSearchParams(SelectedIndustries, titleModified);
+    Selectedvalues.current=SelectedIndustries;
+
   }, [SelectedIndustries]);
+
+   
+
+
+   const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      console.log("paramsList is ");
+      
+      let paramsList=[{param:titleModified,values:Selectedvalues.current}]
+  
+      paramsList.forEach((Each) => {
+        if (params.has(Each.param)) {
+          let currentList = params.get(Each.param)?.split(",");
+          console.log(currentList);
+          if (
+            currentList &&
+            (Each.values.length !== currentList.length ||
+              !Each.values.every((value, index) => value === currentList[index]))
+          ) {
+            if(Each.values.length>currentList.length){
+              
+              console.log("hey");
+  
+             handlelocationback("Backspace");
+            }
+            else{
+            
+              console.log("hey2");
+  
+      setlocationhandler(currentList[currentList.length - 1], divRef.current!);
+            }
+          }
+        } else {
+          if (Each.values.length) {
+            handlelocationback("Backspace");
+          }
+        }
+      });
+    };
+  
+    useEffect(() => {
+        
+      
+        window.addEventListener('popstate', handlePopState);
+      
+        return () => {
+          window.removeEventListener('popstate', handlePopState);
+        };
+      }, []);
+  
 
   useEffect(() => {
     let items = [...Industries];
@@ -53,9 +109,9 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
 
   const setlocationhandler = (
     loc: string,
-    e: React.MouseEvent<HTMLDivElement>
+    e: EventTarget
   ) => {
-    let clickedelement = e.target as HTMLElement | null; // Ensure it's cast safely
+    let clickedelement = e as HTMLElement | null; // Ensure it's cast safely
     let closestFilter: HTMLElement | null = null; // Initialize to null explicitly
 
     if (clickedelement) {
@@ -71,7 +127,8 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
       }
     }, 200);
 
-    let newlocations = [...SelectedIndustries];
+    let newlocations = [...Selectedvalues.current];
+    console.log(IndustryDropDown);
     let changedstr = loc.replace(/\(Select All\)/g, "").trim();
     if (newlocations.includes(changedstr)) {
       return;
@@ -86,7 +143,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
   //  const [SelectedIndustries,setSelectedIndustries]=useState<string[]>([]);
   //  const [CurrentIndustryVal,setCurrentIndustryVal]=useState<string>("")
 
-  const clearhandler = (loc: string, e: React.MouseEvent<HTMLDivElement>) => {
+  const clearhandler = (loc: string, e:React.MouseEvent<HTMLDivElement> ) => {
     let clickedelement = e.target as HTMLElement | null; // Ensure it's cast safely
     let closestFilter: HTMLElement | null = null; // Initialize to null explicitly
 
@@ -124,13 +181,13 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
     }
   };
 
-  const handlelocationback = (e: React.KeyboardEvent) => {
+  const handlelocationback = (e: string) => {
     if (
-      e.key === "Backspace" &&
-      SelectedIndustries.length > 0 &&
+      e === "Backspace" &&
+      Selectedvalues.current.length > 0 &&
       CurrentIndustryVal.length === 0
     ) {
-      let duplicate = [...SelectedIndustries];
+      let duplicate = [...Selectedvalues.current];
       let last_ele: any = duplicate.pop();
 
       setSelectedIndustries(duplicate);
@@ -146,6 +203,8 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
     >
       <div
         id="IndustryTitle"
+        ref={divRef}
+
         onClick={(e) => {
           changehandler("IndustryDiv", "IndustryInput");
         }}
@@ -179,7 +238,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
           <input
             id="IndustryInput"
             value={CurrentIndustryVal}
-            onKeyDown={handlelocationback}
+            onKeyDown={(e)=>{handlelocationback(e.key)}}
             onChange={(e) => {
               setCurrentIndustryVal(e.target.value);
             }}
@@ -211,7 +270,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
                     setIndustrySubcategory(industriesSubcategories[location]);
                   }}
                   onClick={(e) => {
-                    setlocationhandler(location, e);
+                    setlocationhandler(location, e.target);
                   }}
                   key={index + "loc"}
                   className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  text-[1.2rem] text-[600]"
@@ -233,7 +292,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
                 {IndustrySubcategory.map((location, index) => (
                   <div
                     onClick={(e) => {
-                      setlocationhandler(location, e);
+                      setlocationhandler(location, e.target);
                     }}
                     key={index + "loc"}
                     className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  text-[1.2rem] text-[600]"

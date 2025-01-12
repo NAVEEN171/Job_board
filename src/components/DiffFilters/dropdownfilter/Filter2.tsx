@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useRef,useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import "../../../app/globals.css";
 import { setTimeout } from "timers/promises";
@@ -41,6 +41,13 @@ const Filter2: React.FC<Filter2type> = ({
   updateSearchParams,
 }) => {
   const titleModified = title.replace(/\s+/g, "");
+  const Selectedvalues=useRef(Selectlocationtypes);
+  const locationdroptype=useRef(locationtype);
+
+  const divRef = useRef<HTMLDivElement | null>(null);
+
+
+
 
   //  useEffect(() => {
   //      const dropdownDiv = document.getElementById(dd1);
@@ -56,7 +63,63 @@ const Filter2: React.FC<Filter2type> = ({
   //    }, [Selectlocationtypes]);
   useEffect(() => {
     updateSearchParams(Selectlocationtypes, titleModified);
+     Selectedvalues.current=Selectlocationtypes;
   }, [Selectlocationtypes]);
+
+  useEffect(()=>{
+    locationdroptype.current=locationtype
+  },[locationtype])
+  
+  const handlePopState = () => {
+    const params = new URLSearchParams(window.location.search);
+    console.log("paramsList is ");
+    
+    let paramsList=[{param:titleModified,values:Selectedvalues.current,func:setSelectlocationtypes}]
+
+    paramsList.forEach((Each) => {
+      if (params.has(Each.param)) {
+        let currentList = params.get(Each.param)?.split(",");
+        console.log(currentList);
+        if (
+          currentList &&
+          (Each.values.length !== currentList.length ||
+            !Each.values.every((value, index) => value === currentList[index]))
+        ) {
+          if(Each.values.length>currentList.length){
+            
+            console.log("hey");
+
+           handlelocationback("Backspace");
+          }
+          else{
+          
+            console.log("hey2");
+
+    setlocationhandler(currentList[currentList.length - 1], divRef.current);
+          }
+        }
+      } else {
+        if (Each.values.length) {
+          handlelocationback("Backspace");
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+      
+    
+      window.addEventListener('popstate', handlePopState);
+    
+      return () => {
+        window.removeEventListener('popstate', handlePopState);
+      };
+    }, []);
+
+    useEffect(()=>{
+      console.log(Selectlocationtypes)
+    },[Selectlocationtypes])
+  
 
   useEffect(() => {
     let items;
@@ -80,9 +143,10 @@ const Filter2: React.FC<Filter2type> = ({
 
   const setlocationhandler = (
     loc: string,
-    e: React.MouseEvent<HTMLDivElement>
+    e: EventTarget | null
   ) => {
-    let clickedelement = e.target as HTMLElement | null; // Ensure it's cast safely
+    console.log(e);
+    let clickedelement = e as HTMLElement | null; // Ensure it's cast safely
     let closestFilter: HTMLElement | null = null; // Initialize to null explicitly
 
     if (clickedelement) {
@@ -97,10 +161,12 @@ const Filter2: React.FC<Filter2type> = ({
         closestFilter.setAttribute("data-closed", "false");
       }
     }, 200);
-    let locations = [...locationtype];
+    let locations = [...locationdroptype.current];
     locations = locations.filter((location) => location !== loc);
+    console.log("locations are:");
+    console.log(locations);
     setlocationtype(locations);
-    let newlocations = [...Selectlocationtypes];
+    let newlocations = [...Selectedvalues.current];
 
     newlocations.push(loc);
     setSelectlocationtypes(newlocations);
@@ -137,13 +203,17 @@ const Filter2: React.FC<Filter2type> = ({
     setlocationtype(locations);
   };
 
-  const handlelocationback = (e: React.KeyboardEvent) => {
+  const handlelocationback = (e:string) => {
+    console.log(e);
+    console.log(Selectlocationtypes);
+
+    
     if (
-      e.key === "Backspace" &&
-      Selectlocationtypes.length > 0 &&
+      e === "Backspace" &&
+      Selectedvalues.current.length > 0 &&
       locationvalue.length === 0
     ) {
-      let duplicate = [...Selectlocationtypes];
+      let duplicate = [...Selectedvalues.current];
       let last_ele: any = duplicate.pop();
 
       setSelectlocationtypes(duplicate);
@@ -177,6 +247,7 @@ const Filter2: React.FC<Filter2type> = ({
         onClick={(e) => {
           changehandler(id1, id2);
         }}
+        ref={divRef}
         className=" border   relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
       >
         <div id={id1} className="w-[200px]  text-black-500 text-[1.2rem]">
@@ -204,7 +275,7 @@ const Filter2: React.FC<Filter2type> = ({
           <input
             id={id2}
             value={locationvalue}
-            onKeyDown={handlelocationback}
+            onKeyDown={(e)=>{handlelocationback(e.key)}}
             onChange={(e) => {
               setlocationvalue(e.target.value);
             }}
@@ -232,7 +303,7 @@ const Filter2: React.FC<Filter2type> = ({
             {locationtype.map((location, index) => (
               <div
                 onClick={(e) => {
-                  setlocationhandler(location, e);
+                  setlocationhandler(location, e.target);
                 }}
                 key={index + "loc"}
                 className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  text-[1.2rem] text-[600]"
