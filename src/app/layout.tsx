@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Providers } from "@/providers/Providers";
 
 export const metadata: Metadata = {
   title: "FlexiBoard",
@@ -14,10 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head/>
-      <body suppressHydrationWarning>
-        {children}
-      </body>
+      <head />
+      <Providers>
+        <body suppressHydrationWarning>{children}</body>
+      </Providers>
     </html>
   );
 }

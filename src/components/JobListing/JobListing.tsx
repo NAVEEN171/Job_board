@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import "../../app/globals.css";
 import Bookstamp from "./Bookstamp";
+import Link from "next/link";
 
 const JobListing = () => {
   const [currentJobs, setcurrentJobs] = useState(DummyJobData);
@@ -79,20 +80,20 @@ const JobListing = () => {
               <div>{Job.requirements_summary}</div>
             </div>
             <div className="company-urls flex gap-[10px]">
-              <a
+              <Link
                 className="px-[10px] py-[5px] rounded-[5px]  border border-[1px] border-[#C8C8C8] "
                 target="_blank"
                 href={Job.company_link}
               >
                 Company
-              </a>
-              <a
+              </Link>
+              <Link
                 className="px-[10px] py-[5px] rounded-[5px] border border-[1px] border-[#C8C8C8] "
                 target="_blank"
                 href={Job.company_data.linkedin_link}
               >
                 Linkedin
-              </a>
+              </Link>
             </div>
             <div className="flex gap-[10px] max-w-[80%] flex-wrap">
               <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-[1px] border-[#C8C8C8]">

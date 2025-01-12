@@ -3,7 +3,7 @@ import {
   industriesSubcategories,
 } from "@/FiltersList/CategoryFilter";
 import type { Subcategorytype } from "@/FiltersList/CategoryFilter";
-import React, { useEffect,useRef,useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type stringfunc = (val: string[]) => void;
 
@@ -38,66 +38,59 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
   updateSearchParams,
 }) => {
   const titleModified = "Industries";
-  const Selectedvalues=useRef(SelectedIndustries);
-    const locationdroptype=useRef(IndustryDropDown);
-  
-    const divRef = useRef<HTMLDivElement | null>(null);
+  const Selectedvalues = useRef(SelectedIndustries);
+  const locationdroptype = useRef(IndustryDropDown);
+
+  const divRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     updateSearchParams(SelectedIndustries, titleModified);
-    Selectedvalues.current=SelectedIndustries;
-
+    Selectedvalues.current = SelectedIndustries;
   }, [SelectedIndustries]);
 
-   
+  const handlePopState = () => {
+    const params = new URLSearchParams(window.location.search);
+    console.log("paramsList is ");
 
+    let paramsList = [{ param: titleModified, values: Selectedvalues.current }];
 
-   const handlePopState = () => {
-      const params = new URLSearchParams(window.location.search);
-      console.log("paramsList is ");
-      
-      let paramsList=[{param:titleModified,values:Selectedvalues.current}]
-  
-      paramsList.forEach((Each) => {
-        if (params.has(Each.param)) {
-          let currentList = params.get(Each.param)?.split(",");
-          console.log(currentList);
-          if (
-            currentList &&
-            (Each.values.length !== currentList.length ||
-              !Each.values.every((value, index) => value === currentList[index]))
-          ) {
-            if(Each.values.length>currentList.length){
-              
-              console.log("hey");
-  
-             handlelocationback("Backspace");
-            }
-            else{
-            
-              console.log("hey2");
-  
-      setlocationhandler(currentList[currentList.length - 1], divRef.current!);
-            }
-          }
-        } else {
-          if (Each.values.length) {
+    paramsList.forEach((Each) => {
+      if (params.has(Each.param)) {
+        let currentList = params.get(Each.param)?.split(",");
+        console.log(currentList);
+        if (
+          currentList &&
+          (Each.values.length !== currentList.length ||
+            !Each.values.every((value, index) => value === currentList[index]))
+        ) {
+          if (Each.values.length > currentList.length) {
+            console.log("hey");
+
             handlelocationback("Backspace");
+          } else {
+            console.log("hey2");
+
+            setlocationhandler(
+              currentList[currentList.length - 1],
+              divRef.current!
+            );
           }
         }
-      });
+      } else {
+        if (Each.values.length) {
+          handlelocationback("Backspace");
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
     };
-  
-    useEffect(() => {
-        
-      
-        window.addEventListener('popstate', handlePopState);
-      
-        return () => {
-          window.removeEventListener('popstate', handlePopState);
-        };
-      }, []);
-  
+  }, []);
 
   useEffect(() => {
     let items = [...Industries];
@@ -107,10 +100,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
     setIndustryDropDown(items);
   }, [CurrentIndustryVal]);
 
-  const setlocationhandler = (
-    loc: string,
-    e: EventTarget
-  ) => {
+  const setlocationhandler = (loc: string, e: EventTarget) => {
     let clickedelement = e as HTMLElement | null; // Ensure it's cast safely
     let closestFilter: HTMLElement | null = null; // Initialize to null explicitly
 
@@ -143,7 +133,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
   //  const [SelectedIndustries,setSelectedIndustries]=useState<string[]>([]);
   //  const [CurrentIndustryVal,setCurrentIndustryVal]=useState<string>("")
 
-  const clearhandler = (loc: string, e:React.MouseEvent<HTMLDivElement> ) => {
+  const clearhandler = (loc: string, e: React.MouseEvent<HTMLDivElement>) => {
     let clickedelement = e.target as HTMLElement | null; // Ensure it's cast safely
     let closestFilter: HTMLElement | null = null; // Initialize to null explicitly
 
@@ -204,7 +194,6 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
       <div
         id="IndustryTitle"
         ref={divRef}
-
         onClick={(e) => {
           changehandler("IndustryDiv", "IndustryInput");
         }}
@@ -238,7 +227,9 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
           <input
             id="IndustryInput"
             value={CurrentIndustryVal}
-            onKeyDown={(e)=>{handlelocationback(e.key)}}
+            onKeyDown={(e) => {
+              handlelocationback(e.key);
+            }}
             onChange={(e) => {
               setCurrentIndustryVal(e.target.value);
             }}

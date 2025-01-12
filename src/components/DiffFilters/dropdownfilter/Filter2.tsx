@@ -1,4 +1,4 @@
-import React, { useEffect,useRef,useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import "../../../app/globals.css";
 import { setTimeout } from "timers/promises";
@@ -41,13 +41,10 @@ const Filter2: React.FC<Filter2type> = ({
   updateSearchParams,
 }) => {
   const titleModified = title.replace(/\s+/g, "");
-  const Selectedvalues=useRef(Selectlocationtypes);
-  const locationdroptype=useRef(locationtype);
+  const Selectedvalues = useRef(Selectlocationtypes);
+  const locationdroptype = useRef(locationtype);
 
   const divRef = useRef<HTMLDivElement | null>(null);
-
-
-
 
   //  useEffect(() => {
   //      const dropdownDiv = document.getElementById(dd1);
@@ -63,18 +60,25 @@ const Filter2: React.FC<Filter2type> = ({
   //    }, [Selectlocationtypes]);
   useEffect(() => {
     updateSearchParams(Selectlocationtypes, titleModified);
-     Selectedvalues.current=Selectlocationtypes;
+    Selectedvalues.current = Selectlocationtypes;
   }, [Selectlocationtypes]);
 
-  useEffect(()=>{
-    locationdroptype.current=locationtype
-  },[locationtype])
-  
+  useEffect(() => {
+    locationdroptype.current = locationtype;
+  }, [locationtype]);
+
   const handlePopState = () => {
     const params = new URLSearchParams(window.location.search);
     console.log("paramsList is ");
-    
-    let paramsList=[{param:titleModified,values:Selectedvalues.current,func:setSelectlocationtypes}]
+    console.log(titleModified);
+
+    let paramsList = [
+      {
+        param: titleModified,
+        values: Selectedvalues.current,
+        func: setSelectlocationtypes,
+      },
+    ];
 
     paramsList.forEach((Each) => {
       if (params.has(Each.param)) {
@@ -85,17 +89,17 @@ const Filter2: React.FC<Filter2type> = ({
           (Each.values.length !== currentList.length ||
             !Each.values.every((value, index) => value === currentList[index]))
         ) {
-          if(Each.values.length>currentList.length){
-            
+          if (Each.values.length > currentList.length) {
             console.log("hey");
 
-           handlelocationback("Backspace");
-          }
-          else{
-          
+            handlelocationback("Backspace");
+          } else {
             console.log("hey2");
 
-    setlocationhandler(currentList[currentList.length - 1], divRef.current);
+            setlocationhandler(
+              currentList[currentList.length - 1],
+              divRef.current
+            );
           }
         }
       } else {
@@ -107,19 +111,16 @@ const Filter2: React.FC<Filter2type> = ({
   };
 
   useEffect(() => {
-      
-    
-      window.addEventListener('popstate', handlePopState);
-    
-      return () => {
-        window.removeEventListener('popstate', handlePopState);
-      };
-    }, []);
+    window.addEventListener("popstate", handlePopState);
 
-    useEffect(()=>{
-      console.log(Selectlocationtypes)
-    },[Selectlocationtypes])
-  
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log(Selectlocationtypes);
+  }, [Selectlocationtypes]);
 
   useEffect(() => {
     let items;
@@ -141,10 +142,7 @@ const Filter2: React.FC<Filter2type> = ({
     }
   }, [locationvalue]);
 
-  const setlocationhandler = (
-    loc: string,
-    e: EventTarget | null
-  ) => {
+  const setlocationhandler = (loc: string, e: EventTarget | null) => {
     console.log(e);
     let clickedelement = e as HTMLElement | null; // Ensure it's cast safely
     let closestFilter: HTMLElement | null = null; // Initialize to null explicitly
@@ -203,11 +201,10 @@ const Filter2: React.FC<Filter2type> = ({
     setlocationtype(locations);
   };
 
-  const handlelocationback = (e:string) => {
+  const handlelocationback = (e: string) => {
     console.log(e);
     console.log(Selectlocationtypes);
 
-    
     if (
       e === "Backspace" &&
       Selectedvalues.current.length > 0 &&
@@ -275,7 +272,9 @@ const Filter2: React.FC<Filter2type> = ({
           <input
             id={id2}
             value={locationvalue}
-            onKeyDown={(e)=>{handlelocationback(e.key)}}
+            onKeyDown={(e) => {
+              handlelocationback(e.key);
+            }}
             onChange={(e) => {
               setlocationvalue(e.target.value);
             }}
