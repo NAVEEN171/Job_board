@@ -126,7 +126,40 @@ const Filter = () => {
   const Selectlocationtypes = useSelector(
     (state: RootState) => state.Filter.Selectlocationtypes
   );
+  const sliderValue = useSelector(
+    (state: RootState) => state.Filter.sliderValue
+  );
+  const singleSlidervalue = useSelector(
+    (state: RootState) => state.Filter.singleSlidervalue
+  );
 
+  const SelectedIndustries = useSelector(
+    (state: RootState) => state.Filter.SelectedIndustries
+  );
+
+  const Selectjobcategory = useSelector(
+    (state: RootState) => state.Filter.Selectjobcategory
+  );
+
+  const selectedEmptype = useSelector(
+    (state: RootState) => state.Filter.selectedEmptype
+  );
+  const EmpTypedropdown = useSelector(
+    (state: RootState) => state.Filter.EmpTypedropdown
+  );
+
+  const dropdowncategory = useSelector(
+    (state: RootState) => state.Filter.dropdowncategory
+  );
+  const SelectedLocations = useSelector(
+    (state: RootState) => state.Filter.SelectedLocations
+  );
+  const Experiencevalue = useSelector(
+    (state: RootState) => state.Filter.Experiencevalue
+  );
+  const Locationdropdown = useSelector(
+    (state: RootState) => state.Filter.Locationdropdown
+  );
   const searchParams = useSearchParams();
 
   //added options for jobtitle (addable filter)
@@ -137,41 +170,27 @@ const Filter = () => {
   // const [Selectlocationtypes, setSelectlocationtypes] = useState<string[]>([]); //selected values from the dropdown (dropdown filter)
 
   const [searchjobcategory, setsearchjobcategory] = useState<string>("");
-  const [sliderValue, setSliderValue] = useState<number[]>([40, 900]);
   const [Slideprevalue, setSlideprevalue] = useState("40K  -  900K");
-  const [singleSlidervalue, setsingleSlidervalue] = useState<number[]>([7]);
   const [datepostedshower, setdatepostedshower] =
     useState<string>("7 days ago");
-  const [Experiencevalue, setExperiencevalue] = useState<number[]>([0, 4]);
   const [Experienceprevalue, setExperienceprevalue] = useState("0  -  4 years");
   const [Employmenttypevalue, setEmploymenttypevalue] = useState<string>("");
-  const [EmpTypedropdown, setEmpTypedropdown] =
-    useState<string[]>(EmploymentList);
-  const [selectedEmptype, setselectedEmptype] = useState<string[]>([]);
+
   const [IndustryDropDown, setIndustryDropDown] =
     useState<string[]>(Industries);
   const [IndustrySubcategory, setIndustrySubcategory] = useState<string[]>([]);
-  const [SelectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [CurrentIndustryVal, setCurrentIndustryVal] = useState<string>("");
 
-  const [dropdowncategory, setdropdowncategory] =
-    useState<string[]>(jobCategories);
-  const [Selectjobcategory, setSelectjobcategory] = useState<string[]>([]);
   const [activeDropdown, setactiveDropdown] = useState<string | null>(null);
   const [advancedFilterCount, setadvancedFilterCount] = useState<number>(0);
   const [advancedShow, setAdvancedShow] = useState<boolean>(false);
 
-  const [Locationdropdown, setLocationdropdown] = useState<Locationtype[]>(
-    countryData.slice(0, 7)
-  );
   const [visa, setVisa] = useState<boolean>(false);
   const [remote, setRemote] = useState<boolean>(false);
   const [NoSalary, setNoSalary] = useState<boolean>(false);
   const [NoExperience, setNoExperience] = useState<boolean>(false);
   const [Locationvalue, setLocationvalue] = useState<string>("");
-  const [SelectedLocations, setSelectedLocations] = useState<Locationtype[]>(
-    []
-  );
+
   const [selectadvancedOption, setselectadvancedOption] =
     useState<string>("Relevance & Date");
   const [initialRender, setinitialRender] = useState(false);
@@ -183,12 +202,7 @@ const Filter = () => {
       ["Employment-type"]: selectedEmptype,
       Location: Selectlocationtypes,
     }),
-    [
-      SelectedIndustries,
-      Selectjobcategory,
-      selectedEmptype,
-      Selectlocationtypes,
-    ]
+    []
   );
 
   useEffect(() => {
@@ -213,7 +227,7 @@ const Filter = () => {
     if (params.has("datePosted")) {
       let currentDate = params.get("datePosted");
       if (currentDate && typeof parseInt(currentDate) === "number") {
-        setsingleSlidervalue([parseInt(currentDate)]);
+        dispatch(FilterActions.setsingleSlidervalue([parseInt(currentDate)]));
         setdatepostedshower(currentDate + " days ago");
       }
     }
@@ -222,7 +236,7 @@ const Filter = () => {
       if (salaryRange) {
         console.log("exp is ");
         console.log(salaryRange);
-        setSliderValue(salaryRange);
+        dispatch(FilterActions.setSliderValue(salaryRange));
         salaryChangeShower(salaryRange);
       }
     }
@@ -234,8 +248,18 @@ const Filter = () => {
         const filteredData = countryData.filter((item) =>
           Locationslist.includes(item.country)
         );
-        setSelectedLocations(filteredData);
+        dispatch(FilterActions.setSelectedLocations(filteredData));
       }
+    }
+    if (params.has("Experience")) {
+      let currentList = params.get("Experience")?.split("-").map(Number);
+      console.log("paramsList is ");
+      if (currentList) {
+        const numList = currentList.map(Number);
+        dispatch(FilterActions.setExperiencevalue(numList));
+      }
+
+      console.log(currentList);
     }
   }, []);
 
@@ -245,7 +269,7 @@ const Filter = () => {
       Include_no_yeo: NoExperience,
       remote: remote,
     }),
-    [visa, NoExperience, NoSalary, remote]
+    []
   );
 
   const checkAdvancedParams = (): boolean => {
@@ -279,9 +303,9 @@ const Filter = () => {
       const paramList = Object.keys(getLatestValues);
       paramList.pop();
       const paramfunctions = [
-        setSelectedIndustries,
-        setSelectjobcategory,
-        setselectedEmptype,
+        FilterActions.setSelectedIndustries,
+        FilterActions.setSelectjobcategory,
+        FilterActions.setselectedEmptype,
       ];
       let currentList = [];
       paramList.forEach((param, idx) => {
@@ -289,7 +313,7 @@ const Filter = () => {
           currentList = params.get(param)?.split(",")!;
           console.log(currentList);
           console.log(paramfunctions[idx]);
-          paramfunctions[idx](currentList);
+          dispatch(paramfunctions[idx](currentList));
         }
       });
     }
@@ -304,16 +328,16 @@ const Filter = () => {
 
       const paramList = Object.keys(getLatestValues);
       const paramfunctions = [
-        setSelectedIndustries,
-        setSelectjobcategory,
-        setselectedEmptype,
-        setSelectedLocations,
+        FilterActions.setSelectedIndustries,
+        FilterActions.setSelectjobcategory,
+        FilterActions.setselectedEmptype,
+        FilterActions.setSelectedLocations,
       ];
       console.log(paramList);
       paramList.forEach((param, idx) => {
         if (params.has(param)) {
           params.delete(param);
-          paramfunctions[idx]([]);
+          dispatch(paramfunctions[idx]([]));
         }
       });
       const buttonParamList = Object.keys(getLatestbuttonValues);
@@ -339,29 +363,6 @@ const Filter = () => {
     values: string[];
     func: (val: string[]) => void;
   };
-  const intialBooleanStates = [
-    { val: visa, func: setVisa, param: "visa" },
-    { val: NoExperience, func: setNoExperience, param: "Include_no_yeo" },
-    { val: NoSalary, func: setNoSalary, param: "Include_no_salary" },
-    { val: remote, func: setRemote, param: "remote" },
-  ];
-  type booleanstatetype = {
-    val: boolean;
-    func: (value: boolean) => void;
-    param: string;
-  };
-
-  const booleanStates = useRef(intialBooleanStates);
-
-  useEffect(() => {
-    const currentState = [...booleanStates.current];
-    currentState[0].val = visa;
-    currentState[1].val = NoExperience;
-    currentState[2].val = NoSalary;
-    currentState[3].val = remote;
-
-    booleanStates.current = currentState;
-  }, [visa, NoExperience, NoSalary, remote]);
 
   const router = useRouter();
 
@@ -465,7 +466,7 @@ const Filter = () => {
       console.log("paramsList is ");
       if (currentList) {
         const numList = currentList.map(Number);
-        setExperiencevalue(numList);
+        dispatch(FilterActions.setExperiencevalue(numList));
       }
 
       console.log(currentList);
@@ -475,7 +476,7 @@ const Filter = () => {
       console.log("paramsList is ");
       if (currentList) {
         const numList = currentList.map(Number);
-        setSliderValue(numList);
+        dispatch(FilterActions.setSliderValue(numList));
       }
 
       console.log(currentList);
@@ -486,7 +487,7 @@ const Filter = () => {
       if (currentList) {
         const numList = [parseInt(currentList)];
         console.log(numList);
-        setsingleSlidervalue(numList);
+        dispatch(FilterActions.setsingleSlidervalue(numList));
       }
 
       console.log(currentList);
@@ -619,7 +620,7 @@ const Filter = () => {
   }, [sliderValue]);
 
   const handleSingleValueChange = (value: number[]) => {
-    setsingleSlidervalue(value);
+    dispatch(FilterActions.setsingleSlidervalue(value));
 
     setdatepostedshower(value + " days ago ");
   };
@@ -746,7 +747,9 @@ const Filter = () => {
                     min={0}
                     max={1190}
                     value={sliderValue}
-                    onValueChange={setSliderValue}
+                    onValueChange={(values: number[]) =>
+                      dispatch(FilterActions.setSliderValue(values))
+                    }
                     onClick={() => {
                       ChangeDoubleslider(sliderValue, "salary");
                     }}
@@ -770,7 +773,9 @@ const Filter = () => {
           <Fragment>
             <Industryfilter
               SelectedIndustries={SelectedIndustries}
-              setSelectedIndustries={setSelectedIndustries}
+              setSelectedIndustries={(values: string[]) =>
+                dispatch(FilterActions.setSelectedIndustries(values))
+              }
               activeDropdown={activeDropdown}
               setactiveDropdown={setactiveDropdown}
               setIndustrySubcategory={setIndustrySubcategory}
@@ -787,13 +792,17 @@ const Filter = () => {
               locationvalue={searchjobcategory}
               setlocationvalue={setsearchjobcategory}
               locationtype={dropdowncategory}
-              setlocationtype={setdropdowncategory}
+              setlocationtype={(values: string[]) =>
+                dispatch(FilterActions.setdropdowncategory(values))
+              }
               Selectlocationtypes={Selectjobcategory}
               LocationTypes={jobCategories}
               root="filter-3"
               activeDropdown={activeDropdown}
               setactiveDropdown={setactiveDropdown}
-              setSelectlocationtypes={setSelectjobcategory}
+              setSelectlocationtypes={(values: string[]) =>
+                dispatch(FilterActions.setSelectjobcategory(values))
+              }
               title="Domain"
               id1="domainDiv"
               id2="domainInput"
@@ -837,7 +846,9 @@ const Filter = () => {
                         min={0}
                         max={10}
                         value={Experiencevalue}
-                        onValueChange={setExperiencevalue}
+                        onValueChange={(values: number[]) =>
+                          dispatch(FilterActions.setExperiencevalue(values))
+                        }
                         onClick={() => {
                           ChangeDoubleslider(Experiencevalue, "Experience");
                         }}
@@ -864,13 +875,17 @@ const Filter = () => {
               locationvalue={Employmenttypevalue}
               setlocationvalue={setEmploymenttypevalue}
               locationtype={EmpTypedropdown}
-              setlocationtype={setEmpTypedropdown}
+              setlocationtype={(values: string[]) =>
+                dispatch(FilterActions.setEmpTypedropdown(values))
+              }
               Selectlocationtypes={selectedEmptype}
               LocationTypes={EmploymentList}
               root="filter-7"
               activeDropdown={activeDropdown}
               setactiveDropdown={setactiveDropdown}
-              setSelectlocationtypes={setselectedEmptype}
+              setSelectlocationtypes={(values: string[]) =>
+                dispatch(FilterActions.setselectedEmptype(values))
+              }
               title="Employment-type"
               id1="EmploymenttypeDiv"
               id2="EmploymenttypeInput"
@@ -886,13 +901,17 @@ const Filter = () => {
               locationvalue={Locationvalue}
               setlocationvalue={setLocationvalue}
               locationtype={Locationdropdown}
-              setlocationtype={setLocationdropdown}
+              setlocationtype={(values: Locationtype[]) =>
+                dispatch(FilterActions.setLocationdropdown(values))
+              }
               Selectlocationtypes={SelectedLocations}
               LocationTypes={countryData}
               root="filter-9"
               activeDropdown={activeDropdown}
               setactiveDropdown={setactiveDropdown}
-              setSelectlocationtypes={setSelectedLocations}
+              setSelectlocationtypes={(values: Locationtype[]) =>
+                dispatch(FilterActions.setSelectedLocations(values))
+              }
               title="Location"
               id1="LocationsearchDiv"
               id2="LocationsearchInput"

@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction, configureStore } from "@reduxjs/toolkit";
 import { LocationTypes } from "../FiltersList/Locationtypes";
+import { EmploymentList } from "../FiltersList/Employmentlist";
+import { jobCategories } from "../FiltersList/Jobcategories";
+import { countryData } from "@/FiltersList/Locations";
+
 type Locationtype = {
   country: string;
   emoji: string;
@@ -29,12 +33,12 @@ const initialFiltersState: initialFiltersStatetype = {
   singleSlidervalue: [7], // date posted
   Experiencevalue: [0, 4], //experience values
   selectedEmptype: [], //employment type
-  EmpTypedropdown: [],
+  EmpTypedropdown: EmploymentList,
   SelectedIndustries: [], //Industry filter
   Selectjobcategory: [], //Domain filter
-  dropdowncategory: [],
+  dropdowncategory: jobCategories,
   SelectedLocations: [], //Location filter
-  Locationdropdown: [],
+  Locationdropdown: countryData.slice(0, 7),
 };
 
 //creation of slice
