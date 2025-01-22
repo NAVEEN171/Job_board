@@ -30,8 +30,11 @@ import { useSearchParams } from "next/navigation";
 import { AdvancedList } from "@/FiltersList/AdvancedList";
 import { createPostponedAbortSignal } from "next/dist/server/app-render/dynamic-rendering";
 import { useDispatch, useSelector } from "react-redux";
-import store, { FilterActions } from "@/store";
+import store from "@/store";
+
 import { parse } from "path";
+import { FilterActions } from "@/store/Substores/Filterstore";
+import { OptionActions } from "@/store/Substores/Optionstore";
 
 type DropDowndatatype = {
   name: string;
@@ -160,6 +163,12 @@ const Filter = () => {
   const Locationdropdown = useSelector(
     (state: RootState) => state.Filter.Locationdropdown
   );
+  const visa = useSelector((state: RootState) => state.Options.visa);
+  const remote = useSelector((state: RootState) => state.Options.remote);
+  const NoSalary = useSelector((state: RootState) => state.Options.NoSalary);
+  const NoExperience = useSelector(
+    (state: RootState) => state.Options.NoExperience
+  );
   const searchParams = useSearchParams();
 
   //added options for jobtitle (addable filter)
@@ -185,10 +194,6 @@ const Filter = () => {
   const [advancedFilterCount, setadvancedFilterCount] = useState<number>(0);
   const [advancedShow, setAdvancedShow] = useState<boolean>(false);
 
-  const [visa, setVisa] = useState<boolean>(false);
-  const [remote, setRemote] = useState<boolean>(false);
-  const [NoSalary, setNoSalary] = useState<boolean>(false);
-  const [NoExperience, setNoExperience] = useState<boolean>(false);
   const [Locationvalue, setLocationvalue] = useState<string>("");
 
   const [selectadvancedOption, setselectadvancedOption] =
@@ -342,11 +347,15 @@ const Filter = () => {
       });
       const buttonParamList = Object.keys(getLatestbuttonValues);
 
-      const buttonfunctions = [setVisa, setNoExperience, setRemote];
+      const buttonfunctions = [
+        OptionActions.setVisa,
+        OptionActions.setNoExperience,
+        OptionActions.setRemote,
+      ];
       buttonParamList.forEach((param, idx) => {
         if (params.has(param)) {
           params.delete(param);
-          buttonfunctions[idx](false);
+          dispatch(buttonfunctions[idx](false));
         }
       });
       if (params.has("Experience")) {
@@ -760,7 +769,9 @@ const Filter = () => {
                     <Switch
                       initialChecked={NoSalary}
                       title="Include_no_salary"
-                      changeSwitchState={setNoSalary}
+                      changeSwitchState={(value: boolean) =>
+                        dispatch(OptionActions.setNoSalary(value))
+                      }
                     />
                     <div>Include No salary Info</div>
                   </div>
@@ -859,7 +870,9 @@ const Filter = () => {
                         <Switch
                           initialChecked={NoExperience}
                           title="Include_no_yeo"
-                          changeSwitchState={setNoExperience}
+                          changeSwitchState={(value: boolean) =>
+                            dispatch(OptionActions.setNoExperience(value))
+                          }
                         />
                         <div>Include No YEO info</div>
                       </div>
@@ -918,7 +931,9 @@ const Filter = () => {
               dd1="LocationsearchDropdown"
               dd2="LocationsearchList"
               updateSearchParams={updateSearchParams}
-              changeSwitchState={setRemote}
+              changeSwitchState={(value: boolean) =>
+                dispatch(OptionActions.setRemote(value))
+              }
               remote={remote}
             />
             {/* id1:IndustryTitle
@@ -932,7 +947,9 @@ const Filter = () => {
                   <Switch
                     initialChecked={visa}
                     title="visa"
-                    changeSwitchState={setVisa}
+                    changeSwitchState={(value: boolean) =>
+                      dispatch(OptionActions.setVisa(value))
+                    }
                   />
                   <div>Visa Sponsored</div>
                 </div>
