@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar/Navbar";
 import Herosection from "../components/Herosection/Herosection";
 import Filter from "../components/Filters/Filter";
 import JobListing from "@/components/JobListing/JobListing";
+import Pagination from "@/components/Pagination/pagination";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
           <Herosection />
           <Filter />
           <JobListing />
+          <Pagination />
         </div>
       </div>
     </div>

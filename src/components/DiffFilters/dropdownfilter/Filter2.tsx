@@ -296,7 +296,7 @@ const Filter2: React.FC<Filter2type> = ({
         {activeDropdown === root && (
           <div
             id={dd2}
-            className="drop-down-list top-full translate-y-4   bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0  top-[55px] absolute shadow-custom"
+            className="drop-down-list top-full translate-y-4   bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0   absolute shadow-custom"
             style={{ zIndex: 9999 }}
           >
             {locationtype.map((location, index) => (

@@ -1,6 +1,13 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect, useRef, Fragment, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Fragment,
+  useMemo,
+  use,
+} from "react";
 import "../../app/globals.css";
 import { LocationTypes } from "../../FiltersList/Locationtypes";
 import {
@@ -22,6 +29,9 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { AdvancedList } from "@/FiltersList/AdvancedList";
 import { createPostponedAbortSignal } from "next/dist/server/app-render/dynamic-rendering";
+import { useDispatch, useSelector } from "react-redux";
+import store, { FilterActions } from "@/store";
+import { parse } from "path";
 
 type DropDowndatatype = {
   name: string;
@@ -106,14 +116,25 @@ type Locationtype = {
 };
 
 const Filter = () => {
+  const dispatch = useDispatch();
+  type RootState = ReturnType<typeof store.getState>;
+
+  const jobtitle = useSelector((state: RootState) => state.Filter.jobtitle);
+  const locationtype = useSelector(
+    (state: RootState) => state.Filter.locationtype
+  );
+  const Selectlocationtypes = useSelector(
+    (state: RootState) => state.Filter.Selectlocationtypes
+  );
+
   const searchParams = useSearchParams();
 
-  const [jobtitle, setjobtitle] = useState<string[]>([]); //added options for jobtitle (addable filter)
+  //added options for jobtitle (addable filter)
   const [jobvalue, setjobvalue] = useState<string>(""); //current typed value of the filter (addable filter)
 
   const [locationvalue, setlocationvalue] = useState<string>(""); // current typed value of the filter (dropdown filter)
-  const [locationtype, setlocationtype] = useState<string[]>(LocationTypes); //drop down values (dropdown filter)
-  const [Selectlocationtypes, setSelectlocationtypes] = useState<string[]>([]); //selected values from the dropdown (dropdown filter)
+  // const [locationtype, setlocationtype] = useState<string[]>(LocationTypes); //drop down values (dropdown filter)
+  // const [Selectlocationtypes, setSelectlocationtypes] = useState<string[]>([]); //selected values from the dropdown (dropdown filter)
 
   const [searchjobcategory, setsearchjobcategory] = useState<string>("");
   const [sliderValue, setSliderValue] = useState<number[]>([40, 900]);
@@ -169,6 +190,54 @@ const Filter = () => {
       Selectlocationtypes,
     ]
   );
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    console.log(params);
+    const paramsList = ["JobTitle", "LocationType"];
+    console.log("hey whats up");
+    const paramfunctions = [
+      FilterActions.setjobtitle,
+      FilterActions.setSelectlocationtypes,
+    ];
+    let currentList;
+    paramsList.forEach((param, idx) => {
+      console.log(param);
+      if (params.has(param)) {
+        currentList = params.get(param)?.split(",");
+        console.log(currentList);
+        console.log(paramfunctions[idx]);
+        dispatch(paramfunctions[idx](currentList!));
+      }
+    });
+    if (params.has("datePosted")) {
+      let currentDate = params.get("datePosted");
+      if (currentDate && typeof parseInt(currentDate) === "number") {
+        setsingleSlidervalue([parseInt(currentDate)]);
+        setdatepostedshower(currentDate + " days ago");
+      }
+    }
+    if (params.has("salary")) {
+      let salaryRange = params.get("salary")?.split("-").map(Number) ?? [];
+      if (salaryRange) {
+        console.log("exp is ");
+        console.log(salaryRange);
+        setSliderValue(salaryRange);
+        salaryChangeShower(salaryRange);
+      }
+    }
+    if (params.has("Location")) {
+      let Locationslist = params.get("Location")?.split(",");
+      if (Locationslist) {
+        console.log("locs  is ");
+        console.log(Locationslist);
+        const filteredData = countryData.filter((item) =>
+          Locationslist.includes(item.country)
+        );
+        setSelectedLocations(filteredData);
+      }
+    }
+  }, []);
 
   const getLatestbuttonValues = useMemo(
     () => ({
@@ -524,7 +593,7 @@ const Filter = () => {
     };
   }, []);
 
-  useEffect(() => {
+  const salaryChangeShower = (value: number[]) => {
     let show1 = "K";
     let show2 = "K";
     let num1, num2;
@@ -543,6 +612,10 @@ const Filter = () => {
       show2 = "K";
     }
     setSlideprevalue(num1 + show1 + " - " + num2 + show2);
+  };
+
+  useEffect(() => {
+    salaryChangeShower(sliderValue);
   }, [sliderValue]);
 
   const handleSingleValueChange = (value: number[]) => {
@@ -557,7 +630,9 @@ const Filter = () => {
         <Filter1
           jobtitle={jobtitle}
           jobvalue={jobvalue}
-          setjobtitle={setjobtitle}
+          setjobtitle={(value: string[]) =>
+            dispatch(FilterActions.setjobtitle(value))
+          }
           activeDropdown={activeDropdown}
           setactiveDropdown={setactiveDropdown}
           setjobvalue={setjobvalue}
@@ -568,9 +643,13 @@ const Filter = () => {
           locationvalue={locationvalue}
           setlocationvalue={setlocationvalue}
           locationtype={locationtype}
-          setlocationtype={setlocationtype}
+          setlocationtype={(values: string[]) =>
+            dispatch(FilterActions.setlocationtype(values))
+          }
           Selectlocationtypes={Selectlocationtypes}
-          setSelectlocationtypes={setSelectlocationtypes}
+          setSelectlocationtypes={(values: string[]) =>
+            dispatch(FilterActions.setSelectlocationtypes(values))
+          }
           LocationTypes={LocationTypes}
           activeDropdown={activeDropdown}
           setactiveDropdown={setactiveDropdown}

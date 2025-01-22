@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../../../app/globals.css";
 
 type Filter1type = {
@@ -22,13 +22,13 @@ const Filter1: React.FC<Filter1type> = ({
   setactiveDropdown,
   updateSearchParams,
 }) => {
-    const divRef = useRef<HTMLDivElement | null>(null);
-    const jobtitleRef=useRef<string[]>(jobtitle);
+  const divRef = useRef<HTMLDivElement | null>(null);
+  const jobtitleRef = useRef<string[]>(jobtitle);
 
-    useEffect(()=>{
-      jobtitleRef.current=jobtitle;
-    },[jobtitle])
-  
+  useEffect(() => {
+    jobtitleRef.current = jobtitle;
+  }, [jobtitle]);
+
   const titleModified = title.replace(/\s+/g, "");
   const changehandler = (ID1: string, ID2: string) => {
     let Jobtitlediv: HTMLElement = document.getElementById(ID1)!;
@@ -45,8 +45,8 @@ const Filter1: React.FC<Filter1type> = ({
 
   const handlePopState = () => {
     const params = new URLSearchParams(window.location.search);
-    
-    let paramsList=[{param:titleModified,values:jobtitleRef.current}]
+
+    let paramsList = [{ param: titleModified, values: jobtitleRef.current }];
 
     paramsList.forEach((Each) => {
       if (params.has(Each.param)) {
@@ -56,35 +56,27 @@ const Filter1: React.FC<Filter1type> = ({
           (Each.values.length !== currentList.length ||
             !Each.values.every((value, index) => value === currentList[index]))
         ) {
-          if(Each.values.length>currentList.length){
-            
-            
-          handlepress("Backspace")
-          }
-          else{
-          
-
-            handlepress("Enter",currentList[currentList.length - 1]);
+          if (Each.values.length > currentList.length) {
+            handlepress("Backspace");
+          } else {
+            handlepress("Enter", currentList[currentList.length - 1]);
           }
         }
       } else {
         if (Each.values.length) {
-          handlepress("Backspace")
+          handlepress("Backspace");
         }
       }
     });
   };
 
-   useEffect(() => {
-        
-      
-        window.addEventListener('popstate', handlePopState);
-      
-        return () => {
-          window.removeEventListener('popstate', handlePopState);
-        };
-      }, []);
+  useEffect(() => {
+    window.addEventListener("popstate", handlePopState);
 
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   const clickHandler = (job: string, e: EventTarget) => {
     let clickedelement = e as HTMLElement | null; // Ensure it's cast safely
@@ -109,20 +101,18 @@ const Filter1: React.FC<Filter1type> = ({
     });
     setjobtitle(jobtitle_duplicate);
   };
-  const handlepress = (e: string,newstr?:string) => {
-    
-
-    if (e === "Enter" && (jobvalue.trim() !== ""|| (newstr!==undefined && newstr.trim()!== "") )) {
-      if(newstr){
+  const handlepress = (e: string, newstr?: string) => {
+    if (
+      e === "Enter" &&
+      (jobvalue.trim() !== "" || (newstr !== undefined && newstr.trim() !== ""))
+    ) {
+      if (newstr) {
         setjobtitle([...jobtitleRef.current, newstr]);
-
-      }
-      else{
-      setjobtitle([...jobtitle, jobvalue]);
+      } else {
+        setjobtitle([...jobtitle, jobvalue]);
       }
       setjobvalue("");
-    } 
-    else if (
+    } else if (
       e === "Backspace" &&
       jobtitleRef.current.length !== 0 &&
       jobvalue.length == 0
@@ -139,13 +129,36 @@ const Filter1: React.FC<Filter1type> = ({
       }}
       data-closed="false"
     >
+      {activeDropdown === "filter-1" && (
+        <div
+          className="drop-down-list cursor-pointer hover:bg-[#4aa3fa] hover:text-white px-[20px] py-[10px] flex gap-[10px] w-[250px] max-w-[350px]  items-center top-full translate-y-4 absolute shadow-custom bg-white left-0"
+          style={{ zIndex: 9999 }}
+          onClick={(e) => {
+            handlepress("Enter", jobvalue);
+          }}
+        >
+          <div className="magnify-emoji">🔍</div>
+          <div className="max-h-[250px] h-fit break-words overflow-y-auto">
+            {jobvalue.trim() !== "" ? jobvalue : "Search..."}
+          </div>
+        </div>
+      )}
       <div
         onClick={() => {
           changehandler("jobtitlediv", "jobtitleinput");
         }}
-        className="drop-down z-10  border border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
+        className="drop-down z-10   border border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
       >
-        <div ref={divRef} className="options-list-2 flex  gap-[10px] flex-wrap max-w-[100%]	">
+        <div
+          ref={divRef}
+          className="options-list-2 flex items-center  gap-[10px] flex-wrap max-w-[100%]	"
+        >
+          <div
+            id="jobtitlediv"
+            className="type w-[200px]   text-black-500 text-[1.2rem]"
+          >
+            {title}
+          </div>
           {jobtitle.map((job, index) => (
             <div
               className="bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px] py-[5px] rounded-[5px]"
@@ -165,20 +178,15 @@ const Filter1: React.FC<Filter1type> = ({
           <input
             id="jobtitleinput"
             value={jobvalue}
-            onKeyDown={(e)=>{handlepress(e.key)}}
+            onKeyDown={(e) => {
+              handlepress(e.key);
+            }}
             onChange={(e) => {
               setjobvalue(e.target.value);
             }}
             className="hidden w-[200px] text-black-500 text-[1.2rem] "
             placeholder="Type..."
           ></input>
-        </div>
-
-        <div
-          id="jobtitlediv"
-          className="type w-[200px]  text-black-500 text-[1.2rem]"
-        >
-          {title}
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, configureStore } from "@reduxjs/toolkit";
+import { LocationTypes } from "../FiltersList/Locationtypes";
 type Locationtype = {
   country: string;
   emoji: string;

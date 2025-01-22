@@ -8,11 +8,11 @@ const Bookstamp = () => {
     }
   };
   return (
-    <div className="book-mark-container  flex items-center justify-center relative  w-[45px] h-[45px] border-blue-200 rounded-[5px] border-2">
+    <div className="book-mark-container cursor-pointer  flex items-center justify-center relative  w-[45px] h-[45px] border-blue-200 rounded-[5px] border-2">
       <div className={`${bookmark ? "loader" : ""}`}></div>
       <div onClick={bookmarkhandler} className="flex flex-col   w-fit">
         <div
-          className={`w-[18px] h-[15px]  rounded-t-[5px] ${
+          className={`w-[18px] h-[15px] ${
             !bookmark ? "bg-blue-200" : "bg-[#3a90ff]"
           }`}
         ></div>
