@@ -17,7 +17,19 @@ const page = () => {
           <div className="text-[25px] font-bold text-center ">
             Welcome to FlexiBoard
           </div>
-          <div className="text-[23px] font-semibold ">Sign Up</div>
+          <div className="flex gap-[20px] items-center">
+            <div className="text-[23px] font-semibold ">Sign Up</div>
+            <Link href="/">
+              <div className=" py-[5px] px-[5px] rounded-lg shadow-md bg-white">
+                <Image
+                  src="/svgs/backsymbol.svg"
+                  width={20}
+                  height={20}
+                  alt="back"
+                />
+              </div>
+            </Link>
+          </div>
           <div className="flex flex-col gap-[7px]">
             <div className="text-[15px] font-medium">User Name</div>
             <input
