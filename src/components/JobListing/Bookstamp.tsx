@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../../app/globals.css";
 
 const Bookstamp = () => {
   const [bookmark, setBookmark] = useState(false);
@@ -8,8 +9,12 @@ const Bookstamp = () => {
     }
   };
   return (
-    <div className="book-mark-container cursor-pointer  flex items-center justify-center relative  w-[45px] h-[45px] border-blue-200 rounded-[5px] border-2">
-      <div className={`${bookmark ? "loader" : ""}`}></div>
+    <div
+      className={`book-mark-container relative ${
+        bookmark ? "after:content-['']" : "border-blue-200 border-2"
+      } cursor-pointer bg-white flex items-center justify-center relative  w-[45px] h-[45px] border-blue-200 rounded-[5px]`}
+    >
+      {/* <div className={`${bookmark ? "loader" : ""}`}></div> */}
       <div onClick={bookmarkhandler} className="flex flex-col   w-fit">
         <div
           className={`w-[18px] h-[15px] ${

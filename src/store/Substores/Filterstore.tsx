@@ -8,6 +8,7 @@ type Locationtype = {
   country: string;
   emoji: string;
   index: number;
+  type: string;
 };
 type initialFiltersStatetype = {
   jobtitle: string[];

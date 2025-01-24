@@ -1,4 +1,4 @@
-import React, { useEffect,useRef,useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import "../../../app/globals.css";
 import { countryData } from "@/FiltersList/Locations";
@@ -7,6 +7,7 @@ type Locationtype = {
   country: string;
   emoji: string;
   index: number;
+  type: string;
 };
 
 type Filter2type = {
@@ -52,71 +53,76 @@ const Locationfilter: React.FC<Filter2type> = ({
 }) => {
   const titleModified = title.replace(/\s+/g, "");
 
-  const Selectedvalues=useRef(Selectlocationtypes);
-  const locationdroptype=useRef(locationtype);
-  
+  const Selectedvalues = useRef(Selectlocationtypes);
+  const locationdroptype = useRef(locationtype);
+
   const divRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let newlocations = Selectlocationtypes.map((element) => element.country);
-    Selectedvalues.current=Selectlocationtypes;
+    Selectedvalues.current = Selectlocationtypes;
 
     updateSearchParams(newlocations, titleModified);
   }, [Selectlocationtypes]);
-  
-    useEffect(()=>{
-      locationdroptype.current=locationtype
-    },[locationtype])
 
-     const handlePopState = () => {
-        const params = new URLSearchParams(window.location.search);
-        console.log("paramsList is ");
-        
-        let paramsList=[{param:titleModified,values:Selectedvalues.current,func:setSelectlocationtypes}]
-    
-        paramsList.forEach((Each) => {
-          if (params.has(Each.param)) {
-            let currentList = params.get(Each.param)?.split(",");
-            console.log(currentList);
-            if (
-              currentList &&
-              (Each.values.length !== currentList.length ||
-                !Each.values.every((value, index) => value.country === currentList[index]))
-            ) {
-              if(Each.values.length>currentList.length){
-                
-                console.log("hey");
-    
-               handlelocationback("Backspace");
-              }
-              else{
-              
-                console.log("hey2");
-                let targetCountry=currentList[currentList.length-1];
-                const result = LocationTypes.find(item => item.country === targetCountry);
+  useEffect(() => {
+    locationdroptype.current = locationtype;
+  }, [locationtype]);
 
-       if(result){
-        setlocationhandler(result, divRef.current!);
-       }
-              }
-            }
+  const handlePopState = () => {
+    const params = new URLSearchParams(window.location.search);
+    console.log("paramsList is ");
+
+    let paramsList = [
+      {
+        param: titleModified,
+        values: Selectedvalues.current,
+        func: setSelectlocationtypes,
+      },
+    ];
+
+    paramsList.forEach((Each) => {
+      if (params.has(Each.param)) {
+        let currentList = params.get(Each.param)?.split(",");
+        console.log(currentList);
+        if (
+          currentList &&
+          (Each.values.length !== currentList.length ||
+            !Each.values.every(
+              (value, index) => value.country === currentList[index]
+            ))
+        ) {
+          if (Each.values.length > currentList.length) {
+            console.log("hey");
+
+            handlelocationback("Backspace");
           } else {
-            if (Each.values.length) {
-              handlelocationback("Backspace");
+            console.log("hey2");
+            let targetCountry = currentList[currentList.length - 1];
+            const result = LocationTypes.find(
+              (item) => item.country === targetCountry
+            );
+
+            if (result) {
+              setlocationhandler(result, divRef.current!);
             }
           }
-        });
-      };
-    
-      useEffect(() => {
-          
-        
-          window.addEventListener('popstate', handlePopState);
-        
-          return () => {
-            window.removeEventListener('popstate', handlePopState);
-          };
-        }, []);
+        }
+      } else {
+        if (Each.values.length) {
+          handlelocationback("Backspace");
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   useEffect(() => {
     let filteredLocations;
@@ -131,10 +137,7 @@ const Locationfilter: React.FC<Filter2type> = ({
     }
   }, [locationvalue]);
 
-  const setlocationhandler = (
-    loc: Locationtype,
-    e: EventTarget
-  ) => {
+  const setlocationhandler = (loc: Locationtype, e: EventTarget) => {
     const closestFilter = (e as HTMLElement).closest(".filter");
     if (closestFilter) closestFilter.setAttribute("data-closed", "true");
 
@@ -143,7 +146,9 @@ const Locationfilter: React.FC<Filter2type> = ({
     }, 200);
 
     setlocationtype(
-      locationdroptype.current.filter((location) => location.country !== loc.country)
+      locationdroptype.current.filter(
+        (location) => location.country !== loc.country
+      )
     );
     setSelectlocationtypes([...Selectedvalues.current, loc]);
     setlocationvalue("");
@@ -181,7 +186,7 @@ const Locationfilter: React.FC<Filter2type> = ({
     ) {
       const duplicate = [...Selectedvalues.current];
       const last_ele = duplicate.pop();
-      console.log("duplicate is")
+      console.log("duplicate is");
       console.log(duplicate);
 
       setSelectlocationtypes(duplicate);
@@ -222,7 +227,7 @@ const Locationfilter: React.FC<Filter2type> = ({
         ref={divRef}
         className="border relative flex items-center justify-between border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
       >
-        <div id={id1}  className="w-[200px] text-black-500 text-[1.2rem]">
+        <div id={id1} className="w-[200px] text-black-500 text-[1.2rem]">
           {title}
         </div>
         <div className="options-list flex gap-[10px] flex-wrap max-w-[97%]">
@@ -243,7 +248,9 @@ const Locationfilter: React.FC<Filter2type> = ({
           <input
             id={id2}
             value={locationvalue}
-            onKeyDown={(e)=>{handlelocationback(e.key)}}
+            onKeyDown={(e) => {
+              handlelocationback(e.key);
+            }}
             onChange={(e) => setlocationvalue(e.target.value)}
             className="hidden w-[200px] text-black-500 text-[1.2rem]"
             placeholder="Type..."

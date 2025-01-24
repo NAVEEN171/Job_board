@@ -116,6 +116,7 @@ type Locationtype = {
   country: string;
   emoji: string;
   index: number;
+  type: string;
 };
 
 const Filter = () => {
@@ -395,6 +396,7 @@ const Filter = () => {
   const updateSearchParams = (List: string[], Dropdownname: string) => {
     const params = new URLSearchParams(window.location.search);
     if (List?.length > 0) {
+      //change code
       params.set(`${Dropdownname}`, List.join(","));
     } else {
       params.delete(`${Dropdownname}`);

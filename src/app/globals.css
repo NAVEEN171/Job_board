@@ -60,3 +60,34 @@ button {
     transform: rotate(360deg); /* Rotate to 360 degrees */
   }
 }
+
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.book-mark-container::after {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: conic-gradient(from var(--angle), transparent 70%, #3a90ff);
+
+  box-sizing: content-box;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: -1;
+  padding: 3px;
+  border-radius: 5px;
+  animation: 3s spin-line linear infinite;
+}
+
+@keyframes spin-line {
+  0% {
+    --angle: 0deg;
+  }
+  100% {
+    --angle: 360deg;
+  }
+}
