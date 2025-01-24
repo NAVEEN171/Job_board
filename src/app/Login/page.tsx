@@ -1,12 +1,14 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
 
 const page = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [email, setemail] = useState<string>("");
+  const [password, setpassword] = useState<string>("");
 
   return (
     <div className="h-[100vh] w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
@@ -33,6 +35,7 @@ const page = () => {
             <input
               className="text-lg w-[350px] bg-white/70 px-[20px] py-[5px] rounded-lg placeholder-gray-400 focus:ring-2 focus:outline-none focus:ring-blue-400/50 focus:bg-white"
               type="text"
+              onChange={(e) => setemail(e.target.value)}
               placeholder="Email"
             />
           </div>
@@ -41,6 +44,7 @@ const page = () => {
             <div className="relative">
               <input
                 id="password"
+                onChange={(e) => setpassword(e.target.value)}
                 className="text-lg w-[350px] bg-white/70 pl-[20px] pr-[35px] py-[5px] rounded-lg placeholder-gray-400 focus:ring-2 focus:outline-none focus:ring-blue-400/50 focus:bg-white"
                 type={`${showPassword ? "text" : "password"}`}
                 placeholder="Password"
