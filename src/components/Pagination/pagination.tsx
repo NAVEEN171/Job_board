@@ -91,7 +91,7 @@ const Pagination = () => {
                 currentPage === page
                   ? "bg-blue-500 text-white"
                   : page === "..."
-                  ? "cursor-default"
+                  ? "cursor-default border-none"
                   : "bg-gray-200 hover:bg-blue-200"
               }`}
               disabled={page === "..."}
