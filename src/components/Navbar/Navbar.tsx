@@ -1,6 +1,8 @@
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { use } from "react";
 
 const Navbar = () => {
+  const router = useRouter();
   return (
     <div className="h-[100px] w-full flex items-center justify-center">
       <div className="w-[90%]  flex flex-row justify-between ">
@@ -17,10 +19,20 @@ const Navbar = () => {
           <button className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
             Add Job
           </button>
-          <button className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
+          <button
+            onClick={() => {
+              router.push("/Signup");
+            }}
+            className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]"
+          >
             Sign up
           </button>
-          <button className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
+          <button
+            onClick={() => {
+              router.push("/Login");
+            }}
+            className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]"
+          >
             Login
           </button>
         </div>
