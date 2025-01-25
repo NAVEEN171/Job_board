@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, configureStore } from "@reduxjs/toolkit";
 import { Filterslicereducer } from "./Substores/Filterstore";
 
 import { OptionsSliceReducer } from "./Substores/Optionstore";
+import { Authreducer } from "./Substores/Authslice";
 
 //to get states from store
 
@@ -19,7 +20,11 @@ import { OptionsSliceReducer } from "./Substores/Optionstore";
 
 //configuring the store so that it states can be accessed
 const store = configureStore({
-  reducer: { Filter: Filterslicereducer, Options: OptionsSliceReducer },
+  reducer: {
+    Filter: Filterslicereducer,
+    Options: OptionsSliceReducer,
+    Auth: Authreducer,
+  },
 });
 
 //passing the reducer functions

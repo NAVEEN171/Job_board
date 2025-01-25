@@ -1,17 +1,24 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { FormEvent } from "react";
-import { setPriority } from "os";
+import { Authactions } from "@/store/Substores/Authslice";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+  const dispatch = useDispatch();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setemail] = useState<string>("");
   const [password, setpassword] = useState<string>("");
+  const [errorshow, seterrorshow] = useState<string>("");
   type loginErrorstype = {
     emailerror: string;
     passworderror: string;
@@ -29,12 +36,17 @@ const page = () => {
   } => {
     let updatedErrors: loginErrorstype = { ...errors };
 
+    console.log(updatedErrors);
+
     if (email.trim() === "" || password === "") {
       updatedErrors.emailerror = "Some fields are empty";
       setErrors(updatedErrors);
-      setTimeout((prevErrors: any) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout((prevErrors: any) => {
         setErrors({ ...prevErrors, emailerror: "" });
-      }, 4000);
+      }, 3000);
       return { updatedErrors, isValid: false };
     } else {
       if (!email.includes("@") && email.trim().length > 0) {
@@ -45,45 +57,81 @@ const page = () => {
         updatedErrors.passworderror = "Password should be atleast 8 characters";
       }
       setErrors(updatedErrors);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
 
-      setTimeout((prevErrors: any) => {
+      timeoutRef.current = setTimeout((prevErrors: any) => {
         setErrors({ ...prevErrors, emailerror: "", passworderror: "" });
-      }, 4000);
-      return { updatedErrors, isValid: false };
+      }, 3000);
+      console.log(updatedErrors);
+      if (updatedErrors.emailerror || updatedErrors.passworderror) {
+        return { updatedErrors, isValid: false };
+      }
     }
-    return { updatedErrors, isValid: false };
+    return { updatedErrors, isValid: true };
   };
 
-  const submitHandler = (e: FormEvent) => {
+  const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
+
     const { updatedErrors, isValid } = validateFields();
     console.log(isValid);
-    if (!isValid) {
-      // let errorcount = 0;
-      // let topValue;
-      // let updatedPriority = { ...priority };
-      // Object.keys(updatedErrors).forEach((error) => {
-      //   console.log(error);
-      //   if (updatedErrors[error] && updatedErrors[error] !== "") {
-      //     topValue = errorcount * 80 + 10;
-      //     errorcount++;
-      //     console.log(error);
-      //     if (error === "passworderror") {
-      //       updatedPriority.passwordtop = topValue;
-      //     }
-      //     if (error === "emailerror") {
-      //       updatedPriority.emailtop = topValue;
-      //     }
-      //     setpriority(updatedPriority);
-      //     console.log(error);
-      //   }
-      // });
+    if (isValid) {
+      let response = await fetch("/api/auth/Login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        let data = await response.json();
+        console.log(data);
+        console.log("succesfully logged in");
+        dispatch(Authactions.setloggedIn(true));
+        router.push("/");
+      } else {
+        let data = await response.json();
+        if (data.message) {
+          seterrorshow(data.message);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+          timeoutRef.current = setTimeout(() => {
+            seterrorshow("");
+          }, 3000);
+        }
+
+        console.log(data);
+      }
     }
+  };
+  const handleSignIn = async () => {
+    console.log("I am running...");
+    const response = await signIn("google", {
+      redirect: false,
+      callbackUrl: "/",
+    });
   };
 
   return (
     <div className="h-[100vh] relative w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
       <div className="errorsshower w-full absolute top-2 flex flex-col items-center  gap-[10px]">
+        {errorshow && (
+          <div
+            style={{
+              zIndex: 10000,
+            }}
+            className="   text-lg  border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+          >
+            {errorshow}
+          </div>
+        )}
         {errors.emailerror && (
           <div
             id="emailerrorshower"
@@ -188,7 +236,7 @@ const page = () => {
             />
             <div
               onClick={() => {
-                signIn("google");
+                handleSignIn();
               }}
               className="text-[18px] font-semibold"
             >

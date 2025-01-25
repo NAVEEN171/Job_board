@@ -1,8 +1,13 @@
+import store from "@/store";
 import { useRouter } from "next/navigation";
-import React, { use } from "react";
+import React, { Fragment } from "react";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const router = useRouter();
+  type RootState = ReturnType<typeof store.getState>;
+
+  const loggedIn = useSelector((state: RootState) => state.Auth.loggedIn);
   return (
     <div className="h-[100px] w-full flex items-center justify-center">
       <div className="w-[90%]  flex flex-row justify-between ">
@@ -10,31 +15,39 @@ const Navbar = () => {
           FlexiBoard
         </h2>
         <div className="flex  flex-row gap-[10px]">
-          {/* <button className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
-            Job Boards
-          </button>
-          <button className="px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
-            Create One
-          </button> */}
-          <button className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
-            Add Job
-          </button>
-          <button
-            onClick={() => {
-              router.push("/Signup");
-            }}
-            className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]"
-          >
-            Sign up
-          </button>
-          <button
-            onClick={() => {
-              router.push("/Login");
-            }}
-            className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]"
-          >
-            Login
-          </button>
+          {loggedIn && (
+            <Fragment>
+              <button className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
+                Job Boards
+              </button>
+              <button className="px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
+                Create One
+              </button>
+            </Fragment>
+          )}
+          {!loggedIn && (
+            <Fragment>
+              <button className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
+                Add Job
+              </button>
+              <button
+                onClick={() => {
+                  router.push("/Signup");
+                }}
+                className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]"
+              >
+                Sign up
+              </button>
+              <button
+                onClick={() => {
+                  router.push("/Login");
+                }}
+                className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]"
+              >
+                Login
+              </button>
+            </Fragment>
+          )}
         </div>
       </div>
     </div>

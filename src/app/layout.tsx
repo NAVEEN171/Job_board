@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/providers/Providers";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "FlexiBoard",

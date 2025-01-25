@@ -1,13 +1,23 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { FormEvent } from "react";
+import { Authactions } from "@/store/Substores/Authslice";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { data: session } = useSession();
+  if (session) {
+    console.log(session);
+  }
+
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setConfirmShowPassword] =
     useState<boolean>(false);
@@ -15,6 +25,8 @@ const page = () => {
   const [password, setpassword] = useState<string>("");
   const [confirmpassword, setconfirmpassword] = useState<string>("");
   const [username, setusername] = useState<string>("");
+  const [errorshow, seterrorshow] = useState<string>("");
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   type signupErrorstype = {
     emailerror: String;
@@ -41,13 +53,20 @@ const page = () => {
       confirmpassword === "" ||
       username === ""
     ) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
       updatedErrors.emailerror = "Some fields are empty";
       setErrors(updatedErrors);
-      setTimeout((prevErrors: any) => {
+
+      timeoutRef.current = setTimeout((prevErrors: any) => {
         setErrors({ ...prevErrors, emailerror: "" });
-      }, 4000);
+      }, 3000);
       return { updatedErrors, isValid: false };
     } else {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
       if (!email.includes("@") && email.trim().length > 0) {
         updatedErrors.emailerror = "Email id should contain @";
       }
@@ -61,7 +80,7 @@ const page = () => {
         updatedErrors.usernameerror = "Username should be atleast 3 characters";
       }
       setErrors(updatedErrors);
-      setTimeout((prevErrors: any) => {
+      timeoutRef.current = setTimeout((prevErrors: any) => {
         setErrors({
           ...prevErrors,
           emailerror: "",
@@ -69,22 +88,77 @@ const page = () => {
           confirmpassworderror: "",
           usernameerror: "",
         });
-      }, 4000);
-      return { updatedErrors, isValid: false };
+      }, 3000);
+      if (
+        updatedErrors.confirmpassworderror ||
+        updatedErrors.emailerror ||
+        updatedErrors.passworderror ||
+        updatedErrors.usernameerror
+      ) {
+        return { updatedErrors, isValid: false };
+      }
     }
     return { updatedErrors, isValid: true };
   };
-  const submitHandler = (e: FormEvent) => {
+  const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
     const { updatedErrors, isValid } = validateFields();
     console.log(isValid);
-    if (!isValid) {
+    if (isValid) {
+      let response = await fetch("/api/auth/Sign-up", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          username,
+          confirmpassword,
+        }),
+      });
+      if (response.ok) {
+        let data = await response.json();
+        console.log(data);
+        console.log("succesfully logged in");
+        dispatch(Authactions.setloggedIn(true));
+        router.push("/");
+      } else {
+        let data = await response.json();
+        if (data.message) {
+          seterrorshow(data.message);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+          timeoutRef.current = setTimeout(() => {
+            seterrorshow("");
+          }, 3000);
+        }
+
+        console.log(data);
+      }
     }
+  };
+  const handleSignIn = async () => {
+    const response = await signIn("google", {
+      redirect: false,
+      callbackUrl: "/",
+    });
   };
 
   return (
     <div className="h-[100vh] relative w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
       <div className="errorsshower w-full absolute top-2 flex flex-col items-center  gap-[10px]">
+        {errorshow && (
+          <div
+            style={{
+              zIndex: 10000,
+            }}
+            className="   text-lg  border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+          >
+            {errorshow}
+          </div>
+        )}
         {errors.usernameerror && (
           <div
             style={{
@@ -239,7 +313,7 @@ const page = () => {
           </button>
           <button
             onClick={() => {
-              signIn("google");
+              handleSignIn();
             }}
             className="flex gap-[5px] mt-[10px]  w-full items-center bg-white/50 hover:bg-white/70 border border-2 border-gray-200 justify-center rounded-[5px] py-[5px] px-[20px]"
           >
