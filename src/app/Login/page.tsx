@@ -4,14 +4,109 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { FormEvent } from "react";
+import { setPriority } from "os";
 
 const page = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setemail] = useState<string>("");
   const [password, setpassword] = useState<string>("");
+  type loginErrorstype = {
+    emailerror: string;
+    passworderror: string;
+    [key: string]: string;
+  };
+
+  const loginErrors: loginErrorstype = {
+    emailerror: "",
+    passworderror: "",
+  };
+  const [errors, setErrors] = useState<loginErrorstype>(loginErrors);
+  const validateFields = (): {
+    updatedErrors: loginErrorstype;
+    isValid: boolean;
+  } => {
+    let updatedErrors: loginErrorstype = { ...errors };
+
+    if (email.trim() === "" || password === "") {
+      updatedErrors.emailerror = "Some fields are empty";
+      setErrors(updatedErrors);
+      setTimeout((prevErrors: any) => {
+        setErrors({ ...prevErrors, emailerror: "" });
+      }, 4000);
+      return { updatedErrors, isValid: false };
+    } else {
+      if (!email.includes("@") && email.trim().length > 0) {
+        console.log("email error");
+        updatedErrors.emailerror = "Email id should contain @";
+      }
+      if (password.trim().length < 8) {
+        updatedErrors.passworderror = "Password should be atleast 8 characters";
+      }
+      setErrors(updatedErrors);
+
+      setTimeout((prevErrors: any) => {
+        setErrors({ ...prevErrors, emailerror: "", passworderror: "" });
+      }, 4000);
+      return { updatedErrors, isValid: false };
+    }
+    return { updatedErrors, isValid: false };
+  };
+
+  const submitHandler = (e: FormEvent) => {
+    e.preventDefault();
+    const { updatedErrors, isValid } = validateFields();
+    console.log(isValid);
+    if (!isValid) {
+      // let errorcount = 0;
+      // let topValue;
+      // let updatedPriority = { ...priority };
+      // Object.keys(updatedErrors).forEach((error) => {
+      //   console.log(error);
+      //   if (updatedErrors[error] && updatedErrors[error] !== "") {
+      //     topValue = errorcount * 80 + 10;
+      //     errorcount++;
+      //     console.log(error);
+      //     if (error === "passworderror") {
+      //       updatedPriority.passwordtop = topValue;
+      //     }
+      //     if (error === "emailerror") {
+      //       updatedPriority.emailtop = topValue;
+      //     }
+      //     setpriority(updatedPriority);
+      //     console.log(error);
+      //   }
+      // });
+    }
+  };
 
   return (
-    <div className="h-[100vh] w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
+    <div className="h-[100vh] relative w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
+      <div className="errorsshower w-full absolute top-2 flex flex-col items-center  gap-[10px]">
+        {errors.emailerror && (
+          <div
+            id="emailerrorshower"
+            style={{
+              zIndex: 10000,
+            }}
+            className="   text-lg  border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+          >
+            {errors.emailerror}
+          </div>
+        )}
+        {errors.passworderror && (
+          <div
+            id="passworderrorshower"
+            style={{
+              zIndex: 10000,
+            }}
+            className="   text-lg  border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+          >
+            {errors.passworderror}
+          </div>
+        )}
+      </div>
       <div className="w-1/2 h-full  flex items-center justify-center ">
         <div className="bg-gradient-to-br w-fit  flex flex-col gap-[10px] from-white/50  to-white/30 backdrop-blur-xl rounded-3xl  shadow-xl border border-white/50 px-[30px] py-[20px] ">
           <div className="text-[25px] font-bold text-center ">
@@ -76,6 +171,9 @@ const page = () => {
             <div className="text-blue-600">Forgot password ?</div>
           </div>
           <button
+            onClick={(e) => {
+              submitHandler(e);
+            }}
             className="text-white text-[18px] text-center  w-full rounded-[5px] py-[5px] px-[20px]
            bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600   font-semibold transition-all duration-300   shadow-lg shadow-blue-500/30 "
           >
@@ -88,7 +186,14 @@ const page = () => {
               height={24}
               alt="google"
             />
-            <div className="text-[18px] font-semibold">Log In with Google</div>
+            <div
+              onClick={() => {
+                signIn("google");
+              }}
+              className="text-[18px] font-semibold"
+            >
+              Log In with Google
+            </div>
           </button>
           <div className="flex items-center gap-[5px] justify-center">
             <div>not a member ?</div>
