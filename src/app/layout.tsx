@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/providers/Providers";
-import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "FlexiBoard",
@@ -17,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
+
       <Providers>
         <body suppressHydrationWarning>{children}</body>
       </Providers>

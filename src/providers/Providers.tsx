@@ -2,12 +2,12 @@
 
 import { Provider } from "react-redux";
 import store from "@/store";
-import { SessionProvider } from "next-auth/react";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider>
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
       <Provider store={store}>{children}</Provider>
-    </SessionProvider>
+    </GoogleOAuthProvider>
   );
 }

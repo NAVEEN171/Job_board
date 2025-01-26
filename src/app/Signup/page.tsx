@@ -4,19 +4,15 @@ import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
-import { signIn, signOut, useSession } from "next-auth/react";
 import { FormEvent } from "react";
 import { Authactions } from "@/store/Substores/Authslice";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const page = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { data: session } = useSession();
-  if (session) {
-    console.log(session);
-  }
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setConfirmShowPassword] =
@@ -139,16 +135,41 @@ const page = () => {
       }
     }
   };
-  const handleSignIn = async () => {
-    const response = await signIn("google", {
-      redirect: false,
-      callbackUrl: "/",
-    });
-  };
+  const handleSignIn = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const response = await fetch("/api/auth/[...nextauth]", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: tokenResponse.access_token }),
+        });
+
+        const data = await response.json();
+        if (data) {
+          console.log(data);
+        }
+
+        if (data.status === 200) {
+          seterrorshow("Successfully logged in");
+          router.push("/");
+        } else {
+          seterrorshow(data.message);
+        }
+      } catch (error) {
+        seterrorshow("Network error");
+      }
+    },
+    flow: "implicit",
+    onError: () => {
+      seterrorshow("Login Failed");
+    },
+  });
 
   return (
-    <div className="h-[100vh] relative w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
-      <div className="errorsshower w-full absolute top-2 flex flex-col items-center  gap-[10px]">
+    <div className="h-[100vh] relative  w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
+      <div className="errorsshower w-full absolute fixed top-2 flex flex-col items-center  gap-[10px]">
         {errorshow && (
           <div
             style={{

@@ -4,21 +4,24 @@ import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
-import { signIn, signOut, useSession } from "next-auth/react";
 import { FormEvent } from "react";
 import { Authactions } from "@/store/Substores/Authslice";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { useGoogleLogin } from "@react-oauth/google";
+import store from "@/store";
 
 const page = () => {
   const dispatch = useDispatch();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  type RootState = ReturnType<typeof store.getState>;
+
+  const errorshow = useSelector((state: RootState) => state.Auth.errorshow);
 
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setemail] = useState<string>("");
   const [password, setpassword] = useState<string>("");
-  const [errorshow, seterrorshow] = useState<string>("");
   type loginErrorstype = {
     emailerror: string;
     passworderror: string;
@@ -98,12 +101,12 @@ const page = () => {
       } else {
         let data = await response.json();
         if (data.message) {
-          seterrorshow(data.message);
+          dispatch(Authactions.seterrorshow(data.message));
           if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
           }
           timeoutRef.current = setTimeout(() => {
-            seterrorshow("");
+            dispatch(Authactions.seterrorshow(""));
           }, 3000);
         }
 
@@ -111,17 +114,42 @@ const page = () => {
       }
     }
   };
-  const handleSignIn = async () => {
-    console.log("I am running...");
-    const response = await signIn("google", {
-      redirect: false,
-      callbackUrl: "/",
-    });
-  };
+
+  const handleSignIn = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const response = await fetch("/api/auth/[...nextauth]", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: tokenResponse.access_token }),
+        });
+
+        const data = await response.json();
+        if (data) {
+          console.log(data);
+        }
+
+        if (data.status === 200) {
+          dispatch(Authactions.seterrorshow("Successfully logged in"));
+          router.push("/");
+        } else {
+          dispatch(Authactions.seterrorshow(data.message));
+        }
+      } catch (error) {
+        dispatch(Authactions.seterrorshow("Network error"));
+      }
+    },
+    flow: "implicit",
+    onError: () => {
+      dispatch(Authactions.seterrorshow("Login Failed"));
+    },
+  });
 
   return (
-    <div className="h-[100vh] relative w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
-      <div className="errorsshower w-full absolute top-2 flex flex-col items-center  gap-[10px]">
+    <div className="h-[100vh]  relative  w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
+      <div className="errorsshower absolute w-full  top-2 flex flex-col items-center  gap-[10px]">
         {errorshow && (
           <div
             style={{
@@ -227,21 +255,19 @@ const page = () => {
           >
             Login
           </button>
-          <button className="flex gap-[5px] mt-[10px]  w-full items-center bg-white/50 hover:bg-white/70 border border-2 border-gray-200 justify-center rounded-[5px] py-[5px] px-[20px]">
+          <button
+            onClick={() => {
+              handleSignIn();
+            }}
+            className="flex gap-[5px] mt-[10px]  w-full items-center bg-white/50 hover:bg-white/70 border border-2 border-gray-200 justify-center rounded-[5px] py-[5px] px-[20px]"
+          >
             <Image
               src="/Images/google.png"
               width={24}
               height={24}
               alt="google"
             />
-            <div
-              onClick={() => {
-                handleSignIn();
-              }}
-              className="text-[18px] font-semibold"
-            >
-              Log In with Google
-            </div>
+            <div className="text-[18px] font-semibold">Log In with Google</div>
           </button>
           <div className="flex items-center gap-[5px] justify-center">
             <div>not a member ?</div>

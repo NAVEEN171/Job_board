@@ -36,7 +36,6 @@ import { Authactions } from "@/store/Substores/Authslice";
 import { parse } from "path";
 import { FilterActions } from "@/store/Substores/Filterstore";
 import { OptionActions } from "@/store/Substores/Optionstore";
-import { useSession } from "next-auth/react";
 
 type DropDowndatatype = {
   name: string;
@@ -123,8 +122,6 @@ type Locationtype = {
 
 const Filter = () => {
   const dispatch = useDispatch();
-
-  const { data: session, status } = useSession();
 
   type RootState = ReturnType<typeof store.getState>;
 
@@ -215,24 +212,6 @@ const Filter = () => {
     }),
     []
   );
-
-  useEffect(() => {
-    const isExpired =
-      new Date().getTime() > new Date(session?.expires || 0).getTime();
-
-    console.log("current time:", new Date().getTime());
-    console.log("expiry time:", new Date(session?.expires || 0).getTime());
-    console.log("is expired:", isExpired);
-
-    if (status === "authenticated" && !isExpired) {
-      dispatch(Authactions.setloggedIn(true));
-    } else {
-      dispatch(Authactions.setloggedIn(false));
-    }
-  }, [status, dispatch]);
-  if (session) {
-    console.log(session);
-  }
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

@@ -2,9 +2,11 @@ import { createSlice, PayloadAction, configureStore } from "@reduxjs/toolkit";
 
 type Authtype = {
   loggedIn: boolean;
+  errorshow: string;
 };
 const initialAuthstate: Authtype = {
   loggedIn: false,
+  errorshow: "",
 };
 
 const AuthSlice = createSlice({
@@ -13,6 +15,9 @@ const AuthSlice = createSlice({
   reducers: {
     setloggedIn(state, action: PayloadAction<boolean>) {
       state.loggedIn = action.payload;
+    },
+    seterrorshow(state, action: PayloadAction<string>) {
+      state.errorshow = action.payload;
     },
   },
 });

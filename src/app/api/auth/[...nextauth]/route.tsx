@@ -1,93 +1,105 @@
-import NextAuth from "next-auth";
-import { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import ConnectToDB from "@/utils/connections/mongoose";
-import "next-auth";
-import "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 
-declare module "next-auth" {
-  interface Account {
-    access_token?: string;
-    provider: string;
-  }
-  interface Session {
-    user: {
-      id: string;
-      name?: string;
-      email: string;
-      image?: string;
-      accessToken?: string;
+export async function googleAuthentication(accessToken: string) {
+  try {
+    // Fetch user info using access token
+    const response = await fetch(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessToken}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Cross-Origin-Opener-Policy": "same-origin",
+          "Cross-Origin-Embedder-Policy": "unsafe-none",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      return {
+        message: "Failed to fetch user info",
+        status: 401,
+      };
+    }
+
+    const profile = await response.json();
+
+    if (!profile.email) {
+      return {
+        message: "Invalid credentials",
+        status: 401,
+      };
+    }
+
+    const dbConn = await ConnectToDB();
+    if (!dbConn) {
+      return {
+        message: "DB connection failed",
+        status: 401,
+      };
+    }
+
+    const userCollection = dbConn.connection.collection("users");
+    let user = await userCollection.findOne({ email: profile.email });
+
+    if (!user) {
+      const newUser = {
+        username: profile.name,
+        email: profile.email,
+        password: null,
+        provider: "google",
+        profilephoto: profile.picture || null,
+      };
+
+      const result = await userCollection.insertOne(newUser);
+      user = { ...newUser, _id: result.insertedId };
+    }
+    const token = jwt.sign({ user }, process.env.JWT_ACCESS_TOKEN!, {
+      expiresIn: "30s",
+    });
+    console.log("access token is");
+    console.log(token);
+
+    return {
+      id: user._id.toString(),
+      username: user.username,
+      email: user.email,
+      profilephoto: user.profilephoto,
+      provider: "google",
+      accessToken: token ? token : null,
+    };
+  } catch (error) {
+    console.error("Google authentication error:", error);
+    return {
+      message: "Authentication failed",
+      status: 401,
     };
   }
 }
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    sub?: string;
-    name?: string;
-    email?: string;
-    picture?: string;
-    accessToken?: string;
+export async function POST(req: NextRequest) {
+  try {
+    const { token } = await req.json();
+    const user = await googleAuthentication(token);
+    console.log(user);
+
+    if (!user.message) {
+      return NextResponse.json({
+        user,
+        status: 200,
+      });
+    } else {
+      return NextResponse.json({
+        message: user.message,
+        status: user.status,
+      });
+    }
+  } catch (error) {
+    return NextResponse.json({
+      message: "Authentication Failed",
+      status: 401,
+    });
   }
 }
-
-const authOptions: NextAuthOptions = {
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
-  callbacks: {
-    async signIn({ account, profile }) {
-      if (!profile?.email) {
-        return false;
-      }
-      const dbConn = await ConnectToDB();
-      if (!dbConn) {
-        console.log("database is not connected");
-        return false;
-      }
-      const userscollection = await dbConn.connection.collection("users");
-      if (!userscollection) {
-        return false;
-      }
-      let existinguser = await userscollection.findOne({
-        email: profile.email,
-      });
-      if (!existinguser) {
-        await userscollection.insertOne({
-          username: profile.name,
-          email: profile.email,
-          password: null,
-          provider: "google",
-          profilephoto: profile.image,
-        });
-      }
-      return true;
-    },
-    async session({ session, token }) {
-      session.user.id = token.sub!;
-      session.user.email = token.email!;
-      session.user.image = token.picture!;
-      session.user.accessToken = token.accessToken as string;
-      session.user.name = token.name!;
-
-      return session;
-    },
-    async jwt({ token, account }) {
-      if (account) {
-        token.accessToken = account.access_token;
-      }
-      return token;
-    },
-  },
-  session: {
-    strategy: "jwt",
-    maxAge: 60, // 1 hour in seconds
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-};
-
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
