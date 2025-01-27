@@ -1,7 +1,7 @@
 import ConnectToDB from "@/utils/connections/mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-
+import { generateToken } from "@/middlewares/Auth/generateToken";
 export async function googleAuthentication(accessToken: string) {
   try {
     // Fetch user info using access token
@@ -56,9 +56,11 @@ export async function googleAuthentication(accessToken: string) {
       const result = await userCollection.insertOne(newUser);
       user = { ...newUser, _id: result.insertedId };
     }
-    const token = jwt.sign({ user }, process.env.JWT_ACCESS_TOKEN!, {
-      expiresIn: "30s",
-    });
+    const token = await generateToken(user);
+    const refreshToken = await jwt.sign(
+      { user },
+      process.env.JWT_REFRESH_TOKEN!
+    );
     console.log("access token is");
     console.log(token);
 
@@ -69,6 +71,7 @@ export async function googleAuthentication(accessToken: string) {
       profilephoto: user.profilephoto,
       provider: "google",
       accessToken: token ? token : null,
+      refreshToken: refreshToken ? refreshToken : null,
     };
   } catch (error) {
     console.error("Google authentication error:", error);

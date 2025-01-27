@@ -12,13 +12,11 @@ import { useGoogleLogin } from "@react-oauth/google";
 import store from "@/store";
 
 const page = () => {
-  const dispatch = useDispatch();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  type RootState = ReturnType<typeof store.getState>;
-
-  const errorshow = useSelector((state: RootState) => state.Auth.errorshow);
 
   const router = useRouter();
+  const dispatch = useDispatch();
+  const [errorshow, seterrorshow] = useState("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setemail] = useState<string>("");
   const [password, setpassword] = useState<string>("");
@@ -101,12 +99,12 @@ const page = () => {
       } else {
         let data = await response.json();
         if (data.message) {
-          dispatch(Authactions.seterrorshow(data.message));
+          seterrorshow(data.message);
           if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
           }
           timeoutRef.current = setTimeout(() => {
-            dispatch(Authactions.seterrorshow(""));
+            seterrorshow("");
           }, 3000);
         }
 
@@ -132,18 +130,18 @@ const page = () => {
         }
 
         if (data.status === 200) {
-          dispatch(Authactions.seterrorshow("Successfully logged in"));
+          seterrorshow("Successfully logged in");
           router.push("/");
         } else {
-          dispatch(Authactions.seterrorshow(data.message));
+          seterrorshow(data.message);
         }
       } catch (error) {
-        dispatch(Authactions.seterrorshow("Network error"));
+        seterrorshow("Network error");
       }
     },
     flow: "implicit",
     onError: () => {
-      dispatch(Authactions.seterrorshow("Login Failed"));
+      seterrorshow("Login Failed");
     },
   });
 

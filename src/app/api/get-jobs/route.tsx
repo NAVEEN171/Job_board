@@ -4,70 +4,12 @@ import mongoose from "mongoose";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import { jwtverification } from "@/middlewares/Auth/validateToken";
 
-interface ResponseMessage {
-  message: string;
-  status?: number;
-}
-export async function jwtverification(req: NextRequest, res: NextResponse) {
-  console.log("I am running up");
-  try {
-    const authHeader = req.headers.get("authorization");
-    let token;
-
-    if (!authHeader) {
-      return new NextResponse(
-        JSON.stringify({
-          message: "authorization code is missing",
-        } as ResponseMessage),
-        {
-          status: 200,
-        }
-      );
-    }
-
-    token = authHeader.split(" ")[1];
-
-    if (!token) {
-      return new NextResponse(
-        JSON.stringify({ message: "Token is missing" } as ResponseMessage),
-        {
-          status: 403,
-        }
-      );
-    }
-
-    console.log(token);
-
-    // Synchronously verify the token
-    const validate = jwt.verify(token, process.env.JWT_ACCESS_TOKEN!);
-
-    // Attach user data to the request object
-    (req as any).user = validate;
-
-    // Continue with your request handling (e.g., return true if everything is okay)
-    return new NextResponse(
-      JSON.stringify({ message: "Token is valid" } as ResponseMessage),
-      {
-        status: 200,
-      }
-    );
-  } catch (err: any) {
-    // Handle token expiration or any other error
-
-    // Handle any other type of JWT verification error
-    return new NextResponse(
-      JSON.stringify({ message: "Token is expired" } as ResponseMessage),
-      {
-        status: 403,
-      }
-    );
-  }
-}
 export async function POST(req: NextRequest, res: NextResponse) {
   // const body = await req.json();
 
-  let verified = await jwtverification(req, res);
+  let verified = await jwtverification(req);
 
   type poststype = {
     name: string;
@@ -83,15 +25,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
       post: "post2",
     },
   ];
-  if (verified.ok) {
+  if (verified.status === 200) {
     return NextResponse.json({ posts: posts });
   }
-  let verifiedJson = await verified.json();
   if (verified) {
-    return NextResponse.json({
-      message: verifiedJson?.message,
-      status: verifiedJson?.status,
-    });
+    return NextResponse.json(
+      {
+        message: verified.message,
+      },
+      { status: verified.status }
+    );
   }
 
   // const params: any = {};
