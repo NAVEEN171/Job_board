@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import ConnectToDB from "../../../../utils/connections/mongoose";
 import { Collection } from "mongoose";
 import bcrypt from "bcrypt";
+import { sendMagicLink } from "@/utils/sendMagicLink/send-magicLink";
+import {
+  generateToken,
+  storeToken,
+} from "@/middlewares/Auth/generateCryptotoken";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
@@ -29,6 +34,22 @@ export async function POST(req: NextRequest, res: NextResponse) {
           { status: 400 }
         );
       }
+      const insertedUser = {
+        username,
+        email,
+        provider: "manual",
+        profilephoto: "",
+        password: hashedpassword,
+      };
+
+      const token = await generateToken();
+
+      let storedToken;
+      if (token) {
+        storedToken = await storeToken(token, insertedUser);
+        const sentemail = await sendMagicLink(token, email);
+      }
+
       const insertPerson = await userscollection.insertOne({
         username,
         email,
@@ -37,12 +58,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         profilephoto: "",
       });
       console.log(insertPerson);
-      const insertedUser = {
-        username,
-        email,
-        provider: "manual",
-        profilephoto: "",
-      };
+
       if (insertPerson.acknowledged) {
         exisitinguser = await userscollection.findOne({ email: email });
         if (exisitinguser) {

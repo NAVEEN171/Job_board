@@ -12,10 +12,11 @@ import { useGoogleLogin } from "@react-oauth/google";
 import store from "@/store";
 
 const page = () => {
+  const dispatch = useDispatch();
+
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const router = useRouter();
-  const dispatch = useDispatch();
   const [errorshow, seterrorshow] = useState("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setemail] = useState<string>("");
