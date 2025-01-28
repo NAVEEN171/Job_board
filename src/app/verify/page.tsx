@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { Authactions } from "@/store/Substores/Authslice";
 
-useSearchParams;
 const page = () => {
   const router = useRouter();
   const dispatch = useDispatch();

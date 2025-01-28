@@ -11,17 +11,16 @@ let transporter = nodemailer.createTransport({
   },
 });
 
-export const sendMagicLink = async (
+export const passwordResetMail = async (
   token: string,
   email: string
 ): Promise<boolean> => {
   try {
-    const magicLink = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/verify?token=${token}`;
+    const resetLink = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/Reset-password?token=${token}`;
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject:
-        "Welcome to Flexiboard! continue your journey after verification",
+      subject: " Flexiboard | Reset your password ",
       html: `
      
   <html>
@@ -81,12 +80,12 @@ export const sendMagicLink = async (
     </head>
     <body>
       <div class="email-container">
-        <h1>Sign In to Your Account</h1>
-        <p>Click the link or button below to sign :</p>
+        <h1>Reset your password </h1>
+        <p>Click the link or button below to reset your password  :</p>
          <p>This link will expire in 15 minutes.</p>
-        <a class="magiclink" href="${magicLink}">${magicLink}</a>
+        <a class="magiclink" href="${resetLink}">${resetLink}</a>
         <p class="or-element">or</p>
-        <a class="verify" href="${magicLink}">Verify your account</a>
+        <a class="verify" href="${resetLink}">Verify your account</a>
         <p>If you didn't request this link, please ignore this email.</p>
       </div>
     </body>

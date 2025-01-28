@@ -81,14 +81,14 @@ const JobListing = () => {
             </div>
             <div className="company-urls flex gap-[10px]">
               <Link
-                className="px-[10px] py-[5px] rounded-[5px]  border border-[1px] border-[#C8C8C8] "
+                className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF]  border border-[2px] border-[#B2DDFF] "
                 target="_blank"
                 href={Job.company_link}
               >
                 Company
               </Link>
               <Link
-                className="px-[10px] py-[5px] rounded-[5px] border border-[1px] border-[#C8C8C8] "
+                className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border border-[2px] border-[#B2DDFF] "
                 target="_blank"
                 href={Job.company_data.linkedin_link}
               >

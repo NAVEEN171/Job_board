@@ -71,7 +71,7 @@ const Pagination = () => {
         <button
           onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
           disabled={currentPage === 1}
-          className="px-3 py-1 flex   items-center gap-[2px] rounded border disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 flex border-none  items-center gap-[2px] rounded border disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Image
             src="/svgs/prevsymbol.svg"
@@ -106,7 +106,7 @@ const Pagination = () => {
             setCurrentPage((prev) => Math.min(totalPages, prev + 1));
           }}
           disabled={currentPage === totalPages}
-          className="px-2 flex gap-[2px] py-8 items-center rounded border disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 border-none flex gap-[2px] py-8 items-center rounded border disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
           <Image

@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { FormEvent } from "react";
+import "../globals.css";
 import { Authactions } from "@/store/Substores/Authslice";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -199,9 +200,11 @@ const page = () => {
             style={{
               zIndex: 10000,
             }}
-            className="left-1/2 text-lg  border-4 border-white  w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+            className="flex flex-col"
           >
-            {errors.emailerror}
+            <div className="left-1/2 text-lg  border border-4 border-white rounded-[10px]  w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl  backdrop-blur-sm">
+              {errors.emailerror}
+            </div>
           </div>
         )}
         {errors.passworderror && (
@@ -324,7 +327,11 @@ const page = () => {
               <input type="checkbox"></input>
               <div className="">Remember me</div>
             </div>
-            <div className="text-blue-600">Forgot password ?</div>
+            <Link href="/Forgot-password">
+              <div className="text-blue-600 cursor-pointer">
+                Forgot password ?
+              </div>
+            </Link>
           </div>
           <button
             onClick={(e) => {

@@ -59,6 +59,18 @@ button {
     transform: rotate(360deg); /* Rotate to 360 degrees */
   }
 }
+.animate-line {
+  height: 4px;
+  animation: line-animation 3s ease-in-out;
+}
+@keyframes line-animation {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
 
 @property --angle {
   syntax: "<angle>";

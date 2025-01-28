@@ -246,7 +246,11 @@ const page = () => {
               <input type="checkbox"></input>
               <div className="">Remember me</div>
             </div>
-            <div className="text-blue-600">Forgot password ?</div>
+            <Link href="/Forgot-password">
+              <div className="text-blue-600 cursor-pointer">
+                Forgot password ?
+              </div>
+            </Link>
           </div>
           <button
             onClick={(e) => {
