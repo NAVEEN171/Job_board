@@ -6,6 +6,8 @@ import { useState, useEffect, useRef } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { useSearchParams } from "next/navigation";
+import { FormEvent } from "react";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const [errorshow, seterrorshow] = useState<string>("");
@@ -14,12 +16,103 @@ const page = () => {
   const [status, setstatus] = useState<boolean>(false);
   const [token, settoken] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   const params = useSearchParams();
   const [showConfirmPassword, setConfirmShowPassword] =
     useState<boolean>(false);
   const [confirmpassword, setconfirmpassword] = useState<string>("");
-  console.log("hi");
+  type signupErrorstype = {
+    passworderror: String;
+    confirmpassworderror: String;
+    [key: string]: String;
+  };
+  const signupErrors: signupErrorstype = {
+    passworderror: "",
+    confirmpassworderror: "",
+  };
+  const [errors, setErrors] = useState<signupErrorstype>(signupErrors);
+  const validateFields = (): {
+    updatedErrors: signupErrorstype;
+    isValid: boolean;
+  } => {
+    let updatedErrors: signupErrorstype = { ...errors };
+    if (password === "" || confirmpassword === "") {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      updatedErrors.passworderror = "Some fields are empty";
+      setErrors(updatedErrors);
+
+      timeoutRef.current = setTimeout((prevErrors: any) => {
+        setErrors({ ...prevErrors, passworderror: "" });
+      }, 3000);
+      return { updatedErrors, isValid: false };
+    } else {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      if (password.trim().length < 8) {
+        updatedErrors.passworderror = "Password should be atleast 8 characters";
+      }
+      if (password.length > 7 && password !== confirmpassword) {
+        updatedErrors.confirmpassworderror = "Passwords do not match";
+      }
+
+      setErrors(updatedErrors);
+      timeoutRef.current = setTimeout((prevErrors: any) => {
+        setErrors({
+          ...prevErrors,
+          passworderror: "",
+          confirmpassworderror: "",
+        });
+      }, 3000);
+      if (updatedErrors.confirmpassworderror || updatedErrors.passworderror) {
+        return { updatedErrors, isValid: false };
+      }
+    }
+    return { updatedErrors, isValid: true };
+  };
+  const submitHandler = async (e: FormEvent) => {
+    e.preventDefault();
+    let valid = validateFields();
+
+    if (valid.isValid && status) {
+      let response = await fetch("/api/auth/update-password", {
+        method: "POST",
+        headers: {
+          "content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token,
+          password,
+        }),
+      });
+      let data = await response.json();
+      if (response.ok) {
+        seterrorshow(data.message);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+        timeoutRef.current = setTimeout(() => {
+          seterrorshow("");
+          router.push("/Login");
+        }, 2000);
+      } else {
+        seterrorshow(data.message);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+        timeoutRef.current = setTimeout(() => {
+          seterrorshow("");
+          if (response.status === 404) {
+            router.push("/Forgot-password");
+          }
+        }, 3000);
+      }
+    }
+  };
 
   useEffect(() => {
     console.log(params);
@@ -27,6 +120,7 @@ const page = () => {
       settoken(params.get("token"));
     }
   }, [params]);
+
   useEffect(() => {
     console.log(token);
     const fetchData = async () => {
@@ -55,18 +149,42 @@ const page = () => {
       fetchData();
     }
   }, [token]);
+
   return (
     <div className="h-screen relative  w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
-      {errorshow && (
-        <div
-          style={{
-            zIndex: 10000,
-          }}
-          className="   text-lg absolute top-[10px] left-1/2 -translate-x-1/2 border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
-        >
-          {errorshow}
-        </div>
-      )}
+      <div className="errorsshower w-full absolute fixed top-2 flex flex-col items-center  gap-[10px]">
+        {errorshow && (
+          <div
+            style={{
+              zIndex: 10000,
+            }}
+            className="   text-lg  border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+          >
+            {errorshow}
+          </div>
+        )}
+
+        {errors.passworderror && (
+          <div
+            style={{
+              zIndex: 10000,
+            }}
+            className="  left-1/2 text-lg  border-4  border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+          >
+            {errors.passworderror}
+          </div>
+        )}
+        {errors.confirmpassworderror && (
+          <div
+            style={{
+              zIndex: 10000,
+            }}
+            className="   left-1/2 text-lg   border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+          >
+            {errors.confirmpassworderror}
+          </div>
+        )}
+      </div>
       <div className="w-1/2 h-full  flex items-center justify-center ">
         <div className="bg-gradient-to-br w-fit  flex flex-col gap-[10px] from-white/50  to-white/30 backdrop-blur-xl rounded-3xl  shadow-xl border border-white/50 px-[30px] py-[20px] ">
           <div className="text-[25px] font-bold text-center ">
@@ -74,7 +192,7 @@ const page = () => {
           </div>
           <div className="flex gap-[20px] items-center">
             <div className="text-[23px] font-semibold ">Reset password</div>
-            <Link href="/">
+            <Link href="/Forgot-password">
               <div className=" py-[5px] px-[5px] rounded-lg shadow-md bg-white">
                 <Image
                   src="/svgs/backsymbol.svg"
@@ -145,7 +263,9 @@ const page = () => {
             </div>
           </div>
           <button
-            onClick={(e) => {}}
+            onClick={(e) => {
+              submitHandler(e);
+            }}
             type="submit"
             disabled={!status}
             className={`text-white ${

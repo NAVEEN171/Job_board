@@ -9,12 +9,12 @@ import { useState, useRef, useEffect } from "react";
 import { FormEvent } from "react";
 
 const page = () => {
+  const router = useRouter();
+
   const [email, setemail] = useState<string>("");
   const [errorshow, seterrorshow] = useState<string>("");
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const router = useRouter();
 
   const submitHandler = async (e: FormEvent) => {
     if (!email.trim().length) {
@@ -81,7 +81,11 @@ const page = () => {
           </div>
           <div className="flex gap-[20px] items-center">
             <div className="text-[23px] font-semibold ">Enter email</div>
-            <Link href="/">
+            <button
+              onClick={() => {
+                router.back();
+              }}
+            >
               <div className=" py-[5px] px-[5px] rounded-lg shadow-md bg-white">
                 <Image
                   src="/svgs/backsymbol.svg"
@@ -90,7 +94,7 @@ const page = () => {
                   alt="back"
                 />
               </div>
-            </Link>
+            </button>
           </div>
 
           <div className="flex flex-col gap-[7px]">
