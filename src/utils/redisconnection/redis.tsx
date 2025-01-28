@@ -1,17 +1,41 @@
-import type { RedisClientType } from "redis";
-import { createClient } from "redis";
+import {
+  createClient,
+  type RedisClientType,
+  type RedisClientOptions,
+} from "redis";
 
-const redisClient = createClient({
+type RedisClient = RedisClientType<
+  Record<string, never>,
+  Record<string, never>
+>;
+
+declare global {
+  var redisClient: RedisClient | null;
+}
+
+const redisClient: RedisClient = createClient({
   url: process.env.REDIS_CONNECTION_URL,
+}) as RedisClient;
+
+redisClient.on("error", (err) => {
+  console.error("Redis Client Error:", err);
+  global.redisClient = null;
 });
+
 export const connecttoRedis = async (): Promise<boolean> => {
   try {
+    if (redisClient.isOpen) {
+      return true;
+    }
+
     await redisClient.connect();
-    console.log("successfully connected to redis");
+    global.redisClient = redisClient;
+    console.log("Successfully connected to Redis");
     return true;
   } catch (err) {
+    console.error("Failed connecting to Redis:", err);
+    global.redisClient = null;
     return false;
-    console.log("failed connecting to redis");
   }
 };
 

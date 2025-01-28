@@ -94,6 +94,9 @@ const page = () => {
       if (response.ok) {
         let data = await response.json();
         console.log(data);
+
+        console.log(data);
+
         console.log("succesfully logged in");
         dispatch(Authactions.setloggedIn(true));
         router.push("/");

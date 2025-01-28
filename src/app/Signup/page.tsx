@@ -116,9 +116,13 @@ const page = () => {
       if (response.ok) {
         let data = await response.json();
         console.log(data);
-        console.log("succesfully logged in");
-        dispatch(Authactions.setloggedIn(true));
-        router.push("/");
+        seterrorshow(data.message);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+        timeoutRef.current = setTimeout(() => {
+          seterrorshow("");
+        }, 3000);
       } else {
         let data = await response.json();
         if (data.message) {

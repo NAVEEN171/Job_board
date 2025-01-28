@@ -7,6 +7,8 @@ import {
   generateToken,
   storeToken,
 } from "@/middlewares/Auth/generateCryptotoken";
+import redisClient from "@/utils/redisconnection/redis";
+import { connecttoRedis } from "@/utils/redisconnection/redis";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
@@ -34,6 +36,28 @@ export async function POST(req: NextRequest, res: NextResponse) {
           { status: 400 }
         );
       }
+      //redis need to be added here to check whether email is already sent
+      let emailKey = `email:${email}`;
+      let redisConn = await connecttoRedis();
+      if (!redisConn) {
+        return NextResponse.json(
+          {
+            message: "some thing went wrong ! Try again",
+          },
+          { status: 500 }
+        );
+      }
+      const exists = await redisClient.exists(emailKey);
+      if (exists) {
+        return NextResponse.json(
+          {
+            message:
+              "verification email 📧  has been already sent to your inbox",
+          },
+          { status: 500 }
+        );
+      }
+
       const insertedUser = {
         username,
         email,
@@ -45,29 +69,54 @@ export async function POST(req: NextRequest, res: NextResponse) {
       const token = await generateToken();
 
       let storedToken;
+      let sentemail;
+
       if (token) {
         storedToken = await storeToken(token, insertedUser);
-        const sentemail = await sendMagicLink(token, email);
+        sentemail = await sendMagicLink(token, email);
       }
+      if (sentemail) {
+        await redisClient.setEx(emailKey, 60 * 15, email);
 
-      const insertPerson = await userscollection.insertOne({
-        username,
-        email,
-        password: hashedpassword,
-        provider: "manual",
-        profilephoto: "",
-      });
-      console.log(insertPerson);
-
-      if (insertPerson.acknowledged) {
-        exisitinguser = await userscollection.findOne({ email: email });
-        if (exisitinguser) {
-          delete exisitinguser.password;
-          return NextResponse.json({ user: exisitinguser }, { status: 200 });
-        }
+        return NextResponse.json(
+          {
+            message:
+              "An email 📧  has been sent to your inbox. Please verify it.",
+          },
+          { status: 200 }
+        );
       }
+      return NextResponse.json(
+        {
+          message: "something went wrong. Please signup  again.",
+        },
+        { status: 401 }
+      );
+
+      // const insertPerson = await userscollection.insertOne({
+      //   username,
+      //   email,
+      //   password: hashedpassword,
+      //   provider: "manual",
+      //   profilephoto: "",
+      // });
+      // console.log(insertPerson);
+
+      // if (insertPerson.acknowledged) {
+      //   exisitinguser = await userscollection.findOne({ email: email });
+      //   if (exisitinguser) {
+      //     delete exisitinguser.password;
+      //     return NextResponse.json({ user: exisitinguser }, { status: 200 });
+      //   }
+      // }
     }
   } catch (err) {
     console.log(err);
+    return NextResponse.json(
+      {
+        message: "something went wrong. Please signup  again.",
+      },
+      { status: 401 }
+    );
   }
 }

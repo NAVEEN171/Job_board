@@ -1,8 +1,10 @@
+import ConnectToDB from "@/utils/connections/mongoose";
 import redisClient from "@/utils/redisconnection/redis";
 import { connecttoRedis } from "@/utils/redisconnection/redis";
 
 import crypto from "crypto";
 import type { RedisClientType } from "redis";
+
 import { createClient } from "redis";
 interface userData {
   username: string;
@@ -22,8 +24,11 @@ export const generateToken = () => {
 
 export const storeToken = async (token: string, user: userData) => {
   const tokenKey = `token:${token}`;
+  console.log("the token key is ");
+  console.log(tokenKey);
   let redisConn = await connecttoRedis();
   let EXPIRY_TIME = 60 * 15;
+  let newData;
   if (redisConn) {
     await redisClient
       .multi()
@@ -37,31 +42,76 @@ export const storeToken = async (token: string, user: userData) => {
       .exec();
   }
   const storedData = await redisClient.hGetAll(tokenKey);
-  const newData = { ...storedData };
+  newData = { ...storedData };
   console.log("Stored token data:", newData);
 };
+interface returnType {
+  message: string;
+  valid: boolean;
+  user?: userData;
+}
 export const verifyAndConsumeToken = async (token: string) => {
   const tokenKey = `token:${token}`;
   let redisConn = await connecttoRedis();
   let storedData;
+  console.log("redis conn is", redisConn);
   if (!redisConn) {
-    return false;
+    return { message: "couldnt connect to redis", valid: false };
   }
   const exists = await redisClient.exists(tokenKey);
   console.log(`exists=${exists}`);
+
   if (exists) {
     storedData = await redisClient.hGetAll(tokenKey);
     await redisClient.del(tokenKey);
   }
 
   if (!storedData) {
-    return false;
+    return {
+      message: "your verification time has expired! Please Signup again",
+      valid: false,
+    };
+  }
+  let newData = { ...storedData };
+  let emailKey = `email:${newData.email}`;
+  let emailexist = await redisClient.exists(emailKey);
+  if (emailexist) {
+    await redisClient.del(emailKey);
   }
 
   // Delete token to prevent reuse
   // await Redisclient.del(tokenKey);
-  const newData = { ...storedData };
-  delete newData.createdAt;
 
-  return newData;
+  delete newData.createdAt;
+  const dbConn = await ConnectToDB();
+  if (!dbConn) {
+    return {
+      message: "failed connecting to db",
+      valid: false,
+    };
+  }
+  if (dbConn) {
+    const userscollection = dbConn.connection.collection("users");
+    const insertPerson = await userscollection.insertOne(newData);
+    console.log(insertPerson);
+
+    if (insertPerson.acknowledged) {
+      let exisitinguser = await userscollection.findOne({
+        email: newData.email,
+      });
+      if (exisitinguser) {
+        delete newData.password;
+        return {
+          message: "successfully added to database",
+          valid: true,
+          user: newData,
+        };
+      }
+    }
+    console.log(newData);
+    return {
+      message: "something went wrong",
+      valid: false,
+    };
+  }
 };
