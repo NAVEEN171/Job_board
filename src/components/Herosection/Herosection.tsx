@@ -18,7 +18,7 @@ const Herosection = () => {
         onClick={() => {
           router.push("/Resume-tailor");
         }}
-        className="bg-[#4AA3FA] mt-5 text-lg px-7 py-2 font-semibold rounded-lg text-white cursor-pointer"
+        className="bg-[#4AA3FA] mt-5 text-lg px-7 py-3 font-semibold rounded-lg text-white cursor-pointer shadow-md"
       >
         AI Resume Tailor 📝
       </button>

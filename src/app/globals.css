@@ -77,7 +77,6 @@ button {
   inherits: false;
   initial-value: 0deg;
 }
-
 .book-mark-container::after {
   position: absolute;
   height: 100%;

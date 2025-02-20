@@ -1,0 +1,218 @@
+Aggregations:-
+
+-->step experience:-
+
+1. if user selects yoe to include null then this aggregation 
+this code will do the trick 
+{
+          $or: [
+            {
+              years_of_experience: null,
+            },
+            {
+              years_of_experience: {
+                $exists: true,
+              },
+            },
+          ],
+        }
+ --> if a user selects some experience value and he sleects to include yeo null too then here is the code
+ {
+    $or: [
+  { years_of_experience: null },
+  {
+    $and: [
+      { "years_of_experience.min": { $gte: 1 } },
+      { "years_of_experience.max": { $lte: 5 } }
+    ]
+  }
+]
+ }
+
+--> if a user selcts only a specific value dont include this 
+  { years_of_experience: null },
+
+ --> aggegregation to be used 
+
+[
+  {
+    $match: {
+      $and: [
+        {
+          $or: [
+            {
+              job_title: {
+                $regex: "front",
+                $options: "i",
+              },
+            },
+            {
+              job_title: {
+                $regex: "back",
+                $options: "i",
+              },
+            },
+          ],
+        },
+        {
+          location_type: {
+            $in: ["Remote"],
+          },
+        },
+        {
+          $and: [
+            {
+              "salary_range.min": {
+                $gte: 15000,
+              },
+            },
+            {
+              "salary_range.max": {
+                $lte: 230000,
+              },
+            },
+          ],
+        },
+        {
+          locations: {
+            $elemMatch: {
+              $or: [
+                {
+                  city: {
+                    $in: [
+                      "New York",
+                      "United States",
+                    ],
+                  },
+                },
+                {
+                  country: {
+                    $in: [
+                      "New York",
+                      "United States",
+                    ],
+                  },
+                },
+                {
+                  region: {
+                    $in: [
+                      "New York",
+                      "United States",
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        },
+        {
+          $or: [
+            {
+              years_of_experience: null,
+            },
+            {
+              years_of_experience: {
+                $exists: true,
+              },
+            },
+          ],
+        },
+        {
+          expired:false,
+        }
+      ],
+    },
+  },
+  {
+    $facet:{
+      data:[],
+      count:[
+        {$count:"total"}
+      ]
+    }
+  }
+]
+
+--> facet is responsible to make data and count the no of documents
+-->In this response the data is the matched documents you will get ,you can access them via response.data
+-->the count is an array which counts the no of documents that are matching ,we can access them response.count[0].total
+
+--> when we check for aggregation experience high to low then 
+[
+  {
+    $match: {
+      $and: [
+        {
+          $or: [
+            {
+              job_title: {
+                $regex: "front",
+                $options: "i",
+              },
+            },
+            {
+              job_title: {
+                $regex: "back",
+                $options: "i",
+              },
+            },
+          ],
+        },
+       
+        {
+          $and: [
+            {
+              "salary_range.min": {
+                $gte: 15000,
+              },
+            },
+            {
+              "salary_range.max": {
+                $lte: 230000,
+              },
+            },
+          ],
+        },
+        
+        {
+          $or: [
+            {
+              yeo_range: null,
+            },
+            {
+              yeo_range: {
+                $exists: true,
+              },
+            },
+          ],
+        },
+        {
+          "yoe_range":{$ne:null}
+        },
+        {
+          expired:false,
+        }
+      ],
+    },
+  },
+  {
+    $sort:{
+      
+
+      "yoe_range.min":-1,
+
+    }
+  }
+  
+]
+
+-->if sort is applied then we have to remove these null yeo_range documents
+-->sort:-1 for descending order
+-->sort:1 for ascending order
+
+--> do the same for the highest salary sort the salary.min with -1 sort 
+
+
+
+
+
