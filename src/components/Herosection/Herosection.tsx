@@ -1,6 +1,8 @@
 import React from "react";
+import { useRouter } from "next/navigation";
 
 const Herosection = () => {
+  const router = useRouter();
   return (
     <div className="w-[100%] px-[40px] py-[20px] text-center break-words">
       <h1 className="text-[2.3rem]   mt-[40px] text-[900] text-[#0066cc] ">
@@ -12,6 +14,14 @@ const Herosection = () => {
         listings, gain valuable insights into job market trends, and customize
         features like job filters, ratings, and analytics
       </h6>
+      <button
+        onClick={() => {
+          router.push("/Resume-tailor");
+        }}
+        className="bg-[#4AA3FA] mt-5 text-lg px-7 py-2 font-semibold rounded-lg text-white cursor-pointer"
+      >
+        AI Resume Tailor 📝
+      </button>
     </div>
   );
 };
