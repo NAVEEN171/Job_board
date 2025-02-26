@@ -265,7 +265,7 @@ const page = () => {
             onClick={() => {
               handleSignIn();
             }}
-            className="flex gap-[5px] mt-[10px]  w-full items-center bg-white/50 hover:bg-white/70 border border-2 border-gray-200 justify-center rounded-[5px] py-[5px] px-[20px]"
+            className="flex gap-[5px] mt-[10px]  w-full items-center bg-white/50 hover:bg-white/70  border-2 border-gray-200 justify-center rounded-[5px] py-[5px] px-[20px]"
           >
             <Image
               src="/Images/google.png"

@@ -174,7 +174,7 @@ const page = () => {
 
   return (
     <div className="h-[100vh] relative  w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
-      <div className="errorsshower w-full absolute fixed top-2 flex flex-col items-center  gap-[10px]">
+      <div className="errorsshower w-full absolute  top-2 flex flex-col items-center  gap-[10px]">
         {errorshow && (
           <div
             style={{
@@ -202,7 +202,7 @@ const page = () => {
             }}
             className="flex flex-col"
           >
-            <div className="left-1/2 text-lg  border border-4 border-white rounded-[10px]  w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl  backdrop-blur-sm">
+            <div className="left-1/2 text-lg   border-4 border-white rounded-[10px]  w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4  px-8 text-white shadow-2xl  backdrop-blur-sm">
               {errors.emailerror}
             </div>
           </div>
@@ -347,7 +347,7 @@ const page = () => {
             onClick={() => {
               handleSignIn();
             }}
-            className="flex gap-[5px] mt-[10px]  w-full items-center bg-white/50 hover:bg-white/70 border border-2 border-gray-200 justify-center rounded-[5px] py-[5px] px-[20px]"
+            className="flex gap-[5px] mt-[10px]  w-full items-center bg-white/50 hover:bg-white/70  border-2 border-gray-200 justify-center rounded-[5px] py-[5px] px-[20px]"
           >
             <Image
               src="/Images/google.png"
