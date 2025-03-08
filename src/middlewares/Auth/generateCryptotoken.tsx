@@ -40,7 +40,7 @@ export const storeToken = async (token: string, user: userData) => {
       .hSet(tokenKey, "password", user.password)
       .expire(tokenKey, EXPIRY_TIME)
       .exec();
-  }
+  }        
   const storedData = await redisClient.hGetAll(tokenKey);
   newData = { ...storedData };
   console.log("Stored token data:", newData);

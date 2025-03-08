@@ -173,6 +173,9 @@ const Filter = () => {
     (state: RootState) => state.Options.NoExperience
   );
   const searchParams = useSearchParams();
+  const [experienceEdited, setExperienceEdited] = useState<boolean>(false);
+  const [salaryEdited, setSalaryEdited] = useState<boolean>(false);
+  const [dateEdited, setdateEdited] = useState<boolean>(false);
 
   //added options for jobtitle (addable filter)
   const [jobvalue, setjobvalue] = useState<string>(""); //current typed value of the filter (addable filter)
@@ -215,9 +218,29 @@ const Filter = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+
+    if (params.has("Experience")) {
+      setExperienceEdited(true);
+    } else {
+      setExperienceEdited(false);
+    }
+
+    if (params.has("salary")) {
+      setSalaryEdited(true);
+    } else {
+      setSalaryEdited(false);
+    }
+    if (params.has("datePosted")) {
+      setdateEdited(true);
+    } else {
+      setdateEdited(false);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
     console.log(params);
     const paramsList = ["JobTitle", "LocationType"];
-    console.log("hey whats up");
     const paramfunctions = [
       FilterActions.setjobtitle,
       FilterActions.setSelectlocationtypes,
@@ -677,14 +700,19 @@ const Filter = () => {
         />
 
         <div
-          className="filter-5 filter relative"
+          className="filter-5 filter  relative"
           onClick={() => {
             setactiveDropdown("filter-5");
           }}
           data-closed="false"
           style={{ position: "relative" }}
         >
-          <div className="border relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+          <div
+            className={`absolute h-3 w-3 rounded-full -top-1 -right-1 z-20  ${
+              dateEdited ? "bg-[#3A90FF]" : " bg-gray-500"
+            }`}
+          ></div>
+          <div className=" relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
             <div className="w-[200px] text-black-500 text-[1.2rem]">
               Date Posted
             </div>
@@ -701,7 +729,7 @@ const Filter = () => {
             {activeDropdown === "filter-5" && (
               <div
                 id="drop-down-date"
-                className="drop-down-list  rounded-md flex flex-col gap-[15px] py-[20px] px-[15px] rounded-mg bg-white absolute top-[55px] left-0 w-[350px] shadow-custom absolute"
+                className="drop-down-list  rounded-md flex flex-col gap-[15px] py-[20px] px-[15px] rounded-mg bg-white  top-[55px] left-0 w-[350px] shadow-custom absolute"
                 style={{ zIndex: 9999 }}
               >
                 <div className="Singleslider-container flex flex-col gap-[20px]">
@@ -731,7 +759,12 @@ const Filter = () => {
           }}
           data-closed="false"
         >
-          <div className="border relative flex items-center border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+          <div
+            className={`absolute h-3 w-3 rounded-full -top-1 -right-1 z-20  ${
+              salaryEdited ? "bg-[#3A90FF]" : " bg-gray-500"
+            }`}
+          ></div>
+          <div className=" relative flex items-center border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
             <div className="w-[200px] text-black-500 text-[1.2rem]">
               Salary Range
             </div>
@@ -832,7 +865,12 @@ const Filter = () => {
               }}
               data-closed="false"
             >
-              <div className="border relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+              <div
+                className={`absolute h-3 w-3 rounded-full -top-1 -right-1 z-20 ${
+                  experienceEdited ? "bg-[#3A90FF]" : " bg-gray-500"
+                }`}
+              ></div>
+              <div className=" relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
                 <div className="w-[200px] text-black-500 text-[1.2rem]">
                   Experience{" "}
                 </div>
@@ -849,7 +887,7 @@ const Filter = () => {
                 {activeDropdown === "filter-6" && (
                   <div
                     id="experience-drop-down"
-                    className="drop-down-list drop-down-experience  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom"
+                    className="drop-down-list drop-down-experience  bg-white rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] absolute top-[55px] left-0 w-[350px] shadow-custom"
                     style={{ zIndex: 9999 }}
                   >
                     <div className="DualRangeslider-container flex flex-col gap-[20px]">
@@ -945,7 +983,7 @@ const Filter = () => {
         dd1:IndustryDiv
         dd2:Drop-down-Industry
         */}
-            <div className="border h-fit border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+            <div className=" h-fit border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
               <div className="switch-container text-[1.2rem]">
                 <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center ">
                   <Switch
@@ -994,7 +1032,7 @@ const Filter = () => {
         >
           <div
             id={"Advanceddiv"}
-            className=" border   relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
+            className="    relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
           >
             <div
               id="Advancedtitle"
@@ -1017,7 +1055,7 @@ const Filter = () => {
           {activeDropdown === "filter-10" && (
             <div
               id={"Advanceddropdown"}
-              className="drop-down-list top-full translate-y-4   bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0  top-[55px] absolute shadow-custom"
+              className="drop-down-list top-full translate-y-4   bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0   absolute shadow-custom"
               style={{ zIndex: 9999 }}
             >
               {AdvancedList.map((location, index) => (
