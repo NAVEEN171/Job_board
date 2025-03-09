@@ -81,14 +81,14 @@ const JobListing = () => {
             </div>
             <div className="company-urls flex gap-[10px]">
               <Link
-                className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF]  border border-[2px] border-[#B2DDFF] "
+                className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF]   border-[2px] border-[#B2DDFF] "
                 target="_blank"
                 href={Job.company_link}
               >
                 Company
               </Link>
               <Link
-                className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border border-[2px] border-[#B2DDFF] "
+                className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF]  border-2 border-[#B2DDFF] "
                 target="_blank"
                 href={Job.company_data.linkedin_link}
               >
@@ -96,20 +96,20 @@ const JobListing = () => {
               </Link>
             </div>
             <div className="flex gap-[10px] max-w-[80%] flex-wrap">
-              <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-[1px] border-[#C8C8C8]">
+              <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
                 {Job.job_board}
               </div>
-              <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-[1px] border-[#C8C8C8]">
+              <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
                 {Job.job_type}
               </div>
-              <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-[1px] border-[#C8C8C8]">
+              <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
                 {Job.location_type}
               </div>
               <div className="flex gap-[10px] ">
                 {Job.company_data.industries.map((industry) => (
                   <div
                     key={industry}
-                    className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-[1px] border-[#C8C8C8]"
+                    className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border  border-1 border-[#C8C8C8]"
                   >
                     {industry}
                   </div>
@@ -117,7 +117,7 @@ const JobListing = () => {
                 {Job.company_data.subindustries.map((industry) => (
                   <div
                     key={industry}
-                    className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-[1px] border-[#C8C8C8]"
+                    className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
                   >
                     {industry}
                   </div>

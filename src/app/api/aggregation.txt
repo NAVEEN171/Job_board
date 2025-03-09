@@ -29,7 +29,7 @@ this code will do the trick
 ]
  }
 
---> if a user selcts only a specific value dont include this 
+--> if a user selects only a specific value dont include this    
   { years_of_experience: null },
 
  --> aggegregation to be used 
@@ -215,4 +215,75 @@ this code will do the trick
 
 
 
+
+--> for checking Jwt token and USing an api to get jobs
+type poststype = {
+    name: string;
+    post: string;
+  };
+  const posts: poststype[] = [
+    {
+      name: "jim",
+      post: "post1",
+    },
+    {
+      name: "dov",
+      post: "post2",
+    },
+  ];
+  // if (verified.status === 200) {
+  //   return NextResponse.json({ posts: posts });
+  // }
+  // if (verified) {
+  //   return NextResponse.json(
+  //     {
+  //       message: verified.message,
+  //     },
+  //     { status: verified.status }
+  //   );
+  // }
+
+  // const params: any = {};
+
+  // const { title, category, locationType, industry, Experience, days, Salary } =
+  //   body;
+  // console.log("title is :");
+  // if (days && typeof days === "number") {
+  //   params["days"] = days;
+  // }
+  // if (Salary && Salary.length > 0) {
+  //   params["salaryFrom"] = Salary[0];
+  //   params["salaryTo"] = Salary[1];
+  // }
+  // if (Experience && Experience.length > 0) {
+  //   params["yearsFrom"] = Experience[0];
+  //   params["yearsTo"] = Experience[1];
+  // }
+  // if (title && title.length > 0) {
+  //   params["title"] = title;
+  // }
+  // if (category && category.length > 0) {
+  //   params["category"] = category;
+  // }
+  // if (locationType && locationType.length > 0) {
+  //   params["locationType"] = locationType;
+  // }
+  // if (industry && industry.length > 0) {
+  //   params["industry"] = industry;
+  // }
+  // params["limit"] = 100;
+  // console.log(params);
+
+  // const response = await axios.get("https://data.hirebase.org/v0/jobs", {
+  //   params: params,
+  //   paramsSerializer: {
+  //     indexes: null,
+  //   },
+  // });
+
+  // if (response.data) {
+  //   return Response.json(response.data);
+  // }
+
+  // return Response.json({ message: "failed" });
 

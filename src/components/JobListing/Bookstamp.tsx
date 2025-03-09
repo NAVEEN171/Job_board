@@ -22,7 +22,7 @@ const Bookstamp = () => {
           }`}
         ></div>
 
-        <div className="flex w-full justify-between w-fit">
+        <div className="flex w-full justify-between ">
           <div
             className={`w-1/2  h-0 border-r-[9px] border-t-[10px] border-l-transparent ${
               !bookmark ? "border-t-blue-200" : "border-t-[#3a90ff]"
