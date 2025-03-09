@@ -18,10 +18,10 @@ const Navbar = () => {
           {loggedIn && (
             <Fragment>
               <button className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
-                Job Boards
+                Account
               </button>
               <button className="px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
-                Create One
+                Log out
               </button>
             </Fragment>
           )}

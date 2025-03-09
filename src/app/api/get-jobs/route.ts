@@ -27,10 +27,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
     let Remote = body.Remote;
     let daysPosted = body.daysPosted;
     let page = body.page || 1;
+    let extraOption = body.extraOption;
 
     let JOBS_PER_PAGE = 10;
 
     const matchConditions: any[] = [];
+
+    if (extraOption === "Date Added") {
+      daysPosted = [0];
+    }
 
     if (daysPosted) {
       const currentDate = new Date();
@@ -47,50 +52,94 @@ export async function POST(req: NextRequest, res: NextResponse) {
       $or: [],
     };
 
-    if (NoExperience) {
+    if (
+      NoExperience &&
+      extraOption !== "Experience (High to Low)" &&
+      extraOption !== "Experience (Low to High)"
+    ) {
       experienceCondition.$or.push({ yoe_range: null });
     }
 
     if (experienceValue.length) {
-      experienceCondition.$or.push({
-        $and: [
-          {
-            "yoe_range.min": {
-              $gte: experienceValue[0],
+      if (
+        extraOption === "Experience (High to Low)" ||
+        extraOption === "Experience (Low to High)"
+      ) {
+        experienceCondition.$or.push({
+          $and: [
+            { yoe_range: { $ne: null } },
+
+            {
+              "yoe_range.min": {
+                $gte: experienceValue[0],
+              },
             },
-          },
-          {
-            "yoe_range.max": {
-              $lte: experienceValue[1],
+            {
+              "yoe_range.max": {
+                $lte: experienceValue[1],
+              },
             },
-          },
-        ],
-      });
+          ],
+        });
+      } else {
+        experienceCondition.$or.push({
+          $and: [
+            {
+              "yoe_range.min": {
+                $gte: experienceValue[0],
+              },
+            },
+            {
+              "yoe_range.max": {
+                $lte: experienceValue[1],
+              },
+            },
+          ],
+        });
+      }
     }
 
     let salaryCondition: { $or: any[] } = {
       $or: [],
     };
 
-    if (NoSalary) {
+    if (NoSalary && extraOption !== "Highest Salary") {
       salaryCondition.$or.push({ salary_range: null });
     }
 
     if (salaryRange.length) {
-      salaryCondition.$or.push({
-        $and: [
-          {
-            "salary_range.min": {
-              $gte: salaryRange[0],
+      if (extraOption === "Highest Salary") {
+        salaryCondition.$or.push({
+          $and: [
+            { salary_range: { $ne: null } },
+            {
+              "salary_range.min": {
+                $gte: salaryRange[0],
+              },
             },
-          },
-          {
-            "salary_range.max": {
-              $lte: salaryRange[1],
+            {
+              "salary_range.max": {
+                $lte: salaryRange[1],
+              },
             },
-          },
-        ],
-      });
+          ],
+        });
+      } else {
+        salaryCondition.$or.push({
+          $and: [
+            {
+              "salary_range.min": {
+                $gte: salaryRange[0],
+              },
+            },
+            {
+              "salary_range.max": {
+                $lte: salaryRange[1],
+              },
+            },
+          ],
+        });
+      }
     }
 
     if (typeof Visa === "boolean") {
@@ -194,6 +243,29 @@ export async function POST(req: NextRequest, res: NextResponse) {
             : { $and: matchConditions },
       });
     }
+
+    if (extraOption === "Highest Salary") {
+      pipeline.push({
+        $sort: {
+          "salary_range.max": -1,
+        },
+      });
+    }
+
+    if (extraOption === "Experience (High to Low)") {
+      pipeline.push({
+        $sort: {
+          "yoe_range.min": -1,
+        },
+      });
+    }
+    if (extraOption === "Experience (Low to High)") {
+      pipeline.push({
+        $sort: {
+          "yoe_range.min": 1,
+        },
+      });
+    }
     pipeline.push({
       $facet: {
         totalCount: [{ $count: "count" }],
@@ -210,6 +282,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         paginatedJobs: 1,
       },
     });
+    // console.log(JSON.stringify(pipeline, null, 2));
 
     const dbConn = await ConnectToDB();
     if (!dbConn) {
@@ -236,5 +309,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
     }
   } catch (err) {
     console.log(err);
+    return NextResponse.json(
+      {
+        message: "Something went wrong",
+      },
+      { status: 500 }
+    );
   }
 }
