@@ -139,6 +139,8 @@ const Filter = () => {
     (state: RootState) => state.Filter.singleSlidervalue
   );
 
+  const currentPage = useSelector((state: RootState) => state.Auth.currentPage);
+
   const SelectedIndustries = useSelector(
     (state: RootState) => state.Filter.SelectedIndustries
   );
@@ -150,6 +152,7 @@ const Filter = () => {
   const selectedEmptype = useSelector(
     (state: RootState) => state.Filter.selectedEmptype
   );
+
   const EmpTypedropdown = useSelector(
     (state: RootState) => state.Filter.EmpTypedropdown
   );
@@ -172,6 +175,7 @@ const Filter = () => {
   const NoExperience = useSelector(
     (state: RootState) => state.Options.NoExperience
   );
+  const extraOption = useSelector((state: RootState) => state.Auth.extraOption);
   const searchParams = useSearchParams();
   const [experienceEdited, setExperienceEdited] = useState<boolean>(false);
   const [salaryEdited, setSalaryEdited] = useState<boolean>(false);
@@ -202,8 +206,6 @@ const Filter = () => {
 
   const [Locationvalue, setLocationvalue] = useState<string>("");
 
-  const [selectadvancedOption, setselectadvancedOption] =
-    useState<string>("Relevance & Date");
   const [initialRender, setinitialRender] = useState(false);
 
   const getLatestValues = useMemo(
@@ -216,16 +218,59 @@ const Filter = () => {
     []
   );
 
+  const getJobs = async () => {
+    dispatch(Authactions.setIsJobsLoading(true));
+    let response = await fetch("/api/get-jobs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jobtitle,
+        Selectlocationtypes,
+        salaryRange: sliderValue,
+        selectedIndustries: SelectedIndustries,
+        jobDomains: Selectjobcategory,
+        experienceValue: Experiencevalue,
+        employmentType: selectedEmptype,
+        locations: SelectedLocations,
+        Visa: visa,
+        NoExperience,
+        NoSalary,
+        Remote: remote,
+        daysPosted: singleSlidervalue,
+        page: currentPage,
+        extraOption,
+      }),
+    });
+    let data = await response.json();
+    if (response.ok) {
+      console.log(data);
+      console.log(data.jobs[0].paginatedJobs);
+      dispatch(Authactions.setTotalPages(data?.maxPaginationCount));
+
+      dispatch(
+        Authactions.setCurrentJobs(
+          data?.jobs[0]?.paginatedJobs?.length ? data.jobs[0].paginatedJobs : []
+        )
+      );
+    }
+  };
+
+  useEffect(() => {
+    getJobs();
+  }, [searchParams]);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
 
-    if (params.has("Experience")) {
+    if (params.has("Experience") || params.has("Include_no_yeo")) {
       setExperienceEdited(true);
     } else {
       setExperienceEdited(false);
     }
 
-    if (params.has("salary")) {
+    if (params.has("salary") || params.has("Include_no_salary")) {
       setSalaryEdited(true);
     } else {
       setSalaryEdited(false);
@@ -1038,7 +1083,7 @@ const Filter = () => {
               id="Advancedtitle"
               className="px-[10px] flex gap-[10px]  items-center text-black-500 text-[1.2rem]"
             >
-              {selectadvancedOption}
+              {extraOption}
               <svg
                 className="pl-[5px] box-content"
                 xmlns="http://www.w3.org/2000/svg"
@@ -1061,7 +1106,7 @@ const Filter = () => {
               {AdvancedList.map((location, index) => (
                 <div
                   onClick={(e) => {
-                    setselectadvancedOption(location);
+                    dispatch(Authactions.setExtraOption(location));
                   }}
                   key={index + "loc"}
                   className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  text-[1.2rem] text-[600]"

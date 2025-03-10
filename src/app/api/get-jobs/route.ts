@@ -29,6 +29,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
     let page = body.page || 1;
     let extraOption = body.extraOption;
 
+    salaryRange[0] = salaryRange[0] * 100;
+    salaryRange[1] = salaryRange[1] * 100;
+
     let JOBS_PER_PAGE = 10;
 
     const matchConditions: any[] = [];

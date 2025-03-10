@@ -1,16 +1,25 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import store from "@/store";
+import { Authactions } from "@/store/Substores/Authslice";
+
 const Pagination = () => {
+  const dispatch = useDispatch();
+  type RootState = ReturnType<typeof store.getState>;
+
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 20;
+  const currentPage = useSelector((state: RootState) => state.Auth.currentPage);
+  const totalPages = useSelector((state: RootState) => state.Auth.totalPages);
+
+  // const totalPages = 20;
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const page = params.get("Page");
     if (page) {
-      setCurrentPage(parseInt(page));
+      dispatch(Authactions.setCurrentPage(parseInt(page)));
     }
   }, []);
 
@@ -61,7 +70,7 @@ const Pagination = () => {
 
   const changePageHandler = (page: number | string) => {
     if (typeof page === "number") {
-      setCurrentPage(page);
+      dispatch(Authactions.setCurrentPage(page));
     }
   };
 
@@ -69,7 +78,11 @@ const Pagination = () => {
     <div className="flex flex-col items-center w-full ">
       <div className="flex items-center justify-between w-full space-x-2">
         <button
-          onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+          onClick={() =>
+            dispatch(
+              Authactions.setCurrentPage(Math.max(1, (currentPage || 1) - 1))
+            )
+          }
           disabled={currentPage === 1}
           className="px-3 py-1 flex border-none  items-center gap-[2px] rounded border disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -103,7 +116,11 @@ const Pagination = () => {
 
         <button
           onClick={() => {
-            setCurrentPage((prev) => Math.min(totalPages, prev + 1));
+            dispatch(
+              Authactions.setCurrentPage(
+                Math.min(totalPages, (currentPage || 1) + 1)
+              )
+            );
           }}
           disabled={currentPage === totalPages}
           className="px-2 border-none flex gap-[2px] py-8 items-center rounded border disabled:opacity-50 disabled:cursor-not-allowed"
