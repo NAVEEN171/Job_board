@@ -43,6 +43,7 @@ export async function googleAuthentication(accessToken: string) {
 
     const userCollection = dbConn.connection.collection("users");
     let user = await userCollection.findOne({ email: profile.email });
+    let InsertedUser;
 
     if (!user) {
       const newUser = {
@@ -54,8 +55,11 @@ export async function googleAuthentication(accessToken: string) {
       };
 
       const result = await userCollection.insertOne(newUser);
+      console.log(result);
+
       user = { ...newUser, _id: result.insertedId };
     }
+
     const token = await generateToken(user);
     const refreshToken = await jwt.sign(
       { user },

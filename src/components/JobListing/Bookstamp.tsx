@@ -1,37 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../app/globals.css";
+import { useDispatch, useSelector } from "react-redux";
+import store from "@/store";
 
-const Bookstamp = () => {
-  const [bookmark, setBookmark] = useState(false);
-  const bookmarkhandler = () => {
-    if (!bookmark) {
+type BookstampProps = {
+  jobId: string;
+};
+
+const Bookstamp: React.FC<BookstampProps> = ({ jobId }) => {
+  const [bookmark, setBookmark] = useState<boolean>(false);
+  const [saved, setSaved] = useState<boolean>(false);
+  type RootState = ReturnType<typeof store.getState>;
+  const userId = useSelector((state: RootState) => state.Auth.UserId);
+  const user = useSelector((state: RootState) => state.Auth.User);
+
+  useEffect(() => {
+    if (!user || !user?.savedJobs) {
+      return;
+    }
+    if (user.savedJobs.includes(jobId)) {
+      setSaved(true);
+    }
+  }, [user]);
+
+  const bookmarkhandler = async () => {
+    try {
       setBookmark(true);
+
+      setSaved(!saved);
+
+      let response = await fetch(`/api/save-job/${jobId}?userId=${userId}`);
+      if (response.ok) {
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setBookmark(false);
     }
   };
   return (
     <div
+      onClick={bookmarkhandler}
       className={`book-mark-container relative ${
         bookmark ? "after:content-['']" : "border-blue-200 border-2"
       } cursor-pointer bg-white flex items-center justify-center relative  w-[45px] h-[45px] border-blue-200 rounded-[5px]`}
     >
       {/* <div className={`${bookmark ? "loader" : ""}`}></div> */}
-      <div onClick={bookmarkhandler} className="flex flex-col   w-fit">
+      <div className="flex flex-col   w-fit">
         <div
           className={`w-[18px] h-[15px] ${
-            !bookmark ? "bg-blue-200" : "bg-[#3a90ff]"
+            !saved ? "bg-blue-200" : "bg-[#3a90ff]"
           }`}
         ></div>
 
         <div className="flex w-full justify-between ">
           <div
             className={`w-1/2  h-0 border-r-[9px] border-t-[10px] border-l-transparent ${
-              !bookmark ? "border-t-blue-200" : "border-t-[#3a90ff]"
+              !saved ? "border-t-blue-200" : "border-t-[#3a90ff]"
             } border-r-transparent`}
           ></div>
 
           <div
             className={`w-1/2 h-0  border-l-[9px] border-t-[10px] border-l-transparent ${
-              !bookmark ? "border-t-blue-200" : "border-t-[#3a90ff]"
+              !saved ? "border-t-blue-200" : "border-t-[#3a90ff]"
             } border-r-transparent`}
           ></div>
         </div>

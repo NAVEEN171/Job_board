@@ -10,6 +10,7 @@ type Locationtype = {
   index: number;
   type: string;
 };
+
 type initialFiltersStatetype = {
   jobtitle: string[];
   locationtype: string[];

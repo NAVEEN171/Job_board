@@ -129,6 +129,7 @@ const Filter = () => {
   const locationtype = useSelector(
     (state: RootState) => state.Filter.locationtype
   );
+  const userId = useSelector((state: RootState) => state.Auth.UserId);
   const Selectlocationtypes = useSelector(
     (state: RootState) => state.Filter.Selectlocationtypes
   );
@@ -259,7 +260,7 @@ const Filter = () => {
 
   useEffect(() => {
     getJobs();
-  }, [searchParams]);
+  }, [searchParams, extraOption]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -347,6 +348,22 @@ const Filter = () => {
     }),
     []
   );
+
+  async function getUserData() {
+    let response = await fetch(`/api/get-user/${userId}`);
+    let data = await response.json();
+    if (response.ok && data.user) {
+      console.log(data.user);
+      dispatch(Authactions.setUser(data.user));
+    }
+  }
+
+  useEffect(() => {
+    if (!userId || !userId.length) {
+      return;
+    }
+    getUserData();
+  }, [userId]);
 
   const checkAdvancedParams = (): boolean => {
     const AdvancedParamsList = [

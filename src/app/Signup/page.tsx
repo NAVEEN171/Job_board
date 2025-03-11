@@ -152,11 +152,22 @@ const page = () => {
         });
 
         const data = await response.json();
-        if (data) {
-          console.log(data);
-        }
 
         if (data.status === 200) {
+          if (Authactions.getCookie("userId")) {
+            Authactions.deleteCookie("userId");
+          }
+          dispatch(
+            Authactions.setCookie({
+              name: "userId",
+              value: data.user.id,
+              expirationDays: 7,
+            })
+          );
+          if (data.user.id?.length) {
+            dispatch(Authactions.setUserId(data.user.id));
+          }
+          dispatch(Authactions.setloggedIn(true));
           seterrorshow("Successfully logged in");
           router.push("/");
         } else {

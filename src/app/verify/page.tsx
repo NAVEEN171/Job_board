@@ -31,7 +31,21 @@ const page = () => {
 
       if (response.ok) {
         if (data) {
-          console.log(data);
+          if (data?.data?._id) {
+            if (Authactions.getCookie("userId")) {
+              Authactions.deleteCookie("userId");
+            }
+            dispatch(
+              Authactions.setCookie({
+                name: "userId",
+                value: data.data?._id,
+                expirationDays: 7,
+              })
+            );
+          }
+          if (data.data?._id?.length) {
+            dispatch(Authactions.setUserId(data.data._id));
+          }
           dispatch(Authactions.setloggedIn(true));
 
           router.push("/");

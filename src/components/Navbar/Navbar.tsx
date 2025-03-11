@@ -17,7 +17,12 @@ const Navbar = () => {
         <div className="flex  flex-row gap-[10px]">
           {loggedIn && (
             <Fragment>
-              <button className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
+              <button
+                onClick={() => {
+                  router.push("/Account");
+                }}
+                className=" px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]"
+              >
                 Account
               </button>
               <button className="px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">

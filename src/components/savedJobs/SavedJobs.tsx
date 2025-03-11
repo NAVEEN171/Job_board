@@ -2,10 +2,9 @@ import { DummyJobData } from "@/FiltersList/DummyjobData";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import "../../app/globals.css";
-import Bookstamp from "./Bookstamp";
+import Bookstamp from "../JobListing/Bookstamp";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import store from "@/store";
 import {
   formatDistanceToNow,
   differenceInDays,
@@ -13,13 +12,31 @@ import {
   isYesterday,
 } from "date-fns";
 
-const JobListing = () => {
+import store from "@/store";
+
+export const JobListing = () => {
   type RootState = ReturnType<typeof store.getState>;
-  const currentJobs = useSelector((state: RootState) => state.Auth.currentJobs);
+  const [currentJobs, setCurrentJobs] = useState<any[]>([]);
+  //   const currentJobs = useSelector((state: RootState) => state.Auth.currentJobs);
+  const userId = useSelector((state: RootState) => state.Auth.UserId);
+  const getSavedJobs = async () => {
+    let response = await fetch(`/api/get-saved-jobs/${userId}`);
+    let data = await response.json();
+    if (response.ok) {
+      setCurrentJobs(data.savedJobs);
+    }
+  };
+  useEffect(() => {
+    if (!userId) {
+      return;
+    }
+    getSavedJobs();
+  }, [userId]);
 
   function formatDate(datePosted: string) {
     const postedDate = new Date(datePosted);
 
+    // Check for today or yesterday specifically
     if (isToday(postedDate)) {
       return "Today";
     } else if (isYesterday(postedDate)) {
@@ -43,6 +60,8 @@ const JobListing = () => {
       }
     }
   }
+
+  // Test the function
 
   return (
     <div className="Job-Listing mt-[20px] flex flex-col w-full gap-[20px]">
