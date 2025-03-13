@@ -124,6 +124,9 @@ const Filter = () => {
   const dispatch = useDispatch();
 
   type RootState = ReturnType<typeof store.getState>;
+  const advancedShow = useSelector(
+    (state: RootState) => state.Auth.advancedShow
+  );
 
   const jobtitle = useSelector((state: RootState) => state.Filter.jobtitle);
   const locationtype = useSelector(
@@ -201,9 +204,8 @@ const Filter = () => {
   const [IndustrySubcategory, setIndustrySubcategory] = useState<string[]>([]);
   const [CurrentIndustryVal, setCurrentIndustryVal] = useState<string>("");
 
-  const [activeDropdown, setactiveDropdown] = useState<string | null>(null);
   const [advancedFilterCount, setadvancedFilterCount] = useState<number>(0);
-  const [advancedShow, setAdvancedShow] = useState<boolean>(false);
+  const [activeDropdown, setactiveDropdown] = useState<string | null>(null);
 
   const [Locationvalue, setLocationvalue] = useState<string>("");
 
@@ -388,8 +390,6 @@ const Filter = () => {
     const check = checkAdvancedParams();
 
     if (check && !advancedShow) {
-      setAdvancedShow(true);
-
       console.log("I am running first hahah");
       const params = new URLSearchParams(window.location.search);
 
@@ -523,7 +523,7 @@ const Filter = () => {
     let jobtitleinput;
 
     const con = [
-      { content: jobtitle }, // Spread jobtitle into an array if it's iterable
+      { content: jobtitle },
       { content: Selectlocationtypes },
       { content: Selectjobcategory },
       { content: null },
@@ -609,6 +609,7 @@ const Filter = () => {
 
   const handleClick = (e: MouseEvent) => {
     console.log("clicked");
+    console.log(e.target);
 
     let filter1 = document.querySelector(".filter-1") as HTMLElement;
     let filter2 = document.querySelector(".filter-2") as HTMLElement;
@@ -985,9 +986,7 @@ const Filter = () => {
                 )}
               </div>
             </div>
-            {/* const [Employmenttypevalue,setEmploymenttypevalue]=useState<string>("");
-   const [EmpTypedropdown,setEmpTypedropdown]=useState<string[]>(EmploymentList);
-   const [selectedEmptype,setselectedEmptype]=useState<string[]>([]) */}
+
             <Filter2
               locationvalue={Employmenttypevalue}
               setlocationvalue={setEmploymenttypevalue}
@@ -1011,9 +1010,6 @@ const Filter = () => {
               updateSearchParams={updateSearchParams}
             />
 
-            {/* const [Locationdropdown,setLocationdropdown]=useState<Locationtype[]>(countryData.slice(0,7));
-   const [Locationvalue,setLocationvalue]=useState<string>("");
-   const [SelectedLocations,setSelectedLocations]=useState<Locationtype[]>([]); */}
             <Locationfilter
               locationvalue={Locationvalue}
               setlocationvalue={setLocationvalue}
@@ -1040,11 +1036,7 @@ const Filter = () => {
               }
               remote={remote}
             />
-            {/* id1:IndustryTitle
-        id2:IndustryInput
-        dd1:IndustryDiv
-        dd2:Drop-down-Industry
-        */}
+
             <div className=" h-fit border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
               <div className="switch-container text-[1.2rem]">
                 <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center ">
@@ -1065,7 +1057,7 @@ const Filter = () => {
       <div className="flex items-center justify-between">
         <div
           onClick={() => {
-            setAdvancedShow(!advancedShow);
+            dispatch(Authactions.setAdvancedShow(!advancedShow));
           }}
           className="flex  h-fit w-fit relative gap-[10px] py-[10px] items-center border-[1px] border-[#C8C8C8] px-[15px]  rounded-[8px] hover:border-[#3a90ff]"
         >

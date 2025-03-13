@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import Navbar from "@/components/Navbar/Navbar";
+import Footer from "@/components/Footer/Footer";
 
 interface Section {
   title: string;
@@ -235,6 +236,7 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

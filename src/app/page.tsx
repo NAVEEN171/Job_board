@@ -6,10 +6,12 @@ import Herosection from "../components/Herosection/Herosection";
 import Filter from "../components/Filters/Filter";
 import JobListing from "@/components/JobListing/JobListing";
 import Pagination from "@/components/Pagination/pagination";
+import Footer from "@/components/Footer/Footer";
+import { useState } from "react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col   items-center">
+    <div className="flex flex-col    items-center">
       <Navbar />
       <div className="w-[80%]">
         <div className="bottom-container   w-full pb-[10px]">
@@ -19,6 +21,7 @@ export default function Home() {
           <Pagination />
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

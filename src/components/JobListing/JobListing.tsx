@@ -1,6 +1,6 @@
-import { DummyJobData } from "@/FiltersList/DummyjobData";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../../app/globals.css";
 import Bookstamp from "./Bookstamp";
 import Link from "next/link";
@@ -14,6 +14,10 @@ import {
 } from "date-fns";
 
 const JobListing = () => {
+  const handleJobClick = (jobId: string) => {
+    window.open(`/Jobs/${jobId}`, "_blank");
+  };
+  const dispatch = useDispatch();
   type RootState = ReturnType<typeof store.getState>;
   const currentJobs = useSelector((state: RootState) => state.Auth.currentJobs);
 
@@ -51,7 +55,8 @@ const JobListing = () => {
         currentJobs.map((Job: any, idx: number) => (
           <div
             key={`Job-${idx}`}
-            className="shadow-jobCustom rounded-[10px] flex gap-[15px] py-[30px] px-[20px]"
+            onClick={() => handleJobClick(Job._id)}
+            className="shadow-jobCustom rounded-[10px]  flex gap-[15px] py-[30px] px-[20px] cursor-pointer"
           >
             <Image
               className="rounded-full h-[50px] w-[50px]"
@@ -59,9 +64,9 @@ const JobListing = () => {
               width={50}
               height={50}
               alt="company-logo"
-            ></Image>
+            />
             <div className="flex flex-col w-[92%] gap-[10px]">
-              <div className="flex  w-full justify-between">
+              <div className="flex w-full justify-between">
                 <div className="job-title">
                   <div>{Job.job_title}</div>
                   <div>{Job.company_name}</div>
@@ -102,24 +107,36 @@ const JobListing = () => {
               <div className="company-urls flex gap-[10px]">
                 {Job?.company_link && (
                   <Link
-                    className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF]   border-[2px] border-[#B2DDFF] "
+                    className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border-[2px] border-[#B2DDFF]"
+                    href={
+                      Job.company_link?.startsWith("http")
+                        ? Job.company_link
+                        : Job.company_link.startsWith("www.")
+                        ? `https://${Job.company_link}`
+                        : `https://www.${Job.company_link}`
+                    }
                     target="_blank"
-                    href={Job.company_link}
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     Company
                   </Link>
                 )}
                 {Job.company_data?.linkedin_link && (
                   <Link
-                    className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF]  border-2 border-[#B2DDFF] "
+                    className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border-2 border-[#B2DDFF]"
                     target="_blank"
                     href={Job.company_data.linkedin_link}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     Linkedin
                   </Link>
                 )}
               </div>
-              <div className="flex gap-[10px] max-w-[80%] flex-wrap">
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="flex gap-[10px] max-w-[80%] flex-wrap"
+              >
                 <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
                   {Job.job_board}
                 </div>
@@ -134,7 +151,7 @@ const JobListing = () => {
                     Job.company_data.industries.map((industry: string) => (
                       <div
                         key={industry}
-                        className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border  border-1 border-[#C8C8C8]"
+                        className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
                       >
                         {industry}
                       </div>

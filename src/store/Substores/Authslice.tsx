@@ -18,6 +18,7 @@ type Authtype = {
   totalPages: number;
   UserId: string | null;
   User: User | null;
+  advancedShow: boolean;
 };
 
 const initialAuthstate: Authtype = {
@@ -30,12 +31,31 @@ const initialAuthstate: Authtype = {
   totalPages: 0,
   UserId: null,
   User: null,
+  advancedShow: false,
 };
+interface ToggleIDs {
+  ID1: string;
+  ID2: string;
+}
 
 const AuthSlice = createSlice({
   name: "Authentication",
   initialState: initialAuthstate,
   reducers: {
+    setAdvancedShow(state, action: PayloadAction<boolean>) {
+      state.advancedShow = action.payload;
+    },
+    changehandler(state, action: PayloadAction<ToggleIDs>) {
+      let Jobtitlediv: HTMLElement = document.getElementById(
+        action.payload.ID1
+      )!;
+      let jobinput: HTMLElement = document.getElementById(action.payload.ID2)!;
+      if (Jobtitlediv && jobinput) {
+        Jobtitlediv.classList.add("hidden");
+        jobinput.classList.remove("hidden");
+        jobinput.focus();
+      }
+    },
     setUser(state, action: PayloadAction<User | null>) {
       state.User = action.payload;
     },

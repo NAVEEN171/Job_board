@@ -16,8 +16,11 @@ import store from "@/store";
 
 export const JobListing = () => {
   type RootState = ReturnType<typeof store.getState>;
+
+  const handleJobClick = (jobId: string) => {
+    window.open(`/Jobs/${jobId}`, "_blank");
+  };
   const [currentJobs, setCurrentJobs] = useState<any[]>([]);
-  //   const currentJobs = useSelector((state: RootState) => state.Auth.currentJobs);
   const userId = useSelector((state: RootState) => state.Auth.UserId);
   const getSavedJobs = async () => {
     let response = await fetch(`/api/get-saved-jobs/${userId}`);
@@ -70,7 +73,8 @@ export const JobListing = () => {
         currentJobs.map((Job: any, idx: number) => (
           <div
             key={`Job-${idx}`}
-            className="shadow-jobCustom rounded-[10px] flex gap-[15px] py-[30px] px-[20px]"
+            onClick={() => handleJobClick(Job._id)}
+            className="shadow-jobCustom cursor-pointer rounded-[10px] flex gap-[15px] py-[30px] px-[20px]"
           >
             <Image
               className="rounded-full h-[50px] w-[50px]"
@@ -121,9 +125,17 @@ export const JobListing = () => {
               <div className="company-urls flex gap-[10px]">
                 {Job?.company_link && (
                   <Link
-                    className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF]   border-[2px] border-[#B2DDFF] "
+                    className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border-[2px] border-[#B2DDFF]"
+                    href={
+                      Job.company_link?.startsWith("http")
+                        ? Job.company_link
+                        : Job.company_link.startsWith("www.")
+                        ? `https://${Job.company_link}`
+                        : `https://www.${Job.company_link}`
+                    }
                     target="_blank"
-                    href={Job.company_link}
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     Company
                   </Link>
@@ -133,12 +145,16 @@ export const JobListing = () => {
                     className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF]  border-2 border-[#B2DDFF] "
                     target="_blank"
                     href={Job.company_data.linkedin_link}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     Linkedin
                   </Link>
                 )}
               </div>
-              <div className="flex gap-[10px] max-w-[80%] flex-wrap">
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="flex gap-[10px] max-w-[80%] flex-wrap"
+              >
                 <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
                   {Job.job_board}
                 </div>

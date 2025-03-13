@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import "../../app/globals.css";
 import { useDispatch, useSelector } from "react-redux";
 import store from "@/store";
+import { Authactions } from "@/store/Substores/Authslice";
 
 type BookstampProps = {
   jobId: string;
 };
 
 const Bookstamp: React.FC<BookstampProps> = ({ jobId }) => {
+  const dispatch = useDispatch();
   const [bookmark, setBookmark] = useState<boolean>(false);
   const [saved, setSaved] = useState<boolean>(false);
   type RootState = ReturnType<typeof store.getState>;
@@ -22,8 +24,17 @@ const Bookstamp: React.FC<BookstampProps> = ({ jobId }) => {
       setSaved(true);
     }
   }, [user]);
+  async function getUserData() {
+    let response = await fetch(`/api/get-user/${userId}`);
+    let data = await response.json();
+    if (response.ok && data.user) {
+      console.log(data.user);
+      dispatch(Authactions.setUser(data.user));
+    }
+  }
 
-  const bookmarkhandler = async () => {
+  const bookmarkhandler = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     try {
       setBookmark(true);
 
@@ -31,6 +42,7 @@ const Bookstamp: React.FC<BookstampProps> = ({ jobId }) => {
 
       let response = await fetch(`/api/save-job/${jobId}?userId=${userId}`);
       if (response.ok) {
+        getUserData();
       }
     } catch (err) {
       console.log(err);
@@ -40,7 +52,9 @@ const Bookstamp: React.FC<BookstampProps> = ({ jobId }) => {
   };
   return (
     <div
-      onClick={bookmarkhandler}
+      onClick={(e) => {
+        bookmarkhandler(e);
+      }}
       className={`book-mark-container relative ${
         bookmark ? "after:content-['']" : "border-blue-200 border-2"
       } cursor-pointer bg-white flex items-center justify-center relative  w-[45px] h-[45px] border-blue-200 rounded-[5px]`}
