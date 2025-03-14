@@ -1,4 +1,3 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -12,7 +11,23 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "lever-client-logos.s3-us-west-2.amazonaws.com",
+      },
+      {
+        protocol: "https",
         hostname: "lever-client-logos.s3.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "app.ashbyhq.com",
+      },
+      {
+        protocol: "https",
+        hostname: "c.smartrecruiters.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.myworkdayjobs.com",
       },
     ],
   },

@@ -161,7 +161,7 @@ const Footer = () => {
     }
   };
   return (
-    <div className="flex select-none justify-evenly w-full py-3 ">
+    <div className="flex select-none justify-between py-3 px-10 w-full  ">
       <h2 className="bg-[linear-gradient(180deg,_#0ca3f3_25%,_#098ee7_75%)] font-[700] text-[1.6rem]  bg-clip-text text-transparent cursor-pointer">
         FlexiBoard
       </h2>

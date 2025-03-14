@@ -105,9 +105,24 @@ const page = () => {
             expirationDays: 7,
           })
         );
+
         if (data.user._id?.length) {
           dispatch(Authactions.setUserId(data.user._id));
         }
+        dispatch(
+          Authactions.setCookieInMinutes({
+            name: "accessToken",
+            value: data.user.accessToken,
+            expirationMinutes: 4,
+          })
+        );
+        dispatch(
+          Authactions.setCookieInMinutes({
+            name: "refreshToken",
+            value: data.user.refreshToken,
+            expirationMinutes: 4,
+          })
+        );
 
         console.log(data);
 
@@ -148,6 +163,20 @@ const page = () => {
           if (Authactions.getCookie("userId")) {
             Authactions.deleteCookie("userId");
           }
+          dispatch(
+            Authactions.setCookieInMinutes({
+              name: "accessToken",
+              value: data.user.accessToken,
+              expirationMinutes: 4,
+            })
+          );
+          dispatch(
+            Authactions.setCookieInMinutes({
+              name: "refreshToken",
+              value: data.user.refreshToken,
+              expirationMinutes: 4,
+            })
+          );
           dispatch(
             Authactions.setCookie({
               name: "userId",

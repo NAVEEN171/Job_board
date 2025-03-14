@@ -146,7 +146,7 @@ const JobListing = () => {
                 <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
                   {Job.location_type}
                 </div>
-                <div className="flex gap-[10px] ">
+                <div className="flex gap-[10px] flex-wrap">
                   {Job.company_data?.industries &&
                     Job.company_data.industries.map((industry: string) => (
                       <div

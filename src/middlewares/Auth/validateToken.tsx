@@ -39,12 +39,12 @@ export async function jwtverification(
     if (err instanceof jwt.TokenExpiredError) {
       return {
         message: "Token has expired",
-        status: 401,
+        status: 403,
       };
     }
     return {
       message: "Invalid token",
-      status: 403,
+      status: 401,
     };
   }
 }

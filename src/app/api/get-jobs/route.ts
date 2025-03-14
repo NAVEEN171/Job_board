@@ -9,7 +9,16 @@ import { subDays, format, parseISO } from "date-fns";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
-    // let verified = await jwtverification(req);
+    let verified = await jwtverification(req);
+    console.log(verified);
+    if (verified.message === "Token has expired") {
+      return NextResponse.json(
+        {
+          message: "Token has expired",
+        },
+        { status: 403 }
+      );
+    }
 
     const body = await req.json();
     let jobtitle = body.jobtitle;
@@ -302,6 +311,19 @@ export async function POST(req: NextRequest, res: NextResponse) {
     let maxPaginationCount = Math.floor(totalJobs / 10);
     if (totalJobs % 10 > 0) {
       maxPaginationCount++;
+    }
+
+    if (verified.status !== 200 && page !== 1) {
+      return NextResponse.json(
+        {
+          jobs: [],
+          maxPaginationCount,
+          message: "Please Login to Get full access",
+        },
+        {
+          status: 401,
+        }
+      );
     }
 
     if (jobs) {

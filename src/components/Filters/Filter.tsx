@@ -36,6 +36,7 @@ import { Authactions } from "@/store/Substores/Authslice";
 import { parse } from "path";
 import { FilterActions } from "@/store/Substores/Filterstore";
 import { OptionActions } from "@/store/Substores/Optionstore";
+import { initialize } from "next/dist/server/lib/render-server";
 
 type DropDowndatatype = {
   name: string;
@@ -209,8 +210,10 @@ const Filter = () => {
 
   const [Locationvalue, setLocationvalue] = useState<string>("");
 
-  const [initialRender, setinitialRender] = useState(false);
-
+  const [initialRender, setinitialRender] = useState<boolean>(false);
+  const [intialValuesUpdated, setIntialValuesUpdated] =
+    useState<boolean>(false);
+  const [paramsUpdated, setParamsUpdated] = useState<boolean>(false);
   const getLatestValues = useMemo(
     () => ({
       Industries: SelectedIndustries,
@@ -221,12 +224,15 @@ const Filter = () => {
     []
   );
 
-  const getJobs = async () => {
-    dispatch(Authactions.setIsJobsLoading(true));
+  const updateJobsData = async (
+    accessToken: string,
+    refreshToken: string
+  ): Promise<number> => {
     let response = await fetch("/api/get-jobs", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
         jobtitle,
@@ -247,9 +253,10 @@ const Filter = () => {
       }),
     });
     let data = await response.json();
-    if (response.ok) {
-      console.log(data);
-      console.log(data.jobs[0].paginatedJobs);
+    if (response.ok || response.status === 401) {
+      if (currentPage > data.maxPaginationCount) {
+        dispatch(Authactions.setCurrentPage(1));
+      }
       dispatch(Authactions.setTotalPages(data?.maxPaginationCount));
 
       dispatch(
@@ -257,12 +264,66 @@ const Filter = () => {
           data?.jobs[0]?.paginatedJobs?.length ? data.jobs[0].paginatedJobs : []
         )
       );
+      if (response.status === 401) {
+        console.log("Authentication required !");
+        dispatch(Authactions.deleteCookie("userId"));
+        dispatch(Authactions.setUserId(null));
+      }
+    }
+    return response.status;
+  };
+
+  const getJobs = async () => {
+    try {
+      dispatch(Authactions.setIsJobsLoading(true));
+      if (!paramsUpdated || !intialValuesUpdated) {
+        return;
+      }
+      let accessToken = dispatch(Authactions.getCookie("accessToken")).payload;
+      let refreshToken = dispatch(
+        Authactions.getCookie("refreshToken")
+      ).payload;
+      let jobsStatus = await updateJobsData(accessToken, refreshToken);
+      if (jobsStatus === 403) {
+        if (!refreshToken) {
+          console.log("Authentication required!");
+          dispatch(Authactions.setCurrentJobs([]));
+          dispatch(Authactions.deleteCookie("userId"));
+          dispatch(Authactions.setUserId(null));
+
+          return;
+        }
+        const response = await fetch("/api/tokens/generate-token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refreshToken: refreshToken,
+          }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          console.log(data);
+          dispatch(
+            Authactions.setCookieInMinutes({
+              name: "accessToken",
+              value: data.accessToken,
+              expirationMinutes: 4,
+            })
+          );
+          let jobsStatus = await updateJobsData(data.accessToken, refreshToken);
+        }
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
   useEffect(() => {
     getJobs();
-  }, [searchParams, extraOption]);
+  }, [searchParams, extraOption, paramsUpdated, intialValuesUpdated]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -294,6 +355,12 @@ const Filter = () => {
       FilterActions.setSelectlocationtypes,
     ];
     let currentList;
+    if (params.has("Page")) {
+      let currentPage = params.get("Page");
+      if (currentPage && typeof parseInt(currentPage) === "number") {
+        dispatch(Authactions.setCurrentPage(parseInt(currentPage)));
+      }
+    }
     paramsList.forEach((param, idx) => {
       console.log(param);
       if (params.has(param)) {
@@ -319,6 +386,10 @@ const Filter = () => {
         salaryChangeShower(salaryRange);
       }
     }
+    if (params.has("Include_no_salary")) {
+      let currentValue = Boolean(params.get("Include_no_salary"));
+      dispatch(OptionActions.setNoSalary(currentValue));
+    }
     if (params.has("Location")) {
       let Locationslist = params.get("Location")?.split(",");
       if (Locationslist) {
@@ -340,6 +411,7 @@ const Filter = () => {
 
       console.log(currentList);
     }
+    setParamsUpdated(true);
   }, []);
 
   const getLatestbuttonValues = useMemo(
@@ -386,11 +458,14 @@ const Filter = () => {
     }
     return false;
   };
+
   useEffect(() => {
     const check = checkAdvancedParams();
 
     if (check && !advancedShow) {
       console.log("I am running first hahah");
+      dispatch(Authactions.setAdvancedShow(true));
+
       const params = new URLSearchParams(window.location.search);
 
       const paramList = Object.keys(getLatestValues);
@@ -401,6 +476,21 @@ const Filter = () => {
         FilterActions.setselectedEmptype,
       ];
       let currentList = [];
+      const buttonParamList = Object.keys(getLatestbuttonValues);
+
+      const buttonfunctions = [
+        OptionActions.setVisa,
+        OptionActions.setNoExperience,
+        OptionActions.setRemote,
+      ];
+      let currentVal;
+      buttonParamList.forEach((param, idx) => {
+        if (params.has(param)) {
+          currentVal = Boolean(params.get(param));
+
+          dispatch(buttonfunctions[idx](currentVal));
+        }
+      });
       paramList.forEach((param, idx) => {
         if (params.has(param)) {
           currentList = params.get(param)?.split(",")!;
@@ -410,13 +500,12 @@ const Filter = () => {
         }
       });
     }
+    setIntialValuesUpdated(true);
     setinitialRender(true);
   }, []);
 
   useEffect(() => {
-    console.log("advancedshow is", advancedShow);
     if (!advancedShow && initialRender) {
-      console.log("I am second haha");
       const params = new URLSearchParams(window.location.search);
 
       const paramList = Object.keys(getLatestValues);

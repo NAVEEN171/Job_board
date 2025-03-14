@@ -63,7 +63,8 @@ export async function googleAuthentication(accessToken: string) {
     const token = await generateToken(user);
     const refreshToken = await jwt.sign(
       { user },
-      process.env.JWT_REFRESH_TOKEN!
+      process.env.JWT_REFRESH_TOKEN!,
+      { expiresIn: "4m" }
     );
     console.log("access token is");
     console.log(token);

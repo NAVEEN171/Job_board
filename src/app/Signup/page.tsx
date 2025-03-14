@@ -158,6 +158,20 @@ const page = () => {
             Authactions.deleteCookie("userId");
           }
           dispatch(
+            Authactions.setCookieInMinutes({
+              name: "accessToken",
+              value: data.user.accessToken,
+              expirationMinutes: 2,
+            })
+          );
+          dispatch(
+            Authactions.setCookieInMinutes({
+              name: "refreshToken",
+              value: data.user.refreshToken,
+              expirationMinutes: 4,
+            })
+          );
+          dispatch(
             Authactions.setCookie({
               name: "userId",
               value: data.user.id,

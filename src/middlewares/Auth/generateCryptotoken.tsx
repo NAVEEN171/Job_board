@@ -72,7 +72,8 @@ export const verifyAndConsumeToken = async (token: string) => {
       valid: false,
     };
   }
-  let newData = { ...storedData };
+  let newData: any = { ...storedData };
+  newData.savedJobs = [];
   let emailKey = `email:${newData.email}`;
   let emailexist = await redisClient.exists(emailKey);
   if (emailexist) {
