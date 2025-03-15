@@ -11,8 +11,10 @@ import {
   isToday,
   isYesterday,
 } from "date-fns";
+import { Authactions } from "@/store/Substores/Authslice";
 
 import store from "@/store";
+import Loader from "../JobListing-loading/Loader";
 
 export const JobListing = () => {
   type RootState = ReturnType<typeof store.getState>;
@@ -21,12 +23,20 @@ export const JobListing = () => {
     window.open(`/Jobs/${jobId}`, "_blank");
   };
   const [currentJobs, setCurrentJobs] = useState<any[]>([]);
+  const [JobsLoading, setJobsLoading] = useState(false);
   const userId = useSelector((state: RootState) => state.Auth.UserId);
   const getSavedJobs = async () => {
-    let response = await fetch(`/api/get-saved-jobs/${userId}`);
-    let data = await response.json();
-    if (response.ok) {
-      setCurrentJobs(data.savedJobs);
+    try {
+      setJobsLoading(true);
+      let response = await fetch(`/api/get-saved-jobs/${userId}`);
+      let data = await response.json();
+      if (response.ok) {
+        setCurrentJobs(data.savedJobs);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setJobsLoading(false);
     }
   };
   useEffect(() => {
@@ -65,6 +75,9 @@ export const JobListing = () => {
   }
 
   // Test the function
+  if (JobsLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="Job-Listing mt-[20px] flex flex-col w-full gap-[20px]">
@@ -155,15 +168,21 @@ export const JobListing = () => {
                 onClick={(e) => e.stopPropagation()}
                 className="flex gap-[10px] max-w-[80%] flex-wrap"
               >
-                <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                  {Job.job_board}
-                </div>
-                <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                  {Job.job_type}
-                </div>
-                <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                  {Job.location_type}
-                </div>
+                {Job.job_board && (
+                  <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                    {Job.job_board}
+                  </div>
+                )}
+                {Job.job_type && (
+                  <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                    {Job.job_type}
+                  </div>
+                )}
+                {Job.location_type && (
+                  <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                    {Job.location_type}
+                  </div>
+                )}
                 <div className="flex gap-[10px] ">
                   {Job.company_data?.industries &&
                     Job.company_data.industries.map((industry: string) => (

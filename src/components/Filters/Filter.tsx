@@ -365,6 +365,8 @@ const Filter = () => {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      dispatch(Authactions.setIsJobsLoading(false));
     }
   };
 

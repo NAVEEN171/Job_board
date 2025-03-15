@@ -1,10 +1,11 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import "../../app/globals.css";
 import Bookstamp from "./Bookstamp";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from "../JobListing-loading/Loader";
 import store from "@/store";
 import {
   formatDistanceToNow,
@@ -20,6 +21,9 @@ const JobListing = () => {
   const dispatch = useDispatch();
   type RootState = ReturnType<typeof store.getState>;
   const currentJobs = useSelector((state: RootState) => state.Auth.currentJobs);
+  const JobsLoading = useSelector(
+    (state: RootState) => state.Auth.isJobsLoading
+  );
 
   function formatDate(datePosted: string) {
     const postedDate = new Date(datePosted);
@@ -46,6 +50,9 @@ const JobListing = () => {
         return `${monthsAgo} months ago`;
       }
     }
+  }
+  if (JobsLoading) {
+    return <Loader />;
   }
 
   return (
@@ -137,34 +144,44 @@ const JobListing = () => {
                 onClick={(e) => e.stopPropagation()}
                 className="flex gap-[10px] max-w-[80%] flex-wrap"
               >
-                <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                  {Job.job_board}
-                </div>
-                <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                  {Job.job_type}
-                </div>
-                <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                  {Job.location_type}
-                </div>
+                {Job.job_board && (
+                  <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                    {Job.job_board}
+                  </div>
+                )}
+                {Job.job_type && (
+                  <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                    {Job.job_type}
+                  </div>
+                )}
+                {Job.location_type && (
+                  <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                    {Job.location_type}
+                  </div>
+                )}
                 <div className="flex gap-[10px] flex-wrap">
                   {Job.company_data?.industries &&
-                    Job.company_data.industries.map((industry: string) => (
-                      <div
-                        key={industry}
-                        className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
-                      >
-                        {industry}
-                      </div>
-                    ))}
+                    Job.company_data.industries
+                      .filter((industry: string) => industry.trim() !== "")
+                      .map((industry: string) => (
+                        <div
+                          key={industry}
+                          className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
+                        >
+                          {industry}
+                        </div>
+                      ))}
                   {Job.company_data?.subindustries &&
-                    Job.company_data.subindustries.map((industry: string) => (
-                      <div
-                        key={industry}
-                        className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
-                      >
-                        {industry}
-                      </div>
-                    ))}
+                    Job.company_data.subindustries
+                      .filter((industry: string) => industry.trim() !== "")
+                      .map((industry: string) => (
+                        <div
+                          key={industry}
+                          className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
+                        >
+                          {industry}
+                        </div>
+                      ))}
                 </div>
               </div>
             </div>

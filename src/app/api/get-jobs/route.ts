@@ -37,6 +37,17 @@ export async function POST(req: NextRequest, res: NextResponse) {
     let daysPosted = body.daysPosted;
     let page = body.page || 1;
     let extraOption = body.extraOption;
+    let updatedlocations = locations;
+    type CountryInfo = {
+      country: string;
+      emoji: string;
+      index: number;
+      type: string;
+    };
+
+    if (locations.length) {
+      locations = updatedlocations.map((loc: CountryInfo) => loc.country);
+    }
 
     salaryRange[0] = salaryRange[0] * 100;
     salaryRange[1] = salaryRange[1] * 100;
@@ -166,7 +177,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
       });
     }
 
-    if (locations.length) {
+    if (locations.length && !locations.includes("Worldwide")) {
+      console.log(locations);
       matchConditions.push({
         locations: {
           $elemMatch: {

@@ -38,6 +38,9 @@ const page = ({ params }: JobPageProps) => {
     }
     getCurrentJob();
   }, [jobId]);
+  const formatDescription = (html: any) => {
+    return { __html: html };
+  };
 
   function formatDate(datePosted: string) {
     const postedDate = new Date(datePosted);
@@ -65,6 +68,9 @@ const page = ({ params }: JobPageProps) => {
       }
     }
   }
+  useEffect(() => {
+    console.log(currentJob);
+  }, [currentJob]);
   return (
     <div className="w-full mb-5 ">
       <Navbar />
@@ -80,7 +86,13 @@ const page = ({ params }: JobPageProps) => {
                 <Link
                   className="px-[10px] py-[5px] rounded-[5px]  bg-[#EFF8FF] text-[#3A90FF]   border-[2px] border-[#B2DDFF] "
                   target="_blank"
-                  href={currentJob.company_link}
+                  href={
+                    currentJob.company_link?.startsWith("http")
+                      ? currentJob.company_link
+                      : currentJob.company_link.startsWith("www.")
+                      ? `https://${currentJob.company_link}`
+                      : `https://www.${currentJob.company_link}`
+                  }
                 >
                   Company
                 </Link>
@@ -96,36 +108,44 @@ const page = ({ params }: JobPageProps) => {
               )}
             </div>
             <div className="flex gap-[10px] max-w-[80%] flex-wrap">
-              <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                {currentJob.job_board}
-              </div>
-              <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                {currentJob.job_type}
-              </div>
-              <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                {currentJob.location_type}
-              </div>
-              <div className="flex gap-[10px] ">
+              {currentJob.job_board && (
+                <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                  {currentJob.job_board}
+                </div>
+              )}
+              {currentJob.job_type && (
+                <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                  {currentJob.job_type}
+                </div>
+              )}
+              {currentJob.location_type && (
+                <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                  {currentJob.location_type}
+                </div>
+              )}
+              <div className="flex gap-[10px] flex-wrap">
                 {currentJob.company_data?.industries &&
-                  currentJob.company_data.industries.map((industry: string) => (
-                    <div
-                      key={industry}
-                      className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border  border-1 border-[#C8C8C8]"
-                    >
-                      {industry}
-                    </div>
-                  ))}
+                  currentJob.company_data.industries
+                    .filter((industry: string) => industry.trim() !== "")
+                    .map((industry: string) => (
+                      <div
+                        key={industry}
+                        className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border  border-1 border-[#C8C8C8]"
+                      >
+                        {industry}
+                      </div>
+                    ))}
                 {currentJob.company_data?.subindustries &&
-                  currentJob.company_data.subindustries.map(
-                    (industry: string) => (
+                  currentJob.company_data.subindustries
+                    .filter((industry: string) => industry.trim() !== "")
+                    .map((industry: string) => (
                       <div
                         key={industry}
                         className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
                       >
                         {industry}
                       </div>
-                    )
-                  )}
+                    ))}
               </div>
             </div>
             <div className="flex gap-4">
@@ -148,7 +168,9 @@ const page = ({ params }: JobPageProps) => {
                 ✍️ Full Description
               </div>
               <div
-                dangerouslySetInnerHTML={{ __html: currentJob.description }}
+                dangerouslySetInnerHTML={formatDescription(
+                  currentJob.description
+                )}
               ></div>
             </div>
             <Link

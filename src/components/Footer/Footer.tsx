@@ -6,6 +6,7 @@ import store from "@/store";
 import { OptionActions } from "@/store/Substores/Optionstore";
 import { FilterActions } from "@/store/Substores/Filterstore";
 import Link from "next/link";
+
 import Image from "next/image";
 
 const Footer = () => {
