@@ -1,11 +1,30 @@
 import store from "@/store";
 import { useRouter } from "next/navigation";
 import React, { Fragment } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Authactions } from "@/store/Substores/Authslice";
 
 const Navbar = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   type RootState = ReturnType<typeof store.getState>;
+
+  const logoutHandler = () => {
+    dispatch(Authactions.setUserId(null));
+    dispatch(Authactions.setloggedIn(false));
+    let userToken = dispatch(Authactions.getCookie("userId")).payload;
+    if (userToken) {
+      dispatch(Authactions.deleteCookie("userId"));
+    }
+    let AccessToken = dispatch(Authactions.getCookie("accessToken")).payload;
+    if (AccessToken) {
+      dispatch(Authactions.deleteCookie("accessToken"));
+    }
+    let RefreshToken = dispatch(Authactions.getCookie("refreshToken")).payload;
+    if (RefreshToken) {
+      dispatch(Authactions.deleteCookie("refreshToken"));
+    }
+  };
 
   const loggedIn = useSelector((state: RootState) => state.Auth.loggedIn);
   return (
@@ -25,7 +44,12 @@ const Navbar = () => {
               >
                 Account
               </button>
-              <button className="px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]">
+              <button
+                onClick={() => {
+                  logoutHandler();
+                }}
+                className="px-[20px] py-[10px] bg-[#eef8ff] text-[#4aa3fa] text-[1rem] font-[600] hover:text-white hover:bg-[#4aa3fa] rounded-[8px]"
+              >
                 Log out
               </button>
             </Fragment>

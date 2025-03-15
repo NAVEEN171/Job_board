@@ -7,11 +7,18 @@ import Filter from "../components/Filters/Filter";
 import JobListing from "@/components/JobListing/JobListing";
 import Pagination from "@/components/Pagination/pagination";
 import Footer from "@/components/Footer/Footer";
+import { useSelector } from "react-redux";
 import { useState } from "react";
+import store from "@/store";
+import Errorscontainer from "@/components/ErrorShow/Errorscontainer";
 
 export default function Home() {
+  type RootState = ReturnType<typeof store.getState>;
+
+  const errorshow = useSelector((state: RootState) => state.Auth.errorshow);
   return (
-    <div className="flex flex-col    items-center">
+    <div className="flex flex-col relative    items-center">
+      <Errorscontainer errorshow={errorshow} />
       <Navbar />
       <div className="w-[80%]">
         <div className="bottom-container   w-full pb-[10px]">

@@ -154,8 +154,8 @@ const page = () => {
         const data = await response.json();
 
         if (data.status === 200) {
-          if (Authactions.getCookie("userId")) {
-            Authactions.deleteCookie("userId");
+          if (dispatch(Authactions.getCookie("userId")).payload.length) {
+            dispatch(Authactions.deleteCookie("userId"));
           }
           dispatch(
             Authactions.setCookieInMinutes({
@@ -172,10 +172,10 @@ const page = () => {
             })
           );
           dispatch(
-            Authactions.setCookie({
+            Authactions.setCookieInMinutes({
               name: "userId",
               value: data.user.id,
-              expirationDays: 7,
+              expirationMinutes: 4,
             })
           );
           if (data.user.id?.length) {

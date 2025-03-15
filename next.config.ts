@@ -29,6 +29,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "*.myworkdayjobs.com",
       },
+      {
+        protocol: "https",
+        hostname: "app.jobvite.com",
+      },
     ],
   },
 };

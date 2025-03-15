@@ -123,6 +123,7 @@ type Locationtype = {
 
 const Filter = () => {
   const dispatch = useDispatch();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   type RootState = ReturnType<typeof store.getState>;
   const advancedShow = useSelector(
@@ -224,6 +225,15 @@ const Filter = () => {
     []
   );
 
+  useEffect(() => {
+    let UserIdValue = dispatch(Authactions.getCookie("userId")).payload;
+    // alert(UserIdValue);
+    if (UserIdValue?.length) {
+      dispatch(Authactions.setloggedIn(true));
+      dispatch(Authactions.setUserId(UserIdValue));
+    }
+  }, []);
+
   const updateJobsData = async (
     accessToken: string,
     refreshToken: string
@@ -266,8 +276,18 @@ const Filter = () => {
       );
       if (response.status === 401) {
         console.log("Authentication required !");
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+        dispatch(
+          Authactions.seterrorshow("Please Login to Get Access to all Jobs")
+        );
+        timeoutRef.current = setTimeout(() => {
+          dispatch(Authactions.seterrorshow(""));
+        }, 3000);
         dispatch(Authactions.deleteCookie("userId"));
         dispatch(Authactions.setUserId(null));
+        dispatch(Authactions.setloggedIn(false));
       }
     }
     return response.status;
@@ -286,10 +306,22 @@ const Filter = () => {
       let jobsStatus = await updateJobsData(accessToken, refreshToken);
       if (jobsStatus === 403) {
         if (!refreshToken) {
+          updateJobsData("", "");
           console.log("Authentication required!");
-          dispatch(Authactions.setCurrentJobs([]));
-          dispatch(Authactions.deleteCookie("userId"));
-          dispatch(Authactions.setUserId(null));
+          dispatch(Authactions.setloggedIn(false));
+
+          // if (timeoutRef.current) {
+          //   clearTimeout(timeoutRef.current);
+          // }
+          // dispatch(
+          //   Authactions.seterrorshow("Please Login to Get Access To all Jobs")
+          // );
+          // timeoutRef.current = setTimeout(() => {
+          //   dispatch(Authactions.seterrorshow(""));
+          // }, 3000);
+          // dispatch(Authactions.setCurrentJobs([]));
+          // dispatch(Authactions.deleteCookie("userId"));
+          // dispatch(Authactions.setUserId(null));
 
           return;
         }
@@ -314,6 +346,21 @@ const Filter = () => {
             })
           );
           let jobsStatus = await updateJobsData(data.accessToken, refreshToken);
+        }
+        if (!response.ok) {
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+          dispatch(
+            Authactions.seterrorshow("Please Login to Get Access To all Jobs")
+          );
+          timeoutRef.current = setTimeout(() => {
+            dispatch(Authactions.seterrorshow(""));
+          }, 3000);
+          dispatch(Authactions.setCurrentJobs([]));
+          dispatch(Authactions.deleteCookie("userId"));
+          dispatch(Authactions.setUserId(null));
+          dispatch(Authactions.setloggedIn(false));
         }
       }
     } catch (err) {

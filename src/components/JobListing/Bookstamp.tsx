@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../../app/globals.css";
 import { useDispatch, useSelector } from "react-redux";
 import store from "@/store";
@@ -10,6 +10,8 @@ type BookstampProps = {
 
 const Bookstamp: React.FC<BookstampProps> = ({ jobId }) => {
   const dispatch = useDispatch();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const [bookmark, setBookmark] = useState<boolean>(false);
   const [saved, setSaved] = useState<boolean>(false);
   type RootState = ReturnType<typeof store.getState>;
@@ -35,6 +37,16 @@ const Bookstamp: React.FC<BookstampProps> = ({ jobId }) => {
 
   const bookmarkhandler = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
+    if (!userId) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      dispatch(Authactions.seterrorshow("Please Login to Save Jobs"));
+      timeoutRef.current = setTimeout(() => {
+        dispatch(Authactions.seterrorshow(""));
+      }, 3000);
+      return;
+    }
     try {
       setBookmark(true);
 

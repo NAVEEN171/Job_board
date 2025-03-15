@@ -32,8 +32,8 @@ const page = () => {
       if (response.ok) {
         if (data) {
           if (data?.data?._id) {
-            if (Authactions.getCookie("userId")) {
-              Authactions.deleteCookie("userId");
+            if (dispatch(Authactions.getCookie("userId")).payload.length) {
+              dispatch(Authactions.deleteCookie("userId"));
             }
             dispatch(
               Authactions.setCookieInMinutes({
@@ -50,10 +50,10 @@ const page = () => {
               })
             );
             dispatch(
-              Authactions.setCookie({
+              Authactions.setCookieInMinutes({
                 name: "userId",
                 value: data.data?._id,
-                expirationDays: 7,
+                expirationMinutes: 4,
               })
             );
           }
