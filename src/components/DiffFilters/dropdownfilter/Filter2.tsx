@@ -245,22 +245,22 @@ const Filter2: React.FC<Filter2type> = ({
           changehandler(id1, id2);
         }}
         ref={divRef}
-        className=" border   relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
+        className="    relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
       >
-        <div id={id1} className="w-[200px]  text-black-500 text-[1.2rem]">
+        <div id={id1} className="w-[200px]  text-lg font-medium">
           {title}
         </div>
-        <div className="options-list flex  w-fit   gap-[10px] flex-wrap max-w-[97%]">
+        <div className="options-list flex  w-fit text-lg font-medium  gap-[10px] flex-wrap max-w-[97%]">
           {Selectlocationtypes.map((loc, index) => (
             <div
-              className="bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px] py-[5px] rounded-[5px]"
+              className="bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px]  rounded-[5px]"
               key={index}
             >
-              <div className="pl-[5px] py-[3px] line-height: normal font-roboto text-[900] text-[1.2rem]">
+              <div className="pl-[5px] py-1 line-height: normal font-roboto text-lg font-medium">
                 {loc}
               </div>
               <div
-                className="wrongbutton  py-[3px] w-[24px] h-[24px] flex items-center line-height:none  font-lato text-[1.1rem] h-auto text-[900] px-[5px]"
+                className="wrongbutton text-md  py-[3px] w-[24px] h-[24px] flex items-center line-height:none  font-lato  h-auto text-[900] px-[5px]"
                 onClick={(e) => {
                   clearhandler(loc, e);
                 }}
@@ -278,7 +278,7 @@ const Filter2: React.FC<Filter2type> = ({
             onChange={(e) => {
               setlocationvalue(e.target.value);
             }}
-            className="hidden w-[200px] text-black-500 text-[1.2rem] "
+            className="hidden w-[200px]   font-medium text-md "
             placeholder="Type..."
           ></input>
         </div>
@@ -305,7 +305,7 @@ const Filter2: React.FC<Filter2type> = ({
                   setlocationhandler(location, e.target);
                 }}
                 key={index + "loc"}
-                className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  text-[1.2rem] text-[600]"
+                className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  font-medium text-md"
               >
                 <div className="drop-down-list-val w-auto px-[15px]">
                   {location}

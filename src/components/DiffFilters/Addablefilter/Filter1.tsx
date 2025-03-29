@@ -147,7 +147,7 @@ const Filter1: React.FC<Filter1type> = ({
         onClick={() => {
           changehandler("jobtitlediv", "jobtitleinput");
         }}
-        className="drop-down z-10   border border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
+        className="drop-down z-10    border border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
       >
         <div
           ref={divRef}
@@ -155,16 +155,16 @@ const Filter1: React.FC<Filter1type> = ({
         >
           <div
             id="jobtitlediv"
-            className="type w-[200px]   text-black-500 text-[1.2rem]"
+            className="type w-[200px] font-medium   text-black-500 text-lg"
           >
             {title}
           </div>
           {jobtitle.map((job, index) => (
             <div
-              className="bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px] py-[5px] rounded-[5px]"
+              className="bg-[#F0F1FA]  text-lg text-medium  h-auto flex items-center gap-[5px]  px-[5px]  rounded-[5px]"
               key={index}
             >
-              <div className="pl-[5px] py-[3px] line-height: normal font-roboto text-[900] text-[1.2rem]">
+              <div className="pl-[5px] py-1   font-roboto font-medium text-lg">
                 {job}
               </div>
               <div
@@ -184,7 +184,7 @@ const Filter1: React.FC<Filter1type> = ({
             onChange={(e) => {
               setjobvalue(e.target.value);
             }}
-            className="hidden w-[200px] text-black-500 text-[1.2rem] "
+            className="hidden w-[200px] text-black-500   text-lg font-medium "
             placeholder="Type..."
           ></input>
         </div>

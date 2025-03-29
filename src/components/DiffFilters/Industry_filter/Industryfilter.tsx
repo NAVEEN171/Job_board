@@ -197,25 +197,22 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
         onClick={(e) => {
           changehandler("IndustryDiv", "IndustryInput");
         }}
-        className=" border   relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
+        className="    relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
       >
-        <div
-          id="IndustryDiv"
-          className="w-[200px]  text-black-500 text-[1.2rem]"
-        >
+        <div id="IndustryDiv" className="w-[200px]  font-medium text-lg">
           Industry
         </div>
         <div className="options-list flex   gap-[10px] flex-wrap max-w-[97%]">
           {SelectedIndustries.map((loc, index) => (
             <div
-              className="bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px] py-[5px] rounded-[5px]"
+              className="bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px]  rounded-[5px]"
               key={index}
             >
-              <div className="pl-[5px] py-[3px] line-height: normal font-roboto text-[900] text-[1.2rem]">
+              <div className="pl-[5px]  line-height: normal py-1 font-roboto font-medium text-[900] text-lg">
                 {loc}
               </div>
               <div
-                className="wrongbutton  py-[3px] w-[24px] h-[24px] flex items-center line-height:none  font-lato text-[1.1rem] h-auto text-[900] px-[5px]"
+                className="wrongbutton  py-[3px] w-[24px] h-[24px] flex items-center line-height:none  font-lato text-md font-medium h-auto text-[900] px-[5px]"
                 onClick={(e) => {
                   clearhandler(loc, e);
                 }}
@@ -233,7 +230,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
             onChange={(e) => {
               setCurrentIndustryVal(e.target.value);
             }}
-            className="hidden w-[200px] text-black-500 text-[1.2rem] "
+            className="hidden w-[200px] font-medium text-lg "
             placeholder="Type..."
           ></input>
         </div>
@@ -264,7 +261,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
                     setlocationhandler(location, e.target);
                   }}
                   key={index + "loc"}
-                  className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  text-[1.2rem] text-[600]"
+                  className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  font-medium text-md"
                 >
                   <div className="drop-down-list-val w-auto px-[15px]">
                     {location}
@@ -286,7 +283,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
                       setlocationhandler(location, e.target);
                     }}
                     key={index + "loc"}
-                    className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  text-[1.2rem] text-[600]"
+                    className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  font-medium text-md"
                   >
                     <div className="drop-down-list-val w-auto px-[15px]">
                       {location}

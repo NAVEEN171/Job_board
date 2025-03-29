@@ -863,7 +863,7 @@ const Filter = () => {
   };
 
   return (
-    <div className="flex flex-col gap-[30px]">
+    <div className="flex flex-col  gap-[30px]">
       <div className="filters-wrapper relative flex gap-[30px]  flex-wrap justify-center w-[100%]">
         <Filter1
           jobtitle={jobtitle}
@@ -914,9 +914,7 @@ const Filter = () => {
             }`}
           ></div>
           <div className=" relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-            <div className="w-[200px] text-black-500 text-[1.2rem]">
-              Date Posted
-            </div>
+            <div className="w-[200px] font-medium text-lg">Date Posted</div>
             <svg
               className="pl-[5px] box-content"
               xmlns="http://www.w3.org/2000/svg"
@@ -936,7 +934,9 @@ const Filter = () => {
                 <div className="Singleslider-container flex flex-col gap-[20px]">
                   <div className="salary-desc flex justify-between">
                     <div className="">Date Posted</div>
-                    <div>{datepostedshower}</div>
+                    <div className="font-semibold text-md">
+                      {datepostedshower}
+                    </div>
                   </div>
                   <SingleSlider
                     value={singleSlidervalue}
@@ -966,9 +966,7 @@ const Filter = () => {
             }`}
           ></div>
           <div className=" relative flex items-center border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-            <div className="w-[200px] text-black-500 text-[1.2rem]">
-              Salary Range
-            </div>
+            <div className="w-[200px] font-medium text-lg">Salary Range</div>
             <svg
               className="pl-[5px] box-content"
               xmlns="http://www.w3.org/2000/svg"
@@ -988,7 +986,7 @@ const Filter = () => {
                 <div className="DualRangeslider-container flex flex-col gap-[20px]">
                   <div className="salary-desc flex justify-between">
                     <div>salary</div>
-                    <div>{Slideprevalue}</div>
+                    <div className="font-semibold text-md">{Slideprevalue}</div>
                   </div>
                   <DualRangeSlider
                     min={0}
@@ -1011,7 +1009,9 @@ const Filter = () => {
                         dispatch(OptionActions.setNoSalary(value))
                       }
                     />
-                    <div>Include No salary Info</div>
+                    <div className="font-medium text-lg">
+                      Include No salary Info
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1072,9 +1072,7 @@ const Filter = () => {
                 }`}
               ></div>
               <div className=" relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-                <div className="w-[200px] text-black-500 text-[1.2rem]">
-                  Experience{" "}
-                </div>
+                <div className="w-[200px] text-lg font-medium">Experience </div>
                 <svg
                   className="pl-[5px] box-content"
                   xmlns="http://www.w3.org/2000/svg"
@@ -1094,7 +1092,9 @@ const Filter = () => {
                     <div className="DualRangeslider-container flex flex-col gap-[20px]">
                       <div className="salary-desc flex justify-between">
                         <div>Experience</div>
-                        <div>{Experienceprevalue}</div>
+                        <div className="text-md font-semibold">
+                          {Experienceprevalue}
+                        </div>
                       </div>
                       <DualRangeSlider
                         min={0}
@@ -1117,7 +1117,9 @@ const Filter = () => {
                             dispatch(OptionActions.setNoExperience(value))
                           }
                         />
-                        <div>Include No YEO info</div>
+                        <div className="font-medium text-lg">
+                          Include No YEO info
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1175,7 +1177,7 @@ const Filter = () => {
               remote={remote}
             />
 
-            <div className=" h-fit border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+            <div className=" h-fit border-[1px] border-[#C8C8C8] px-6 py-[5px] rounded-[8px] hover:border-[#3a90ff]">
               <div className="switch-container text-[1.2rem]">
                 <div className="switch-cont flex gap-[10px] p-[3px] justify-center items-center ">
                   <Switch
@@ -1185,14 +1187,14 @@ const Filter = () => {
                       dispatch(OptionActions.setVisa(value))
                     }
                   />
-                  <div>Visa Sponsored</div>
+                  <div className="font-medium text-lg">Visa Sponsored</div>
                 </div>
               </div>
             </div>
           </Fragment>
         )}
       </div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center flex-wrap gap-3 justify-between">
         <div
           onClick={() => {
             dispatch(Authactions.setAdvancedShow(!advancedShow));

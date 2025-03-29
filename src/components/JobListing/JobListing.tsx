@@ -63,7 +63,7 @@ const JobListing = () => {
           <div
             key={`Job-${idx}`}
             onClick={() => handleJobClick(Job._id)}
-            className="shadow-jobCustom rounded-[10px]  flex gap-[15px] py-[30px] px-[20px] cursor-pointer"
+            className="shadow-jobCustom rounded-xl  flex gap-[15px] py-[30px] px-[20px] cursor-pointer"
           >
             <Image
               className="rounded-full h-[50px] w-[50px]"
@@ -74,11 +74,11 @@ const JobListing = () => {
             />
             <div className="flex flex-col w-[92%] gap-[10px]">
               <div className="flex w-full justify-between">
-                <div className="job-title">
+                <div className="job-title font-bold text-md">
                   <div>{Job.job_title}</div>
-                  <div>{Job.company_name}</div>
+                  <div className="text-gray-400 ">{Job.company_name}</div>
                 </div>
-                <div className="locations-date">
+                <div className="locations-date font-semibold text-sm">
                   {Job.locations &&
                     Job.locations.length > 0 &&
                     Job.locations[0].city !== "" && (
@@ -87,31 +87,39 @@ const JobListing = () => {
                   <div className="flex">
                     {Job.locations &&
                       Job.locations.length > 0 &&
-                      Job.locations[0].region !== "" && (
+                      Job.locations[0].region && (
                         <div>{`${Job.locations[0].region} `}</div>
                       )}
                     {Job.locations &&
                       Job.locations.length > 0 &&
-                      Job.locations[0].country !== "" && (
-                        <div>{` , ${Job.locations[0].country} `}</div>
+                      Job.locations[0].country && (
+                        <div>{` ${Job.locations[0].region ? "," : ""} ${
+                          Job.locations[0].country
+                        } `}</div>
                       )}
                   </div>
-                  <div>{formatDate(Job.date_posted)}</div>
+                  <div className="text-gray-400 font-medium mt-2">
+                    {formatDate(Job.date_posted)}
+                  </div>
                 </div>
               </div>
               {Job.company_data?.description_summary && (
                 <div>
-                  <div className="font-medium">About</div>
-                  <div>{Job.company_data.description_summary}</div>
+                  <div className="font-medium text-md">About</div>
+                  <div className="text-sm font-semibold text-gray-400 mt-1">
+                    {Job.company_data.description_summary}
+                  </div>
                 </div>
               )}
               {Job.requirements_summary && (
                 <div>
-                  <div className="font-medium">Requirements</div>
-                  <div>{Job.requirements_summary}</div>
+                  <div className="font-medium text-md ">Requirements</div>
+                  <div className="font-semibold text-gray-400 text-sm mt-1">
+                    {Job.requirements_summary}
+                  </div>
                 </div>
               )}
-              <div className="company-urls flex gap-[10px]">
+              <div className="company-urls text-md font-medium flex gap-[10px]">
                 {Job?.company_link && (
                   <Link
                     className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border-[2px] border-[#B2DDFF]"
@@ -142,7 +150,7 @@ const JobListing = () => {
               </div>
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="flex gap-[10px] max-w-[80%] flex-wrap"
+                className="flex gap-[10px] font-medium text-md max-w-[80%] flex-wrap"
               >
                 {Job.job_board && (
                   <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">

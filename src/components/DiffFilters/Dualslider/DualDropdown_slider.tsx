@@ -51,7 +51,7 @@ const DualDropdown_slider: React.FC<Filtertype4> = ({
       }}
       data-closed="false"
     >
-      <div className="border relative flex items-center gap-[5px] border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
+      <div className=" relative flex items-center gap-[5px] border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
         <div className="w-[200px] text-black-500 text-[1.2rem]">
           Salary Range
         </div>
@@ -73,7 +73,7 @@ const DualDropdown_slider: React.FC<Filtertype4> = ({
             <div className="DualRangeslider-container flex flex-col gap-[20px]">
               <div className="salary-desc flex justify-between">
                 <div>salary</div>
-                <div>{Slideprevalue}</div>
+                <div className="font-bold">{Slideprevalue}</div>
               </div>
               <DualRangeSlider
                 min={0}
