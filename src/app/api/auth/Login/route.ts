@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import { generateToken } from "@/middlewares/Auth/generateToken";
 import jwt from "jsonwebtoken";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const body = await req.json();
   const { email, password } = body;
   const dbConn = await ConnectToDB();
