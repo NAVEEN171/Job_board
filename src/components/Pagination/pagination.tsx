@@ -75,8 +75,8 @@ const Pagination = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full ">
-      <div className="flex items-center justify-between w-full space-x-2">
+    <div className="flex flex-col items-center mt-5 w-full ">
+      <div className="flex flex-row xs:flex-col  xs:justify-center items-center justify-between w-full xs:space-x-1 space-x-2">
         <button
           onClick={() =>
             dispatch(
@@ -84,23 +84,24 @@ const Pagination = () => {
             )
           }
           disabled={currentPage === 1}
-          className="px-3 py-1 flex border-none  items-center gap-[2px] rounded border disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 xs:hidden flex  border-none xs:text-sm items-center gap-[2px] rounded border disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Image
             src="/svgs/prevsymbol.svg"
             width={20}
             height={20}
+            className="w-5 h-5 xs:h-3"
             alt="previous_symbol"
           />
           Previous
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center xs:gap-1 gap-3">
           {getPageNumbers().map((page, index) => (
             <button
               key={index}
               onClick={() => changePageHandler(page)}
-              className={`px-3 py-2 rounded border tracking-widest  ${
+              className={`px-3 py-2 xs:px-2 h-fit rounded xs:text-xs border tracking-widest  ${
                 currentPage === page
                   ? "bg-blue-500 text-white"
                   : page === "..."
@@ -113,6 +114,46 @@ const Pagination = () => {
             </button>
           ))}
         </div>
+        <div className="xs:flex w-full justify-between items-center hidden">
+          <button
+            onClick={() =>
+              dispatch(
+                Authactions.setCurrentPage(Math.max(1, (currentPage || 1) - 1))
+              )
+            }
+            disabled={currentPage === 1}
+            className="px-3 py-1  flex  border-none  items-center gap-[2px] rounded border disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Image
+              src="/svgs/prevsymbol.svg"
+              width={20}
+              height={20}
+              className="w-5 h-5 xs:h-3"
+              alt="previous_symbol"
+            />
+            Previous
+          </button>
+          <button
+            onClick={() => {
+              dispatch(
+                Authactions.setCurrentPage(
+                  Math.min(totalPages, (currentPage || 1) + 1)
+                )
+              );
+            }}
+            disabled={currentPage === totalPages}
+            className="px-2  border-none flex gap-[2px] py-3 items-center rounded border disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+            <Image
+              src="/svgs/nextsymbol.svg"
+              width={20}
+              height={20}
+              className="w-5 h-5 xs:h-3"
+              alt="next_symbol"
+            />
+          </button>
+        </div>
 
         <button
           onClick={() => {
@@ -123,13 +164,14 @@ const Pagination = () => {
             );
           }}
           disabled={currentPage === totalPages}
-          className="px-2 border-none flex gap-[2px] py-8 items-center rounded border disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 xs:hidden border-none flex gap-[2px] xs:text-sm py-3 items-center rounded border disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
           <Image
             src="/svgs/nextsymbol.svg"
             width={20}
             height={20}
+            className="w-5 h-5 xs:h-3"
             alt="next_symbol"
           />
         </button>

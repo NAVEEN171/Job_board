@@ -162,7 +162,7 @@ const Footer = () => {
     }
   };
   return (
-    <div className="flex select-none justify-between py-3 px-10 w-full  ">
+    <div className="flex md:flex-row flex-col flex-wrap  gap-5 select-none  md:justify-between py-3 px-10 w-full  ">
       <h2 className="bg-[linear-gradient(180deg,_#0ca3f3_25%,_#098ee7_75%)] font-[700] text-[1.6rem]  bg-clip-text text-transparent cursor-pointer">
         FlexiBoard
       </h2>
@@ -274,7 +274,7 @@ const Footer = () => {
           AI Resume Tailor
         </Link>
       </div>
-      <div className="flex flex-col gap-2 items-center">
+      <div className="flex flex-col gap-2 items-start md:items-center">
         <div className="font-bold text-md">Contact Us</div>
         <div className="flex gap-2 items-center">
           <Link href="https://www.linkedin.com/in/naveenkumar-sunkana-a40711250/">

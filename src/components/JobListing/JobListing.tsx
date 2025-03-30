@@ -63,28 +63,31 @@ const JobListing = () => {
           <div
             key={`Job-${idx}`}
             onClick={() => handleJobClick(Job._id)}
-            className="shadow-jobCustom rounded-xl  flex gap-[15px] py-[30px] px-[20px] cursor-pointer"
+            className="shadow-jobCustom rounded-xl  flex flex-col gap-[15px] py-[30px] px-[20px] cursor-pointer"
           >
-            <Image
-              className="rounded-full h-[50px] w-[50px]"
-              src={Job.company_logo ? Job.company_logo : "/svgs/logo.png"}
-              width={50}
-              height={50}
-              alt="company-logo"
-            />
-            <div className="flex flex-col w-[92%] gap-[10px]">
-              <div className="flex w-full justify-between">
-                <div className="job-title font-bold text-md">
+            <div className="flex justify-between gap-3 items-start">
+              <div className="flex gap-2 sm:gap-4">
+                <Image
+                  className="rounded-full h-[25px] w-[25px] sm:h-[50px] sm:w-[50px]"
+                  src={Job.company_logo ? Job.company_logo : "/svgs/logo.png"}
+                  width={50}
+                  height={50}
+                  alt="company-logo"
+                />
+                <div className="job-title sm:block hidden text-sm font-bold sm:text-base">
                   <div>{Job.job_title}</div>
                   <div className="text-gray-400 ">{Job.company_name}</div>
                 </div>
-                <div className="locations-date font-semibold text-sm">
+              </div>
+
+              <div className="flex  gap-2 sm:gap-4">
+                <div className="locations-date w-fit  sm:font-semibold  font-bold  text-xs sm:text-base">
                   {Job.locations &&
                     Job.locations.length > 0 &&
                     Job.locations[0].city !== "" && (
-                      <div>{Job.locations[0].city}</div>
+                      <div className="w-fit">{Job.locations[0].city}</div>
                     )}
-                  <div className="flex">
+                  <div className="flex flex-wrap w-fit">
                     {Job.locations &&
                       Job.locations.length > 0 &&
                       Job.locations[0].region && (
@@ -98,102 +101,110 @@ const JobListing = () => {
                         } `}</div>
                       )}
                   </div>
-                  <div className="text-gray-400 font-medium mt-2">
+                  <div className="text-gray-400 w-fit font-medium mt-2">
                     {formatDate(Job.date_posted)}
                   </div>
                 </div>
+                <Bookstamp jobId={Job._id} />
               </div>
-              {Job.company_data?.description_summary && (
-                <div>
-                  <div className="font-medium text-md">About</div>
-                  <div className="text-sm font-semibold text-gray-400 mt-1">
-                    {Job.company_data.description_summary}
-                  </div>
+            </div>
+            <div className="flex justify-center">
+              <div className="flex flex-col xs:w-full  w-[90%] gap-[10px]">
+                <div className="job-title sm:hidden  text-sm font-bold sm:text-base">
+                  <div>{Job.job_title}</div>
+                  <div className="text-gray-400 ">{Job.company_name}</div>
                 </div>
-              )}
-              {Job.requirements_summary && (
-                <div>
-                  <div className="font-medium text-md ">Requirements</div>
-                  <div className="font-semibold text-gray-400 text-sm mt-1">
-                    {Job.requirements_summary}
+                {Job.company_data?.description_summary && (
+                  <div>
+                    <div className="font-medium  text-base">About</div>
+                    <div className="text-sm xs:text-xs  font-semibold text-gray-400 mt-1">
+                      {Job.company_data.description_summary}
+                    </div>
                   </div>
+                )}
+                {Job.requirements_summary && (
+                  <div>
+                    <div className="font-medium text-base ">Requirements</div>
+                    <div className="font-semibold text-gray-400 xs:text-xs text-sm mt-1">
+                      {Job.requirements_summary}
+                    </div>
+                  </div>
+                )}
+                <div className="company-urls xs:text-xs text-base font-medium flex gap-[10px]">
+                  {Job?.company_link && (
+                    <Link
+                      className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border-[2px] border-[#B2DDFF]"
+                      href={
+                        Job.company_link?.startsWith("http")
+                          ? Job.company_link
+                          : Job.company_link.startsWith("www.")
+                          ? `https://${Job.company_link}`
+                          : `https://www.${Job.company_link}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Company
+                    </Link>
+                  )}
+                  {Job.company_data?.linkedin_link && (
+                    <Link
+                      className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border-2 border-[#B2DDFF]"
+                      target="_blank"
+                      href={Job.company_data.linkedin_link}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Linkedin
+                    </Link>
+                  )}
                 </div>
-              )}
-              <div className="company-urls text-md font-medium flex gap-[10px]">
-                {Job?.company_link && (
-                  <Link
-                    className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border-[2px] border-[#B2DDFF]"
-                    href={
-                      Job.company_link?.startsWith("http")
-                        ? Job.company_link
-                        : Job.company_link.startsWith("www.")
-                        ? `https://${Job.company_link}`
-                        : `https://www.${Job.company_link}`
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    Company
-                  </Link>
-                )}
-                {Job.company_data?.linkedin_link && (
-                  <Link
-                    className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border-2 border-[#B2DDFF]"
-                    target="_blank"
-                    href={Job.company_data.linkedin_link}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    Linkedin
-                  </Link>
-                )}
-              </div>
-              <div
-                onClick={(e) => e.stopPropagation()}
-                className="flex gap-[10px] font-medium text-md max-w-[80%] flex-wrap"
-              >
-                {Job.job_board && (
-                  <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                    {Job.job_board}
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex gap-[10px] font-medium xs:text-xs text-base xs:max-w-[95%] max-w-[80%] flex-wrap"
+                >
+                  {Job.job_board && (
+                    <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                      {Job.job_board}
+                    </div>
+                  )}
+                  {Job.job_type && (
+                    <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                      {Job.job_type}
+                    </div>
+                  )}
+                  {Job.location_type && (
+                    <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
+                      {Job.location_type}
+                    </div>
+                  )}
+                  <div className="flex gap-[10px] flex-wrap">
+                    {Job.company_data?.industries &&
+                      Job.company_data.industries
+                        .filter((industry: string) => industry.trim() !== "")
+                        .map((industry: string) => (
+                          <div
+                            key={industry}
+                            className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
+                          >
+                            {industry}
+                          </div>
+                        ))}
+                    {Job.company_data?.subindustries &&
+                      Job.company_data.subindustries
+                        .filter((industry: string) => industry.trim() !== "")
+                        .map((industry: string) => (
+                          <div
+                            key={industry}
+                            className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
+                          >
+                            {industry}
+                          </div>
+                        ))}
                   </div>
-                )}
-                {Job.job_type && (
-                  <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                    {Job.job_type}
-                  </div>
-                )}
-                {Job.location_type && (
-                  <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
-                    {Job.location_type}
-                  </div>
-                )}
-                <div className="flex gap-[10px] flex-wrap">
-                  {Job.company_data?.industries &&
-                    Job.company_data.industries
-                      .filter((industry: string) => industry.trim() !== "")
-                      .map((industry: string) => (
-                        <div
-                          key={industry}
-                          className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
-                        >
-                          {industry}
-                        </div>
-                      ))}
-                  {Job.company_data?.subindustries &&
-                    Job.company_data.subindustries
-                      .filter((industry: string) => industry.trim() !== "")
-                      .map((industry: string) => (
-                        <div
-                          key={industry}
-                          className="px-[10px] cursor-pointer py-[5px] rounded-[5px] border border-1 border-[#C8C8C8]"
-                        >
-                          {industry}
-                        </div>
-                      ))}
                 </div>
               </div>
             </div>
-            <Bookstamp jobId={Job._id} />
           </div>
         ))}
     </div>

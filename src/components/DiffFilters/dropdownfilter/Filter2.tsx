@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import "../../../app/globals.css";
 import { setTimeout } from "timers/promises";
+import { X } from "lucide-react";
 
 type Filter2type = {
   locationvalue: string;
@@ -247,20 +248,23 @@ const Filter2: React.FC<Filter2type> = ({
         ref={divRef}
         className="    relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
       >
-        <div id={id1} className="w-[200px]  text-lg font-medium">
+        <div
+          id={id1}
+          className="w-[200px] xs:w-[150px] xs:text-sm  text-lg font-medium"
+        >
           {title}
         </div>
-        <div className="options-list flex  w-fit text-lg font-medium  gap-[10px] flex-wrap max-w-[97%]">
+        <div className="options-list flex  w-fit xs:text-sm text-lg font-medium  gap-[10px] flex-wrap xs:max-w-[94%] max-w-[97%]">
           {Selectlocationtypes.map((loc, index) => (
             <div
-              className="bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px]  rounded-[5px]"
+              className="bg-[#F0F1FA]   flex items-center gap-[5px]  px-[5px]  rounded-[5px]"
               key={index}
             >
-              <div className="pl-[5px] py-1 line-height: normal font-roboto text-lg font-medium">
+              <div className="pl-[5px] py-1 line-height: normal font-roboto xs:text-sm text-lg font-medium">
                 {loc}
               </div>
               <div
-                className="wrongbutton text-md  py-[3px] w-[24px] h-[24px] flex items-center line-height:none  font-lato  h-auto text-[900] px-[5px]"
+                className="wrongbutton text-sm mb-[1px] h-fit flex items-center  font-lato  font-medium px-[5px]"
                 onClick={(e) => {
                   clearhandler(loc, e);
                 }}
@@ -278,7 +282,7 @@ const Filter2: React.FC<Filter2type> = ({
             onChange={(e) => {
               setlocationvalue(e.target.value);
             }}
-            className="hidden w-[200px]   font-medium text-md "
+            className="hidden w-[200px] xs:w-[150px] xs:py-0 font-medium xs:text-sm text-lg "
             placeholder="Type..."
           ></input>
         </div>
@@ -296,7 +300,7 @@ const Filter2: React.FC<Filter2type> = ({
         {activeDropdown === root && (
           <div
             id={dd2}
-            className="drop-down-list top-full translate-y-4   bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0   absolute shadow-custom"
+            className="drop-down-list top-full translate-y-4   bg-white flex flex-col xs:w-[250px] w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0   absolute shadow-custom"
             style={{ zIndex: 9999 }}
           >
             {locationtype.map((location, index) => (
@@ -305,7 +309,7 @@ const Filter2: React.FC<Filter2type> = ({
                   setlocationhandler(location, e.target);
                 }}
                 key={index + "loc"}
-                className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  font-medium text-md"
+                className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  font-medium text-sm"
               >
                 <div className="drop-down-list-val w-auto px-[15px]">
                   {location}

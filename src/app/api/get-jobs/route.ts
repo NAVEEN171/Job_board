@@ -130,6 +130,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
       salaryCondition.$or.push({ salary_range: null });
     }
 
+    console.log(extraOption);
+
     if (salaryRange.length) {
       if (extraOption === "Highest Salary") {
         salaryCondition.$or.push({
@@ -265,6 +267,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
           matchConditions.length === 1
             ? matchConditions[0]
             : { $and: matchConditions },
+      });
+    }
+
+    if (extraOption === "Relevance & Date") {
+      pipeline.push({
+        $sort: {
+          date_posted: -1,
+        },
       });
     }
 

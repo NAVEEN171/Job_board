@@ -404,6 +404,14 @@ const Filter = () => {
       FilterActions.setSelectlocationtypes,
     ];
     let currentList;
+    if (params.has("Sort")) {
+      let sortMethod = params.get("Sort");
+      let decodedLocation = sortMethod?.replace("-", " ");
+
+      if (decodedLocation && AdvancedList.includes(decodedLocation)) {
+        dispatch(Authactions.setExtraOption(decodedLocation));
+      }
+    }
     if (params.has("Page")) {
       let currentPage = params.get("Page");
       if (currentPage && typeof parseInt(currentPage) === "number") {
@@ -714,8 +722,6 @@ const Filter = () => {
         const numList = currentList.map(Number);
         dispatch(FilterActions.setSliderValue(numList));
       }
-
-      console.log(currentList);
     }
     if (params.has("datePosted")) {
       let currentList = params.get("datePosted");
@@ -725,13 +731,18 @@ const Filter = () => {
         console.log(numList);
         dispatch(FilterActions.setsingleSlidervalue(numList));
       }
-
-      console.log(currentList);
+    }
+    if (params.has("Sort")) {
+      let location = params.get("Sort");
+      let decodedLocation;
+      if (location) {
+        decodedLocation = location.replace("-", " ");
+        advancedChangeHandler(decodedLocation);
+      }
     }
   };
 
   useEffect(() => {
-    // Only attaches the listener for popstate events
     window.addEventListener("popstate", handlePopState);
 
     return () => {
@@ -851,6 +862,16 @@ const Filter = () => {
     }
     setSlideprevalue(num1 + show1 + " - " + num2 + show2);
   };
+  const advancedChangeHandler = (location: string) => {
+    const params = new URLSearchParams(window.location.search);
+
+    dispatch(Authactions.setExtraOption(location));
+    let formattedLocation = location.replace(" ", "-");
+
+    params.set("Sort", formattedLocation);
+    const newurl = `${window.location.pathname}?${params.toString()}`;
+    router.push(newurl, { scroll: false });
+  };
 
   useEffect(() => {
     salaryChangeShower(sliderValue);
@@ -864,7 +885,7 @@ const Filter = () => {
 
   return (
     <div className="flex flex-col  gap-[30px]">
-      <div className="filters-wrapper relative flex gap-[30px]  flex-wrap justify-center w-[100%]">
+      <div className="filters-wrapper relative flex xs:gap-5 gap-[30px]  flex-wrap justify-start sm:justify-center w-full">
         <Filter1
           jobtitle={jobtitle}
           jobvalue={jobvalue}
@@ -914,7 +935,9 @@ const Filter = () => {
             }`}
           ></div>
           <div className=" relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-            <div className="w-[200px] font-medium text-lg">Date Posted</div>
+            <div className="w-[200px] xs:w-[150px] font-medium xs:text-sm text-lg">
+              Date Posted
+            </div>
             <svg
               className="pl-[5px] box-content"
               xmlns="http://www.w3.org/2000/svg"
@@ -928,13 +951,13 @@ const Filter = () => {
             {activeDropdown === "filter-5" && (
               <div
                 id="drop-down-date"
-                className="drop-down-list  rounded-md flex flex-col gap-[15px] py-[20px] px-[15px] rounded-mg bg-white  top-[55px] left-0 w-[350px] shadow-custom absolute"
+                className="drop-down-list  rounded-md flex flex-col gap-[15px] py-[20px] px-[15px] rounded-mg bg-white  top-[55px] left-0 xs:w-[250px] w-[350px] shadow-custom absolute"
                 style={{ zIndex: 9999 }}
               >
                 <div className="Singleslider-container flex flex-col gap-[20px]">
                   <div className="salary-desc flex justify-between">
                     <div className="">Date Posted</div>
-                    <div className="font-semibold text-md">
+                    <div className="font-semibold text-base">
                       {datepostedshower}
                     </div>
                   </div>
@@ -966,7 +989,9 @@ const Filter = () => {
             }`}
           ></div>
           <div className=" relative flex items-center border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-            <div className="w-[200px] font-medium text-lg">Salary Range</div>
+            <div className="w-[200px] xs:w-[150px] font-medium text-lg xs:text-sm">
+              Salary Range
+            </div>
             <svg
               className="pl-[5px] box-content"
               xmlns="http://www.w3.org/2000/svg"
@@ -980,13 +1005,15 @@ const Filter = () => {
             {activeDropdown === "filter-4" && (
               <div
                 id="salary-drop-down"
-                className="drop-down-list drop-down-salary  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 w-[350px] shadow-custom"
+                className="drop-down-list drop-down-salary  rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] bg-white absolute top-[55px] left-0 xs:w-[270px] w-[350px] shadow-custom"
                 style={{ zIndex: 9999 }}
               >
                 <div className="DualRangeslider-container flex flex-col gap-[20px]">
                   <div className="salary-desc flex justify-between">
                     <div>salary</div>
-                    <div className="font-semibold text-md">{Slideprevalue}</div>
+                    <div className="font-semibold text-base">
+                      {Slideprevalue}
+                    </div>
                   </div>
                   <DualRangeSlider
                     min={0}
@@ -1009,7 +1036,7 @@ const Filter = () => {
                         dispatch(OptionActions.setNoSalary(value))
                       }
                     />
-                    <div className="font-medium text-lg">
+                    <div className="font-medium xs:py-1 xs:text-base text-lg">
                       Include No salary Info
                     </div>
                   </div>
@@ -1072,7 +1099,9 @@ const Filter = () => {
                 }`}
               ></div>
               <div className=" relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-                <div className="w-[200px] text-lg font-medium">Experience </div>
+                <div className="w-[200px] xs:w-[150px] xs:text-sm text-lg font-medium">
+                  Experience{" "}
+                </div>
                 <svg
                   className="pl-[5px] box-content"
                   xmlns="http://www.w3.org/2000/svg"
@@ -1086,13 +1115,13 @@ const Filter = () => {
                 {activeDropdown === "filter-6" && (
                   <div
                     id="experience-drop-down"
-                    className="drop-down-list drop-down-experience  bg-white rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] absolute top-[55px] left-0 w-[350px] shadow-custom"
+                    className="drop-down-list drop-down-experience  bg-white rounded-md flex flex-col gap-[15px] py-[15px] px-[15px] absolute top-[55px] left-0 xs:w-[270px] w-[350px] shadow-custom"
                     style={{ zIndex: 9999 }}
                   >
                     <div className="DualRangeslider-container flex flex-col gap-[20px]">
                       <div className="salary-desc flex justify-between">
                         <div>Experience</div>
-                        <div className="text-md font-semibold">
+                        <div className="text-base font-semibold">
                           {Experienceprevalue}
                         </div>
                       </div>
@@ -1117,7 +1146,7 @@ const Filter = () => {
                             dispatch(OptionActions.setNoExperience(value))
                           }
                         />
-                        <div className="font-medium text-lg">
+                        <div className="font-medium xs:py-1 xs:text-base text-lg">
                           Include No YEO info
                         </div>
                       </div>
@@ -1187,7 +1216,9 @@ const Filter = () => {
                       dispatch(OptionActions.setVisa(value))
                     }
                   />
-                  <div className="font-medium text-lg">Visa Sponsored</div>
+                  <div className="font-medium xs:text-base text-lg">
+                    Visa Sponsored
+                  </div>
                 </div>
               </div>
             </div>
@@ -1199,7 +1230,7 @@ const Filter = () => {
           onClick={() => {
             dispatch(Authactions.setAdvancedShow(!advancedShow));
           }}
-          className="flex  h-fit w-fit relative gap-[10px] py-[10px] items-center border-[1px] border-[#C8C8C8] px-[15px]  rounded-[8px] hover:border-[#3a90ff]"
+          className="flex  h-fit w-fit relative gap-[10px] xs:py-2 py-[10px] items-center border-[1px] border-[#C8C8C8] px-[15px]  rounded-[8px] hover:border-[#3a90ff]"
         >
           <Image
             src="/svgs/thunder.svg"
@@ -1207,7 +1238,7 @@ const Filter = () => {
             height={30}
             alt="thunder"
           ></Image>
-          <div className="font-inter font-semibold text-[18px]">
+          <div className="font-inter xs:text-base font-semibold text-[18px]">
             Advanced Filters
           </div>
           <div className="absolute -top-[10px]  h-[20px] w-[20px]  -right-[10px] bg-[#3a90ff] flex items-center justify-center    text-white z-40 rounded-full ">
@@ -1226,11 +1257,11 @@ const Filter = () => {
         >
           <div
             id={"Advanceddiv"}
-            className="    relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
+            className="    relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] xs:px-0 py-[8px] rounded-[8px] hover:border-[#3a90ff]"
           >
             <div
               id="Advancedtitle"
-              className="px-[10px] flex gap-[10px]  items-center text-black-500 text-[1.2rem]"
+              className="px-[10px] flex gap-[10px] xs:text-sm  items-center text-lg font-medium"
             >
               {extraOption}
               <svg
@@ -1254,11 +1285,11 @@ const Filter = () => {
             >
               {AdvancedList.map((location, index) => (
                 <div
-                  onClick={(e) => {
-                    dispatch(Authactions.setExtraOption(location));
+                  onClick={() => {
+                    advancedChangeHandler(location);
                   }}
                   key={index + "loc"}
-                  className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  text-[1.2rem] text-[600]"
+                  className="p-[5px] text-sm font-medium  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  "
                 >
                   <div className="drop-down-list-val w-auto px-[15px]">
                     {location}

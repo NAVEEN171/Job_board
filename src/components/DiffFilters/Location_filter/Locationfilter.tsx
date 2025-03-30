@@ -227,18 +227,21 @@ const Locationfilter: React.FC<Filter2type> = ({
         ref={divRef}
         className=" relative flex items-center justify-between border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
       >
-        <div id={id1} className="w-[200px] text-lg font-medium ">
+        <div
+          id={id1}
+          className="w-[200px] xs:w-[150px] xs:text-sm text-lg font-medium "
+        >
           {title}
         </div>
-        <div className="options-list  flex gap-[10px] flex-wrap max-w-[97%]">
+        <div className="options-list  flex gap-[10px] flex-wrap xs:max-w-[88%] max-w-[97%]">
           {Selectlocationtypes.map((loc, index) => (
             <div
               key={index}
               className="bg-[#F0F1FA] h-auto flex items-center gap-[5px] px-[5px]  rounded-[5px]"
             >
-              <div className="pl-[5px] py-1 text-lg font-medium font-roboto ">{`${loc.emoji} ${loc.country}`}</div>
+              <div className="pl-[5px] py-1 xs:text-sm text-lg font-medium font-roboto ">{`${loc.emoji} ${loc.country}`}</div>
               <div
-                className="wrongbutton   flex items-center text-md font-lato font-medium px-[5px]"
+                className="wrongbutton mb-[1px]  flex items-center text-sm font-lato font-medium px-[5px]"
                 onClick={(e) => clearhandler(loc, e)}
               >
                 x
@@ -252,7 +255,7 @@ const Locationfilter: React.FC<Filter2type> = ({
               handlelocationback(e.key);
             }}
             onChange={(e) => setlocationvalue(e.target.value)}
-            className="hidden w-[200px] font-medium text-lg"
+            className="hidden w-[200px] xs:w-[150px] font- xs:text-sm text-lg"
             placeholder="Type..."
           />
         </div>
@@ -271,7 +274,7 @@ const Locationfilter: React.FC<Filter2type> = ({
       {activeDropdown === root && (
         <div
           id={dd2}
-          className="drop-down-list top-full translate-y-4 bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0 top-[55px] absolute shadow-custom"
+          className="drop-down-list top-full translate-y-4 bg-white flex flex-col xs:w-[250px] w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] left-0  absolute shadow-custom"
           style={{ zIndex: 9999 }}
         >
           <div className="switch-container text-[1.2rem] p-[5px]">
@@ -281,7 +284,9 @@ const Locationfilter: React.FC<Filter2type> = ({
                 title="remote"
                 changeSwitchState={changeSwitchState}
               />
-              <div className="font-medium text-lg">Include Remote</div>
+              <div className="font-medium xs:py-1 xs:text-sm text-lg">
+                Include Remote
+              </div>
             </div>
           </div>
 
@@ -289,7 +294,7 @@ const Locationfilter: React.FC<Filter2type> = ({
             <div
               onClick={(e) => setlocationhandler(location, e.target)}
               key={index + "loc"}
-              className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-md"
+              className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-sm"
             >
               <div className="drop-down-list-val w-auto px-[15px]">{`${location.emoji} ${location.country}`}</div>
             </div>

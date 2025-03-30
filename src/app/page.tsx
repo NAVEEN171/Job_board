@@ -20,7 +20,7 @@ export default function Home() {
     <div className="flex flex-col relative    items-center">
       <Errorscontainer errorshow={errorshow} />
       <Navbar />
-      <div className="w-[80%]">
+      <div className="w-[80%] xs:p-4 xs:w-full md-max:w-[90%] ">
         <div className="bottom-container   w-full pb-[10px]">
           <Herosection />
           <Filter />

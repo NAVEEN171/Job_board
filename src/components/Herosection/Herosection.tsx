@@ -4,12 +4,12 @@ import { useRouter } from "next/navigation";
 const Herosection = () => {
   const router = useRouter();
   return (
-    <div className="w-[100%] px-[40px] py-[20px] text-center break-words">
-      <h1 className="text-4xl   mt-[40px] font-semibold text-[#0066cc] ">
+    <div className="w-full xs:px-4 px-14 py-[20px] text-center break-words">
+      <h1 className="text-4xl xs:text-xl  mt-[40px] font-semibold text-[#0066cc] ">
         Build, Manage and Analyze Your
         <span className="text-[#3a90ff]"> Perfect Job Board</span>
       </h1>
-      <h6 className="text-gray-500  mt-[30px]  text-xl font-normal">
+      <h6 className="text-gray-500  mt-[30px] xs:text-sm  text-xl font-normal">
         Create a custom job board tailored to your needs with ease. Manage
         listings, gain valuable insights into job market trends, and customize
         features like job filters, ratings, and analytics

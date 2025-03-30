@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 import {
   formatDistanceToNow,
   differenceInDays,
@@ -21,6 +21,7 @@ interface JobPageProps {
 
 const page = ({ params }: JobPageProps) => {
   const { id: jobId } = React.use(params);
+  const dispatch = useDispatch();
   type RootState = ReturnType<typeof store.getState>;
   const [currentJob, setCurrentJob] = useState<any>(null);
   const getCurrentJob = async () => {
@@ -31,6 +32,12 @@ const page = ({ params }: JobPageProps) => {
       console.log(data.job);
     }
   };
+
+  useEffect(() => {
+    if (Authactions.getCookie("userId")?.payload) {
+      dispatch(Authactions.setloggedIn(true));
+    }
+  }, []);
   useEffect(() => {
     console.log(jobId);
     if (!jobId) {

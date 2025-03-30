@@ -40,8 +40,27 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
   const titleModified = "Industries";
   const Selectedvalues = useRef(SelectedIndustries);
   const locationdroptype = useRef(IndustryDropDown);
-
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [expandedIndustry, setExpandedIndustry] = useState<string | null>(null);
   const divRef = useRef<HTMLDivElement | null>(null);
+
+  // Check screen size on mount and resize
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 600);
+    };
+
+    // Initial check
+    checkScreenSize();
+
+    // Add resize listener
+    window.addEventListener("resize", checkScreenSize);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", checkScreenSize);
+    };
+  }, []);
 
   useEffect(() => {
     updateSearchParams(SelectedIndustries, titleModified);
@@ -126,12 +145,10 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
     newlocations.push(changedstr);
     setSelectedIndustries(newlocations);
     setCurrentIndustryVal("");
-  };
 
-  //  const [IndustryDropDown,setIndustryDropDown]=useState<string[]>(Industries);
-  //  const [IndustrySubcategory,setIndustrySubcategory]=useState<string[]>([])
-  //  const [SelectedIndustries,setSelectedIndustries]=useState<string[]>([]);
-  //  const [CurrentIndustryVal,setCurrentIndustryVal]=useState<string>("")
+    // Reset expanded industry after selection
+    setExpandedIndustry(null);
+  };
 
   const clearhandler = (loc: string, e: React.MouseEvent<HTMLDivElement>) => {
     let clickedelement = e.target as HTMLElement | null; // Ensure it's cast safely
@@ -183,9 +200,41 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
       setSelectedIndustries(duplicate);
     }
   };
+
+  const handleIndustryHover = (industry: string) => {
+    if (!isSmallScreen) {
+      setIndustrySubcategory(industriesSubcategories[industry]);
+    }
+  };
+
+  const handleIndustryLeave = () => {
+    if (!isSmallScreen) {
+      setIndustrySubcategory([]);
+    }
+  };
+
+  const handleIndustryClick = (e: React.MouseEvent, industry: string) => {
+    if (isSmallScreen) {
+      // Stop propagation to prevent immediate selection
+      e.stopPropagation();
+
+      // Toggle expanded industry
+      if (expandedIndustry === industry) {
+        setExpandedIndustry(null);
+      } else {
+        setExpandedIndustry(industry);
+      }
+    }
+  };
+
+  const handleSubcategoryClick = (e: React.MouseEvent, subcategory: string) => {
+    e.stopPropagation(); // Prevent the click from affecting parent elements
+    setlocationhandler(subcategory, e.target);
+  };
+
   return (
     <div
-      className={`filter-8 filter   relative max-w-[90%]`}
+      className={`filter-8 filter relative max-w-[90%]`}
       onClick={() => {
         setactiveDropdown("filter-8");
       }}
@@ -197,22 +246,25 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
         onClick={(e) => {
           changehandler("IndustryDiv", "IndustryInput");
         }}
-        className="    relative flex items-center justify-between  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
+        className="relative flex items-center justify-between border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]"
       >
-        <div id="IndustryDiv" className="w-[200px]  font-medium text-lg">
+        <div
+          id="IndustryDiv"
+          className="w-[200px] xs:w-[150px] font-medium xs:text-sm text-lg"
+        >
           Industry
         </div>
-        <div className="options-list flex   gap-[10px] flex-wrap max-w-[97%]">
+        <div className="options-list flex gap-[10px] flex-wrap xs:max-w-[94%] max-w-[97%]">
           {SelectedIndustries.map((loc, index) => (
             <div
-              className="bg-[#F0F1FA]  h-auto flex items-center gap-[5px]  px-[5px]  rounded-[5px]"
+              className="bg-[#F0F1FA] h-auto flex items-center gap-[5px] px-[5px] rounded-[5px]"
               key={index}
             >
-              <div className="pl-[5px]  line-height: normal py-1 font-roboto font-medium text-[900] text-lg">
+              <div className="pl-[5px] line-height: normal py-1 font-roboto font-medium text-[900] xs:text-sm text-lg">
                 {loc}
               </div>
               <div
-                className="wrongbutton  py-[3px] w-[24px] h-[24px] flex items-center line-height:none  font-lato text-md font-medium h-auto text-[900] px-[5px]"
+                className="wrongbutton mb-[1px] flex items-center font-lato text-sm font-medium px-[5px]"
                 onClick={(e) => {
                   clearhandler(loc, e);
                 }}
@@ -230,7 +282,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
             onChange={(e) => {
               setCurrentIndustryVal(e.target.value);
             }}
-            className="hidden w-[200px] font-medium text-lg "
+            className="hidden w-[200px] xs:w-[150px] font-medium xs:text-sm text-lg"
             placeholder="Type..."
           ></input>
         </div>
@@ -248,34 +300,64 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
         {activeDropdown === "filter-8" && (
           <div
             id="Drop-down-Industry-main"
-            className="Industries-DropdownContainer left-0  top-full translate-y-4  absolute flex"
+            className={`Industries-DropdownContainer left-0 top-full translate-y-4 absolute ${
+              isSmallScreen ? "flex flex-col" : "flex"
+            }`}
             style={{ zIndex: 9999 }}
           >
-            <div className="drop-down-list    bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px]  shadow-custom">
-              {IndustryDropDown.map((location, index) => (
-                <div
-                  onMouseEnter={() => {
-                    setIndustrySubcategory(industriesSubcategories[location]);
-                  }}
-                  onClick={(e) => {
-                    setlocationhandler(location, e.target);
-                  }}
-                  key={index + "loc"}
-                  className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  font-medium text-md"
-                >
-                  <div className="drop-down-list-val w-auto px-[15px]">
-                    {location}
+            <div className="drop-down-list bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] shadow-custom">
+              {IndustryDropDown.map((industry, index) => (
+                <div key={index + "loc"} className="industry-item">
+                  <div
+                    onMouseEnter={() => handleIndustryHover(industry)}
+                    onMouseLeave={() => handleIndustryLeave()}
+                    onClick={(e) => {
+                      if (isSmallScreen) {
+                        handleIndustryClick(e, industry);
+                      } else {
+                        setlocationhandler(industry, e.target);
+                      }
+                    }}
+                    className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-sm flex justify-between items-center"
+                  >
+                    <div className="drop-down-list-val w-auto px-[15px]">
+                      {industry}
+                    </div>
                   </div>
+
+                  {/* For small screens, show subcategories below clicked industry */}
+                  {isSmallScreen &&
+                    expandedIndustry === industry &&
+                    industriesSubcategories[industry]?.length > 0 && (
+                      <div className="small-screen-subcategories ml-4 border-l-2 border-[#4aa3fa] pl-2">
+                        {industriesSubcategories[industry].map(
+                          (subcategory, subIndex) => (
+                            <div
+                              onClick={(e) =>
+                                handleSubcategoryClick(e, subcategory)
+                              }
+                              key={subIndex + "sub"}
+                              className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-sm"
+                            >
+                              <div className="drop-down-list-val w-auto px-[15px]">
+                                {subcategory}
+                              </div>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )}
                 </div>
               ))}
             </div>
-            {IndustrySubcategory.length > 0 && (
+
+            {!isSmallScreen && IndustrySubcategory.length > 0 && (
               <div
                 id="Drop-down-Industry"
                 onMouseLeave={() => {
                   setIndustrySubcategory([]);
                 }}
-                className="drop-down-list    bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px]  shadow-custom"
+                className="drop-down-list bg-white flex flex-col w-[300px] max-h-[300px] overflow-y-auto rounded-[4px] shadow-custom"
               >
                 {IndustrySubcategory.map((location, index) => (
                   <div
@@ -283,7 +365,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
                       setlocationhandler(location, e.target);
                     }}
                     key={index + "loc"}
-                    className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  font-medium text-md"
+                    className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-sm"
                   >
                     <div className="drop-down-list-val w-auto px-[15px]">
                       {location}
