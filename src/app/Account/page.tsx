@@ -1,14 +1,12 @@
 "use client";
 
-import React, { Fragment, useState } from "react";
-import { Authactions } from "@/store/Substores/Authslice";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import store from "@/store";
 import Navbar from "@/components/Navbar/Navbar";
 import JobListing from "@/components/savedJobs/SavedJobs";
 import Footer from "@/components/Footer/Footer";
 const page = () => {
-  const dispatch = useDispatch();
   type RootState = ReturnType<typeof store.getState>;
   const user = useSelector((state: RootState) => state.Auth.User);
   const [currentOption, setCurrentOption] = useState<string>("My Profile");

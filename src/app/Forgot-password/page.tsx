@@ -3,9 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { FormEvent } from "react";
 
 const page = () => {

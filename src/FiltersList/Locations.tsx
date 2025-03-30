@@ -1,14 +1,3 @@
-const regions = [
-  "Worldwide",
-  "North America",
-  "Europe",
-  "Latin America",
-  "Asia",
-  "Africa",
-  "Oceania",
-  "Middle East",
-];
-
 const countryData = [
   { country: "Africa", emoji: "🦁", index: 0, type: "region" },
   { country: "Asia", emoji: "⛩", index: 1, type: "region" },
