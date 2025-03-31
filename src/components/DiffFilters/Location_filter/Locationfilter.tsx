@@ -229,7 +229,7 @@ const Locationfilter: React.FC<Filter2type> = ({
       >
         <div
           id={id1}
-          className="w-[200px] xs:w-[150px] xs:text-sm text-lg font-medium "
+          className="w-[200px] xs:w-[180px] xs:text-base text-lg font-medium "
         >
           {title}
         </div>
@@ -239,9 +239,9 @@ const Locationfilter: React.FC<Filter2type> = ({
               key={index}
               className="bg-[#F0F1FA] h-auto flex items-center gap-[5px] px-[5px]  rounded-[5px]"
             >
-              <div className="pl-[5px] py-1 xs:text-sm text-lg font-medium font-roboto ">{`${loc.emoji} ${loc.country}`}</div>
+              <div className="pl-[5px] py-1 xs:text-base text-lg font-medium font-roboto ">{`${loc.emoji} ${loc.country}`}</div>
               <div
-                className="wrongbutton mb-[1px]  flex items-center text-sm font-lato font-medium px-[5px]"
+                className="wrongbutton mb-[1px]  flex items-center text-base font-lato font-medium px-[5px]"
                 onClick={(e) => clearhandler(loc, e)}
               >
                 x
@@ -255,7 +255,7 @@ const Locationfilter: React.FC<Filter2type> = ({
               handlelocationback(e.key);
             }}
             onChange={(e) => setlocationvalue(e.target.value)}
-            className="hidden w-[200px] xs:w-[150px] font- xs:text-sm text-lg"
+            className="hidden w-[200px] xs:w-[180px] font- xs:text-base text-lg"
             placeholder="Type..."
           />
         </div>
@@ -284,7 +284,7 @@ const Locationfilter: React.FC<Filter2type> = ({
                 title="remote"
                 changeSwitchState={changeSwitchState}
               />
-              <div className="font-medium xs:py-1 xs:text-sm text-lg">
+              <div className="font-medium xs:py-1 xs:text-base text-lg">
                 Include Remote
               </div>
             </div>
@@ -294,7 +294,7 @@ const Locationfilter: React.FC<Filter2type> = ({
             <div
               onClick={(e) => setlocationhandler(location, e.target)}
               key={index + "loc"}
-              className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-sm"
+              className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-base"
             >
               <div className="drop-down-list-val w-auto px-[15px]">{`${location.emoji} ${location.country}`}</div>
             </div>

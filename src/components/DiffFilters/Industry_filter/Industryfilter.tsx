@@ -250,7 +250,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
       >
         <div
           id="IndustryDiv"
-          className="w-[200px] xs:w-[150px] font-medium xs:text-sm text-lg"
+          className="w-[200px] xs:w-[180px] font-medium xs:text-base text-lg"
         >
           Industry
         </div>
@@ -260,11 +260,11 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
               className="bg-[#F0F1FA] h-auto flex items-center gap-[5px] px-[5px] rounded-[5px]"
               key={index}
             >
-              <div className="pl-[5px] line-height: normal py-1 font-roboto font-medium text-[900] xs:text-sm text-lg">
+              <div className="pl-[5px] line-height: normal py-1 font-roboto font-medium text-[900] xs:text-base text-lg">
                 {loc}
               </div>
               <div
-                className="wrongbutton mb-[1px] flex items-center font-lato text-sm font-medium px-[5px]"
+                className="wrongbutton mb-[1px] flex items-center font-lato text-base font-medium px-[5px]"
                 onClick={(e) => {
                   clearhandler(loc, e);
                 }}
@@ -282,7 +282,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
             onChange={(e) => {
               setCurrentIndustryVal(e.target.value);
             }}
-            className="hidden w-[200px] xs:w-[150px] font-medium xs:text-sm text-lg"
+            className="hidden w-[200px] xs:w-[150px] font-medium xs:text-base text-lg"
             placeholder="Type..."
           ></input>
         </div>
@@ -318,7 +318,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
                         setlocationhandler(industry, e.target);
                       }
                     }}
-                    className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-sm flex justify-between items-center"
+                    className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-base flex justify-between items-center"
                   >
                     <div className="drop-down-list-val w-auto px-[15px]">
                       {industry}
@@ -337,7 +337,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
                                 handleSubcategoryClick(e, subcategory)
                               }
                               key={subIndex + "sub"}
-                              className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-sm"
+                              className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-base"
                             >
                               <div className="drop-down-list-val w-auto px-[15px]">
                                 {subcategory}
@@ -365,7 +365,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
                       setlocationhandler(location, e.target);
                     }}
                     key={index + "loc"}
-                    className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-sm"
+                    className="p-[5px] hover:bg-[#4aa3fa] hover:text-white cursor-pointer font-medium text-base"
                   >
                     <div className="drop-down-list-val w-auto px-[15px]">
                       {location}

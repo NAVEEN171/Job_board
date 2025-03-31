@@ -250,21 +250,21 @@ const Filter2: React.FC<Filter2type> = ({
       >
         <div
           id={id1}
-          className="w-[200px] xs:w-[150px] xs:text-sm  text-lg font-medium"
+          className="w-[200px] xs:w-[180px] xs:text-base  text-lg font-medium"
         >
           {title}
         </div>
-        <div className="options-list flex  w-fit xs:text-sm text-lg font-medium  gap-[10px] flex-wrap xs:max-w-[94%] max-w-[97%]">
+        <div className="options-list flex  w-fit xs:text-base text-lg font-medium  gap-[10px] flex-wrap xs:max-w-[94%] max-w-[97%]">
           {Selectlocationtypes.map((loc, index) => (
             <div
               className="bg-[#F0F1FA]   flex items-center gap-[5px]  px-[5px]  rounded-[5px]"
               key={index}
             >
-              <div className="pl-[5px] py-1 line-height: normal font-roboto xs:text-sm text-lg font-medium">
+              <div className="pl-[5px] py-1 line-height: normal font-roboto xs:text-base text-lg font-medium">
                 {loc}
               </div>
               <div
-                className="wrongbutton text-sm mb-[1px] h-fit flex items-center  font-lato  font-medium px-[5px]"
+                className="wrongbutton text-base mb-[1px] h-fit flex items-center  font-lato  font-medium px-[5px]"
                 onClick={(e) => {
                   clearhandler(loc, e);
                 }}
@@ -282,7 +282,7 @@ const Filter2: React.FC<Filter2type> = ({
             onChange={(e) => {
               setlocationvalue(e.target.value);
             }}
-            className="hidden w-[200px] xs:w-[150px] xs:py-0 font-medium xs:text-sm text-lg "
+            className="hidden w-[200px] xs:w-[180px] xs:py-0 font-medium xs:text-base text-lg "
             placeholder="Type..."
           ></input>
         </div>
@@ -309,7 +309,7 @@ const Filter2: React.FC<Filter2type> = ({
                   setlocationhandler(location, e.target);
                 }}
                 key={index + "loc"}
-                className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  font-medium text-sm"
+                className="p-[5px]  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  font-medium text-base"
               >
                 <div className="drop-down-list-val w-auto px-[15px]">
                   {location}

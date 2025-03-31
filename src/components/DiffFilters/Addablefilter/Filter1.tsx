@@ -155,16 +155,16 @@ const Filter1: React.FC<Filter1type> = ({
         >
           <div
             id="jobtitlediv"
-            className="type w-[200px] xs:w-[150px] font-medium  xs:text-sm text-black-500 text-lg"
+            className="type w-[200px] xs:w-[180px] font-medium  xs:text-base text-black-500 text-lg"
           >
             {title}
           </div>
           {jobtitle.map((job, index) => (
             <div
-              className="bg-[#F0F1FA] xs:text-sm text-lg text-medium  h-auto flex items-center gap-[5px]  px-[5px]  rounded-[5px]"
+              className="bg-[#F0F1FA] xs:text-base text-lg text-medium  h-auto flex items-center gap-[5px]  px-[5px]  rounded-[5px]"
               key={index}
             >
-              <div className="pl-[5px] py-1   font-roboto font-medium xs:text-sm text-lg">
+              <div className="pl-[5px] py-1   font-roboto font-medium xs:text-base text-lg">
                 {job}
               </div>
               <div
@@ -184,7 +184,7 @@ const Filter1: React.FC<Filter1type> = ({
             onChange={(e) => {
               setjobvalue(e.target.value);
             }}
-            className="hidden w-[200px] xs:w-[150px] text-black-500 xs:text-sm   text-lg font-medium "
+            className="hidden w-[200px] xs:w-[180px] text-black-500 xs:text-base   text-lg font-medium "
             placeholder="Type..."
           ></input>
         </div>

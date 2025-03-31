@@ -935,7 +935,7 @@ const Filter = () => {
             }`}
           ></div>
           <div className=" relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-            <div className="w-[200px] xs:w-[150px] font-medium xs:text-sm text-lg">
+            <div className="w-[200px] xs:w-[180px] font-medium xs:text-base text-lg">
               Date Posted
             </div>
             <svg
@@ -989,7 +989,7 @@ const Filter = () => {
             }`}
           ></div>
           <div className=" relative flex items-center border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-            <div className="w-[200px] xs:w-[150px] font-medium text-lg xs:text-sm">
+            <div className="w-[200px] xs:w-[180px] font-medium text-lg xs:text-base">
               Salary Range
             </div>
             <svg
@@ -1099,7 +1099,7 @@ const Filter = () => {
                 }`}
               ></div>
               <div className=" relative flex items-center  border-[1px] border-[#C8C8C8] px-[15px] py-[8px] rounded-[8px] hover:border-[#3a90ff]">
-                <div className="w-[200px] xs:w-[150px] xs:text-sm text-lg font-medium">
+                <div className="w-[200px] xs:w-[180px] xs:text-base text-lg font-medium">
                   Experience{" "}
                 </div>
                 <svg
