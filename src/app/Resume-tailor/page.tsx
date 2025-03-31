@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useRef } from "react";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 
@@ -42,6 +42,8 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
   const [desc, setDesc] = useState<string>("");
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [errorshow, setErrorShow] = useState<string>("");
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleCopy: CopyHandler = () => {
     const textContent = sections
@@ -51,7 +53,14 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
     navigator.clipboard
       .writeText(textContent)
       .then(() => {
-        alert("Recommendations copied to clipboard!");
+        setErrorShow("Recommendations copied to clipboard!");
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+          setErrorShow("");
+        }, 3000);
       })
       .catch((err: Error) => {
         console.error("Failed to copy:", err);
@@ -69,8 +78,7 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
         setBase64PDF(base64String);
         console.log("Base64 PDF:", base64String); // You can remove this log in production
       } catch (error) {
-        console.error("Error converting file to base64:", error);
-        alert("Error processing the file. Please try again.");
+        console.log("Error converting file to base64:", error);
       }
     }
   };
@@ -84,8 +92,17 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
     setLoading(true);
 
     if (!file || !base64PDF || desc === "") {
-      alert("Please provide both a resume and a job description.");
+      setErrorShow("Please provide both a resume and a job description.");
+      if (timeoutRef.current) {
+        console.log(timeoutRef.current);
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        setErrorShow("");
+      }, 3000);
       setLoading(false);
+      console.log("done");
       return;
     }
 
@@ -106,25 +123,52 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
       });
 
       if (!tailoredResponse.ok) {
-        throw new Error("Failed to analyze resume");
+        setErrorShow("Failed to analyze resume! Please try again");
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+          setErrorShow("");
+        }, 3000);
       }
 
       const data = await tailoredResponse.json();
       if (data && data.sections) {
         setSections(data.sections);
       } else {
-        throw new Error("Invalid response format");
+        console.log("Invalid response format");
       }
     } catch (error) {
-      console.error("Error:", error);
-      alert("There was an error analyzing your resume. Please try again.");
+      setErrorShow(
+        "There was an error analyzing your resume. Please try again."
+      );
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        setErrorShow("");
+      }, 3000);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col relative ">
+      <div className="errorsshower px-3 w-full fixed top-2 flex flex-col items-center gap-[10px]">
+        {errorshow && (
+          <div
+            style={{
+              zIndex: 10000,
+            }}
+            className="text-lg xs:text-base border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4 px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+          >
+            {errorshow}
+          </div>
+        )}
+      </div>
       <Navbar />
       <div className="w-full flex items-center">
         <div className="w-full md:flex md:items-center md:justify-evenly p-5 lg:p-8">
@@ -145,12 +189,12 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
               </div>
             ) : (
               <div className="w-full lg:w-[45%] bg-white rounded-lg shadow-md p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl font-semibold text-gray-800">
+                <div className="flex flex-wrap gap-2 justify-between items-center mb-6">
+                  <h3 className="text-xl font-semibold w-fit  text-gray-800">
                     ATS Optimization Results
                   </h3>
                   <button
-                    className="px-4 py-2 bg-green-500 text-[13px] hover:bg-green-600 text-white rounded-lg"
+                    className="px-4 py-2 h-fit w-fit bg-green-500 text-[13px] hover:bg-green-600 text-white rounded-lg"
                     onClick={handleCopy}
                   >
                     Copy All

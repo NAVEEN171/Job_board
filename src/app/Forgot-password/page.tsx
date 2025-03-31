@@ -62,13 +62,13 @@ const page = () => {
     }
   };
   return (
-    <div className="h-screen relative w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
+    <div className="h-screen relative w-full px-3 flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
       {errorshow && (
         <div
           style={{
             zIndex: 10000,
           }}
-          className="text-lg absolute top-[10px] left-1/2 -translate-x-1/2 border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4 px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+          className="text-lg xs:text-base absolute top-[10px] left-1/2 -translate-x-1/2 border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4 px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
         >
           {errorshow}
         </div>

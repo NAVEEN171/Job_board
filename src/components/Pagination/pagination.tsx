@@ -101,7 +101,7 @@ const Pagination = () => {
             <button
               key={index}
               onClick={() => changePageHandler(page)}
-              className={`px-3 py-2 xs:px-2 h-fit rounded xs:text-xs border tracking-widest  ${
+              className={`px-3 py-2 xs:px-2 h-fit rounded xs:text-xs font-medium border tracking-widest  ${
                 currentPage === page
                   ? "bg-blue-500 text-white"
                   : page === "..."

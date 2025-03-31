@@ -68,7 +68,7 @@ const JobListing = () => {
             <div className="flex justify-between gap-3 items-start">
               <div className="flex gap-2 sm:gap-4">
                 <Image
-                  className="rounded-full h-[25px] w-[25px] sm:h-[50px] sm:w-[50px]"
+                  className="rounded-full h-[30px] w-[30px] sm:h-[50px] sm:w-[50px]"
                   src={Job.company_logo ? Job.company_logo : "/svgs/logo.png"}
                   width={50}
                   height={50}
@@ -81,7 +81,7 @@ const JobListing = () => {
               </div>
 
               <div className="flex  gap-2 sm:gap-4">
-                <div className="locations-date w-fit  sm:font-semibold  font-bold  text-xs sm:text-base">
+                <div className="locations-date w-fit  sm:font-semibold  font-bold  text-sm sm:text-base">
                   {Job.locations &&
                     Job.locations.length > 0 &&
                     Job.locations[0].city !== "" && (
@@ -110,14 +110,14 @@ const JobListing = () => {
             </div>
             <div className="flex justify-center">
               <div className="flex flex-col xs:w-full  w-[90%] gap-[10px]">
-                <div className="job-title sm:hidden  text-sm font-bold sm:text-base">
+                <div className="job-title sm:hidden   font-bold text-base">
                   <div>{Job.job_title}</div>
                   <div className="text-gray-400 ">{Job.company_name}</div>
                 </div>
                 {Job.company_data?.description_summary && (
                   <div>
                     <div className="font-medium  text-base">About</div>
-                    <div className="text-sm xs:text-xs  font-semibold text-gray-400 mt-1">
+                    <div className="text-sm   font-semibold text-gray-400 mt-1">
                       {Job.company_data.description_summary}
                     </div>
                   </div>
@@ -125,7 +125,7 @@ const JobListing = () => {
                 {Job.requirements_summary && (
                   <div>
                     <div className="font-medium text-base ">Requirements</div>
-                    <div className="font-semibold text-gray-400 xs:text-xs text-sm mt-1">
+                    <div className="font-semibold text-gray-400  text-sm mt-1">
                       {Job.requirements_summary}
                     </div>
                   </div>

@@ -152,13 +152,13 @@ const page = () => {
 
   return (
     <div className="h-screen relative w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
-      <div className="errorsshower w-full absolute top-2 flex flex-col items-center gap-[10px]">
+      <div className="errorsshower px-3 w-full absolute top-2 flex flex-col items-center gap-[10px]">
         {errorshow && (
           <div
             style={{
               zIndex: 10000,
             }}
-            className="text-lg border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4 px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+            className="text-lg xs:text-base border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4 px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
           >
             {errorshow}
           </div>
@@ -169,7 +169,7 @@ const page = () => {
             style={{
               zIndex: 10000,
             }}
-            className="text-lg border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4 px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+            className="text-lg xs:text-base border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4 px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
           >
             {errors.passworderror}
           </div>
@@ -179,7 +179,7 @@ const page = () => {
             style={{
               zIndex: 10000,
             }}
-            className="text-lg border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4 px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
+            className="text-lg xs:text-base border-4 border-white w-fit bg-gradient-to-r from-blue-500/70 to-blue-600/70 py-4 px-8 text-white shadow-2xl rounded-[10px] backdrop-blur-sm"
           >
             {errors.confirmpassworderror}
           </div>

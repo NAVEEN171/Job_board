@@ -282,7 +282,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
             onChange={(e) => {
               setCurrentIndustryVal(e.target.value);
             }}
-            className="hidden w-[200px] xs:w-[150px] font-medium xs:text-base text-lg"
+            className="hidden w-[200px] xs:w-[180px] font-medium xs:text-base text-lg"
             placeholder="Type..."
           ></input>
         </div>

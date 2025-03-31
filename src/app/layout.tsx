@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/providers/Providers";
+// import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "FlexiBoard",

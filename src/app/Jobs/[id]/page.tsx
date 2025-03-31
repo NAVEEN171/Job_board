@@ -75,9 +75,7 @@ const page = ({ params }: JobPageProps) => {
       }
     }
   }
-  useEffect(() => {
-    console.log(currentJob);
-  }, [currentJob]);
+
   return (
     <div className="w-full mb-5 ">
       <Navbar />
