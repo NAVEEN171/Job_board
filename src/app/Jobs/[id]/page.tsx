@@ -9,8 +9,8 @@ import {
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { Authactions } from "@/store/Substores/Authslice";
+import OvalLoader from "@/components/ovalLoader/ovalLoader";
 import store from "@/store";
-import { current } from "@reduxjs/toolkit";
 import Navbar from "@/components/Navbar/Navbar";
 
 interface JobPageProps {
@@ -24,12 +24,19 @@ const page = ({ params }: JobPageProps) => {
   const dispatch = useDispatch();
   type RootState = ReturnType<typeof store.getState>;
   const [currentJob, setCurrentJob] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const getCurrentJob = async () => {
-    let response = await fetch(`/api/get-job/${jobId}`);
-    let data = await response.json();
-    if (response.ok) {
-      setCurrentJob(data.job);
-      console.log(data.job);
+    try {
+      setLoading(true);
+      let response = await fetch(`/api/get-job/${jobId}`);
+      let data = await response.json();
+      if (response.ok) {
+        setCurrentJob(data.job);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,16 +84,16 @@ const page = ({ params }: JobPageProps) => {
   }
 
   return (
-    <div className="w-full mb-5 ">
+    <div className={`w-full ${loading ? "h-screen" : ""} mb-5 `}>
       <Navbar />
-      {currentJob && (
+      {currentJob && !loading && (
         <div className="w-full flex justify-center">
           <div className="w-[80%] flex flex-col gap-3">
             <div className="font-bold text-2xl">{currentJob.job_title}</div>
             <div className="text-gray-400 font-medium">
               {formatDate(currentJob.date_posted)}
             </div>
-            <div className="company-urls flex  gap-[10px]">
+            <div className="company-urls flex xs:font-sm  font-medium text-base gap-[10px]">
               {currentJob?.company_link && (
                 <Link
                   className="px-[10px] py-[5px] rounded-[5px]  bg-[#EFF8FF] text-[#3A90FF]   border-[2px] border-[#B2DDFF] "
@@ -112,7 +119,7 @@ const page = ({ params }: JobPageProps) => {
                 </Link>
               )}
             </div>
-            <div className="flex gap-[10px] max-w-[80%] flex-wrap">
+            <div className="flex gap-[10px] font-medium xs:font-sm text-base max-w-[80%] flex-wrap">
               {currentJob.job_board && (
                 <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
                   {currentJob.job_board}
@@ -153,10 +160,10 @@ const page = ({ params }: JobPageProps) => {
                     ))}
               </div>
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
               <Link
                 href="/"
-                className="px-[10px] cursor-pointer py-[6px] rounded-md border  border-1 border-[#C8C8C8]"
+                className="px-[10px] cursor-pointer font-medium text-base xs:text-sm py-[6px] rounded-md border  border-1 border-[#C8C8C8]"
               >
                 🔍 Search all jobs
               </Link>
@@ -188,6 +195,9 @@ const page = ({ params }: JobPageProps) => {
           </div>
         </div>
       )}
+      <div className="h-[calc(100%-100px)] flex items-center justify-center w-full">
+        {loading && <OvalLoader />}
+      </div>
     </div>
   );
 };

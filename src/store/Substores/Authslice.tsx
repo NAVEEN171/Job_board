@@ -26,7 +26,7 @@ const initialAuthstate: Authtype = {
   errorshow: "",
   currentJobs: [],
   currentPage: 1,
-  extraOption: "Relevance & Date",
+  extraOption: "Experience (Low to High)",
   isJobsLoading: false,
   totalPages: 0,
   UserId: null,

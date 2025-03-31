@@ -55,6 +55,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
     let JOBS_PER_PAGE = 10;
 
     const matchConditions: any[] = [];
+    matchConditions.push({ requirements_summary: { $ne: null } });
+    matchConditions.push({ description: { $ne: null } });
 
     if (extraOption === "Date Added") {
       daysPosted = [0];
@@ -130,8 +132,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
       salaryCondition.$or.push({ salary_range: null });
     }
 
-    console.log(extraOption);
-
     if (salaryRange.length) {
       if (extraOption === "Highest Salary") {
         salaryCondition.$or.push({
@@ -180,7 +180,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
     }
 
     if (locations.length && !locations.includes("Worldwide")) {
-      console.log(locations);
       matchConditions.push({
         locations: {
           $elemMatch: {

@@ -1,17 +1,30 @@
-import { NextResponse, NextRequest } from "next/server";
-import ConnectToDB from "@/utils/connections/mongoose";
+// /lib/cron/updateJobDates.ts
+import cron from "node-cron";
+import { MongoClient, ObjectId } from "mongodb";
 import { format, subDays } from "date-fns";
+import ConnectToDB from "@/utils/connections/mongoose";
 
-export async function POST(req: NextRequest) {
+// Track if the job is already running to prevent overlaps
+let isJobRunning = false;
+
+// Function to update job dates
+async function updateJobDates() {
+  // Skip if the job is already running
+  if (isJobRunning) {
+    console.log("Job update already in progress, skipping");
+    return;
+  }
+
+  isJobRunning = true;
+  console.log("Starting job dates update task:", new Date().toISOString());
+
   try {
     // Establish database connection
-
     let dbConn = await ConnectToDB();
     if (!dbConn) {
-      return NextResponse.json(
-        { message: "Couldn't connect to DB" },
-        { status: 500 }
-      );
+      console.error("Couldn't connect to DB");
+      isJobRunning = false;
+      return;
     }
 
     // Get the jobs collection
@@ -44,35 +57,35 @@ export async function POST(req: NextRequest) {
 
     // Check if there are any operations to perform
     if (bulkWriteOperations.length === 0) {
-      return NextResponse.json(
-        { message: "No jobs found to update" },
-        { status: 200 }
-      );
+      console.log("No jobs found to update");
+      isJobRunning = false;
+      return;
     }
 
     // Perform bulk write to update date_posted field
     const result = await jobsCollection.bulkWrite(bulkWriteOperations);
 
-    return NextResponse.json(
-      {
-        message: "Date posted updated successfully",
-        modifiedCount: result.modifiedCount,
-        totalJobs: allJobIds.length,
-        datesUsed: {
-          currentDate: currentDateFormatted,
-          previousDate: previousDateFormatted,
-        },
+    console.log({
+      message: "Date posted updated successfully",
+      modifiedCount: result.modifiedCount,
+      totalJobs: allJobIds.length,
+      datesUsed: {
+        currentDate: currentDateFormatted,
+        previousDate: previousDateFormatted,
       },
-      { status: 200 }
-    );
+    });
   } catch (error) {
     console.error("Error updating date_posted field:", error);
-    return NextResponse.json(
-      {
-        message: "Failed to update date_posted field",
-        error: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 }
-    );
+  } finally {
+    isJobRunning = false;
   }
+}
+
+// Initialize the cron job
+export function initUpdateJobDatesCron() {
+  // Run daily at midnight - adjust schedule as needed
+  return cron.schedule("0 0 * * *", updateJobDates, {
+    scheduled: true,
+    timezone: "UTC",
+  });
 }

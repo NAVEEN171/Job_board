@@ -130,7 +130,7 @@ const JobListing = () => {
                     </div>
                   </div>
                 )}
-                <div className="company-urls xs:text-xs text-base font-medium flex gap-[10px]">
+                <div className="company-urls xs:text-sm text-base font-medium flex gap-[10px]">
                   {Job?.company_link && (
                     <Link
                       className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF] border-[2px] border-[#B2DDFF]"
@@ -161,7 +161,7 @@ const JobListing = () => {
                 </div>
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="flex gap-[10px] font-medium xs:text-xs text-base xs:max-w-[95%] max-w-[80%] flex-wrap"
+                  className="flex gap-[10px] font-medium xs:text-sm text-base xs:max-w-[95%] max-w-[80%] flex-wrap"
                 >
                   {Job.job_board && (
                     <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
