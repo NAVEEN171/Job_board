@@ -11,11 +11,11 @@ interface ResponseMessage {
 export async function jwtRefreshverification(
   req: NextRequest
 ): Promise<ResponseMessage> {
-  console.log("I am running up");
+  // console.log("I am running up");
   try {
     const body = await req.json();
     const Token = body.refreshToken;
-    console.log(Token);
+    // console.log(Token);
 
     if (!Token) {
       return { message: "Token is missing", status: 403 };
@@ -27,7 +27,7 @@ export async function jwtRefreshverification(
     ) as JwtPayload;
 
     (req as any).user = validate;
-    console.log(validate);
+    // console.log(validate);
     let accessToken;
     if (validate.user) {
       accessToken = await generateToken(validate.user);
@@ -40,7 +40,7 @@ export async function jwtRefreshverification(
       status: 200,
     };
   } catch (err: any) {
-    console.log("token is expired");
+    // console.log("token is expired");
     if (err instanceof jwt.TokenExpiredError) {
       return {
         message: "Token has expired",

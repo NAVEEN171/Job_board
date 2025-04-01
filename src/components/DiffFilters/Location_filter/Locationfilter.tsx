@@ -71,7 +71,7 @@ const Locationfilter: React.FC<Filter2type> = ({
 
   const handlePopState = () => {
     const params = new URLSearchParams(window.location.search);
-    console.log("paramsList is ");
+    // console.log("paramsList is ");
 
     let paramsList = [
       {
@@ -84,7 +84,7 @@ const Locationfilter: React.FC<Filter2type> = ({
     paramsList.forEach((Each) => {
       if (params.has(Each.param)) {
         let currentList = params.get(Each.param)?.split(",");
-        console.log(currentList);
+        // console.log(currentList);
         if (
           currentList &&
           (Each.values.length !== currentList.length ||
@@ -93,11 +93,11 @@ const Locationfilter: React.FC<Filter2type> = ({
             ))
         ) {
           if (Each.values.length > currentList.length) {
-            console.log("hey");
+            // console.log("hey");
 
             handlelocationback("Backspace");
           } else {
-            console.log("hey2");
+            // console.log("hey2");
             let targetCountry = currentList[currentList.length - 1];
             const result = LocationTypes.find(
               (item) => item.country === targetCountry
@@ -186,8 +186,8 @@ const Locationfilter: React.FC<Filter2type> = ({
     ) {
       const duplicate = [...Selectedvalues.current];
       const last_ele = duplicate.pop();
-      console.log("duplicate is");
-      console.log(duplicate);
+      // console.log("duplicate is");
+      // console.log(duplicate);
 
       setSelectlocationtypes(duplicate);
       let first7Regions = countryData.slice(0, 7);

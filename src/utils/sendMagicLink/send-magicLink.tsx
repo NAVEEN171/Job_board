@@ -95,7 +95,7 @@ export const sendMagicLink = async (
     };
     const info = await transporter.sendMail(mailOptions);
     if (info.messageId) {
-      console.log("Email is successfully sent", info.messageId);
+      // console.log("Email is successfully sent", info.messageId);
 
       return true;
     } else {

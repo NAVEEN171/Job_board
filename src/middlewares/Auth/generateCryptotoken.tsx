@@ -24,8 +24,8 @@ export const generateToken = () => {
 
 export const storeToken = async (token: string, user: userData) => {
   const tokenKey = `token:${token}`;
-  console.log("the token key is ");
-  console.log(tokenKey);
+  // console.log("the token key is ");
+  // console.log(tokenKey);
   let redisConn = await connecttoRedis();
   let EXPIRY_TIME = 60 * 15;
   let newData;
@@ -43,7 +43,7 @@ export const storeToken = async (token: string, user: userData) => {
   }
   const storedData = await redisClient.hGetAll(tokenKey);
   newData = { ...storedData };
-  console.log("Stored token data:", newData);
+  // console.log("Stored token data:", newData);
 };
 interface returnType {
   message: string;
@@ -54,12 +54,12 @@ export const verifyAndConsumeToken = async (token: string) => {
   const tokenKey = `token:${token}`;
   let redisConn = await connecttoRedis();
   let storedData;
-  console.log("redis conn is", redisConn);
+  // console.log("redis conn is", redisConn);
   if (!redisConn) {
     return { message: "couldnt connect to redis", valid: false };
   }
   const exists = await redisClient.exists(tokenKey);
-  console.log(`exists=${exists}`);
+  // console.log(`exists=${exists}`);
 
   if (exists) {
     storedData = await redisClient.hGetAll(tokenKey);
@@ -94,7 +94,7 @@ export const verifyAndConsumeToken = async (token: string) => {
   if (dbConn) {
     const userscollection = dbConn.connection.collection("users");
     const insertPerson = await userscollection.insertOne(newData);
-    console.log(insertPerson);
+    // console.log(insertPerson);
 
     if (insertPerson.acknowledged) {
       let exisitinguser = await userscollection.findOne({
@@ -109,7 +109,7 @@ export const verifyAndConsumeToken = async (token: string) => {
         };
       }
     }
-    console.log(newData);
+    // console.log(newData);
     return {
       message: "something went wrong",
       valid: false,

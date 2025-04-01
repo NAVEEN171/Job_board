@@ -22,16 +22,16 @@ const Switch = React.forwardRef<
   ) => {
     const [checked, setChecked] = React.useState(initialChecked);
     const router = useRouter();
-    console.log("ok");
+    // console.log("ok");
 
     const handlePopState = () => {
       const params = new URLSearchParams(window.location.search);
 
       if (params.has(title)) {
         let currentList = params.get(title);
-        console.log("paramsList is ");
+        // console.log("paramsList is ");
 
-        console.log(currentList);
+        // console.log(currentList);
         changechecked(currentList === "true");
       } else {
         setChecked(false);
@@ -45,11 +45,11 @@ const Switch = React.forwardRef<
       // Only attaches the listener for popstate events
       window.addEventListener("popstate", handlePopState);
       const searchparams = new URLSearchParams(window.location.search);
-      console.log("gotcha");
-      console.log(searchparams);
+      // console.log("gotcha");
+      // console.log(searchparams);
       if (searchparams.has(title)) {
         let currentList = searchparams.get(title);
-        console.log("current list is", currentList);
+        // console.log("current list is", currentList);
         setChecked(currentList === "true");
       }
       return () => {

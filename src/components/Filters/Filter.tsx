@@ -275,7 +275,7 @@ const Filter = () => {
         )
       );
       if (response.status === 401) {
-        console.log("Authentication required !");
+        // console.log("Authentication required !");
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
@@ -307,7 +307,7 @@ const Filter = () => {
       if (jobsStatus === 403) {
         if (!refreshToken) {
           updateJobsData("", "");
-          console.log("Authentication required!");
+          // console.log("Authentication required!");
           dispatch(Authactions.setloggedIn(false));
 
           // if (timeoutRef.current) {
@@ -337,7 +337,7 @@ const Filter = () => {
 
         const data = await response.json();
         if (response.ok) {
-          console.log(data);
+          // console.log(data);
           dispatch(
             Authactions.setCookieInMinutes({
               name: "accessToken",
@@ -364,7 +364,7 @@ const Filter = () => {
         }
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     } finally {
       dispatch(Authactions.setIsJobsLoading(false));
     }
@@ -397,7 +397,7 @@ const Filter = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    console.log(params);
+    // console.log(params);
     const paramsList = ["JobTitle", "LocationType"];
     const paramfunctions = [
       FilterActions.setjobtitle,
@@ -419,11 +419,11 @@ const Filter = () => {
       }
     }
     paramsList.forEach((param, idx) => {
-      console.log(param);
+      // console.log(param);
       if (params.has(param)) {
         currentList = params.get(param)?.split(",");
-        console.log(currentList);
-        console.log(paramfunctions[idx]);
+        // console.log(currentList);
+        // console.log(paramfunctions[idx]);
         dispatch(paramfunctions[idx](currentList!));
       }
     });
@@ -437,8 +437,8 @@ const Filter = () => {
     if (params.has("salary")) {
       let salaryRange = params.get("salary")?.split("-").map(Number) ?? [];
       if (salaryRange) {
-        console.log("exp is ");
-        console.log(salaryRange);
+        // console.log("exp is ");
+        // console.log(salaryRange);
         dispatch(FilterActions.setSliderValue(salaryRange));
         salaryChangeShower(salaryRange);
       }
@@ -450,8 +450,8 @@ const Filter = () => {
     if (params.has("Location")) {
       let Locationslist = params.get("Location")?.split(",");
       if (Locationslist) {
-        console.log("locs  is ");
-        console.log(Locationslist);
+        // console.log("locs  is ");
+        // console.log(Locationslist);
         const filteredData = countryData.filter((item) =>
           Locationslist.includes(item.country)
         );
@@ -460,13 +460,13 @@ const Filter = () => {
     }
     if (params.has("Experience")) {
       let currentList = params.get("Experience")?.split("-").map(Number);
-      console.log("paramsList is ");
+      // console.log("paramsList is ");
       if (currentList) {
         const numList = currentList.map(Number);
         dispatch(FilterActions.setExperiencevalue(numList));
       }
 
-      console.log(currentList);
+      // console.log(currentList);
     }
     setParamsUpdated(true);
   }, []);
@@ -484,7 +484,7 @@ const Filter = () => {
     let response = await fetch(`/api/get-user/${userId}`);
     let data = await response.json();
     if (response.ok && data.user) {
-      console.log(data.user);
+      // console.log(data.user);
       dispatch(Authactions.setUser(data.user));
     }
   }
@@ -520,7 +520,7 @@ const Filter = () => {
     const check = checkAdvancedParams();
 
     if (check && !advancedShow) {
-      console.log("I am running first hahah");
+      // console.log("I am running first hahah");
       dispatch(Authactions.setAdvancedShow(true));
 
       const params = new URLSearchParams(window.location.search);
@@ -551,8 +551,8 @@ const Filter = () => {
       paramList.forEach((param, idx) => {
         if (params.has(param)) {
           currentList = params.get(param)?.split(",")!;
-          console.log(currentList);
-          console.log(paramfunctions[idx]);
+          // console.log(currentList);
+          // console.log(paramfunctions[idx]);
           dispatch(paramfunctions[idx](currentList));
         }
       });
@@ -572,7 +572,7 @@ const Filter = () => {
         FilterActions.setselectedEmptype,
         FilterActions.setSelectedLocations,
       ];
-      console.log(paramList);
+      // console.log(paramList);
       paramList.forEach((param, idx) => {
         if (params.has(param)) {
           params.delete(param);
@@ -639,11 +639,11 @@ const Filter = () => {
   };
 
   useEffect(() => {
-    console.log(Locationdropdown);
+    // console.log(Locationdropdown);
   }, [Locationdropdown]);
 
   useEffect(() => {
-    console.log(searchParams.get("JobTitle"));
+    // console.log(searchParams.get("JobTitle"));
     let count = 0;
     const AdvancedList: string[][] = [
       ["Industries"],
@@ -681,9 +681,9 @@ const Filter = () => {
     ];
 
     Dropdowndata.forEach((data, idx) => {
-      console.log("values");
-      console.log(con);
-      console.log(idx);
+      // console.log("values");
+      // console.log(con);
+      // console.log(idx);
 
       if (
         activeDropdown !== data.root &&
@@ -691,7 +691,7 @@ const Filter = () => {
         Array.isArray(con[idx].content) &&
         con[idx].content.length === 0
       ) {
-        console.log(data.root + " accessed ");
+        // console.log(data.root + " accessed ");
         jobtitlediv = document.getElementById(data.Namediv);
         jobtitleinput = document.getElementById(data.Nameinput);
         if (jobtitlediv?.classList.contains("hidden") && jobtitleinput) {
@@ -707,17 +707,17 @@ const Filter = () => {
 
     if (params.has("Experience")) {
       let currentList = params.get("Experience")?.split("-");
-      console.log("paramsList is ");
+      // console.log("paramsList is ");
       if (currentList) {
         const numList = currentList.map(Number);
         dispatch(FilterActions.setExperiencevalue(numList));
       }
 
-      console.log(currentList);
+      // console.log(currentList);
     }
     if (params.has("salary")) {
       let currentList = params.get("salary")?.split("-");
-      console.log("paramsList is ");
+      // console.log("paramsList is ");
       if (currentList) {
         const numList = currentList.map(Number);
         dispatch(FilterActions.setSliderValue(numList));
@@ -725,10 +725,10 @@ const Filter = () => {
     }
     if (params.has("datePosted")) {
       let currentList = params.get("datePosted");
-      console.log("paramsList is ");
+      // console.log("paramsList is ");
       if (currentList) {
         const numList = [parseInt(currentList)];
-        console.log(numList);
+        // console.log(numList);
         dispatch(FilterActions.setsingleSlidervalue(numList));
       }
     }
@@ -757,8 +757,8 @@ const Filter = () => {
   }, [Experiencevalue]);
 
   const handleClick = (e: MouseEvent) => {
-    console.log("clicked");
-    console.log(e.target);
+    // console.log("clicked");
+    // console.log(e.target);
 
     let filter1 = document.querySelector(".filter-1") as HTMLElement;
     let filter2 = document.querySelector(".filter-2") as HTMLElement;
@@ -829,7 +829,7 @@ const Filter = () => {
     ) {
       return;
     } else {
-      console.log("clicked outside");
+      // console.log("clicked outside");
 
       setactiveDropdown(null);
     }
@@ -884,7 +884,7 @@ const Filter = () => {
   };
 
   return (
-    <div className="flex flex-col  gap-[30px]">
+    <div className="flex flex-col mt-3  gap-[30px]">
       <div className="filters-wrapper relative flex xs:gap-5 gap-[30px]  flex-wrap justify-start sm:justify-center w-full">
         <Filter1
           jobtitle={jobtitle}
@@ -1289,7 +1289,7 @@ const Filter = () => {
                     advancedChangeHandler(location);
                   }}
                   key={index + "loc"}
-                  className="p-[5px] text-sm font-medium  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  "
+                  className="p-[5px] text-base xs:text-sm font-medium  hover:bg-[#4aa3fa] hover:text-white cursor-pointer  "
                 >
                   <div className="drop-down-list-val w-auto px-[15px]">
                     {location}

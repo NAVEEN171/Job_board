@@ -10,7 +10,6 @@ import { subDays, format, parseISO } from "date-fns";
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     let verified = await jwtverification(req);
-    console.log(verified);
     if (verified.message === "Token has expired") {
       return NextResponse.json(
         {

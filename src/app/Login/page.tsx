@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useGoogleLogin } from "@react-oauth/google";
 import store from "@/store";
+import { Oval } from "react-loader-spinner";
 
 const page = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,8 @@ const page = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setemail] = useState<string>("");
   const [password, setpassword] = useState<string>("");
+  const [isLoginLoading, setIsLoginLoading] = useState<boolean>(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
   type loginErrorstype = {
     emailerror: string;
     passworderror: string;
@@ -38,8 +41,6 @@ const page = () => {
   } => {
     let updatedErrors: loginErrorstype = { ...errors };
 
-    console.log(updatedErrors);
-
     if (email.trim() === "" || password === "") {
       updatedErrors.emailerror = "Some fields are empty";
       setErrors(updatedErrors);
@@ -52,7 +53,6 @@ const page = () => {
       return { updatedErrors, isValid: false };
     } else {
       if (!email.includes("@") && email.trim().length > 0) {
-        console.log("email error");
         updatedErrors.emailerror = "Email id should contain @";
       }
       if (password.trim().length < 8) {
@@ -66,7 +66,7 @@ const page = () => {
       timeoutRef.current = setTimeout((prevErrors: any) => {
         setErrors({ ...prevErrors, emailerror: "", passworderror: "" });
       }, 3000);
-      console.log(updatedErrors);
+      // console.log(updatedErrors);
       if (updatedErrors.emailerror || updatedErrors.passworderror) {
         return { updatedErrors, isValid: false };
       }
@@ -76,78 +76,85 @@ const page = () => {
 
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
-
-    const { updatedErrors, isValid } = validateFields();
-    console.log(isValid);
-    if (isValid) {
-      let response = await fetch("/api/auth/Login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-      let data = await response.json();
-
-      if (response.ok) {
-        console.log(data);
-
-        if (dispatch(Authactions.getCookie("userId")).payload.length) {
-          dispatch(Authactions.deleteCookie("userId"));
-        }
-        dispatch(
-          Authactions.setCookieInMinutes({
-            name: "userId",
-            value: data.user._id,
-            expirationMinutes: 4,
-          })
-        );
-
-        if (data.user._id?.length) {
-          dispatch(Authactions.setUserId(data.user._id));
-        }
-        dispatch(
-          Authactions.setCookieInMinutes({
-            name: "accessToken",
-            value: data.user.accessToken,
-            expirationMinutes: 4,
-          })
-        );
-        dispatch(
-          Authactions.setCookieInMinutes({
-            name: "refreshToken",
-            value: data.user.refreshToken,
-            expirationMinutes: 4,
-          })
-        );
-
-        console.log(data);
-
-        console.log("succesfully logged in");
-        dispatch(Authactions.setloggedIn(true));
-        router.push("/");
-      } else {
+    try {
+      const { updatedErrors, isValid } = validateFields();
+      setIsLoginLoading(true);
+      // console.log(isValid);
+      if (isValid) {
+        let response = await fetch("/api/auth/Login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
         let data = await response.json();
-        if (data.message) {
-          seterrorshow(data.message);
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-          }
-          timeoutRef.current = setTimeout(() => {
-            seterrorshow("");
-          }, 3000);
-        }
 
-        console.log(data);
+        if (response.ok) {
+          // console.log(data);
+
+          if (dispatch(Authactions.getCookie("userId")).payload.length) {
+            dispatch(Authactions.deleteCookie("userId"));
+          }
+          dispatch(
+            Authactions.setCookieInMinutes({
+              name: "userId",
+              value: data.user._id,
+              expirationMinutes: 4,
+            })
+          );
+
+          if (data.user._id?.length) {
+            dispatch(Authactions.setUserId(data.user._id));
+          }
+          dispatch(
+            Authactions.setCookieInMinutes({
+              name: "accessToken",
+              value: data.user.accessToken,
+              expirationMinutes: 4,
+            })
+          );
+          dispatch(
+            Authactions.setCookieInMinutes({
+              name: "refreshToken",
+              value: data.user.refreshToken,
+              expirationMinutes: 4,
+            })
+          );
+
+          // console.log(data);
+
+          // console.log("succesfully logged in");
+          dispatch(Authactions.setloggedIn(true));
+          router.push("/");
+        } else {
+          let data = await response.json();
+          if (data.message) {
+            seterrorshow(data.message);
+            if (timeoutRef.current) {
+              clearTimeout(timeoutRef.current);
+            }
+            timeoutRef.current = setTimeout(() => {
+              seterrorshow("");
+            }, 3000);
+          }
+
+          // console.log(data);
+        }
       }
+    } catch (err) {
+      // console.log(err);
+    } finally {
+      setIsLoginLoading(false);
     }
   };
 
   const handleSignIn = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
+      setIsGoogleLoading(true);
       try {
         const response = await fetch("/api/auth/[...nextauth]", {
           method: "POST",
@@ -195,11 +202,14 @@ const page = () => {
         }
       } catch (error) {
         seterrorshow("Network error");
+      } finally {
+        setIsGoogleLoading(false);
       }
     },
     flow: "implicit",
     onError: () => {
       seterrorshow("Login Failed");
+      setIsGoogleLoading(false);
     },
   });
 
@@ -312,23 +322,48 @@ const page = () => {
             onClick={(e) => {
               submitHandler(e);
             }}
+            disabled={isLoginLoading}
             className="text-white text-[16px] sm:text-[18px] text-center w-full rounded-[5px] py-[5px] px-[20px]
-           bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 font-semibold transition-all duration-300 shadow-lg shadow-blue-500/30"
+           bg-gradient-to-r flex gap-2 items-center justify-center from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 font-semibold transition-all duration-300 shadow-lg shadow-blue-500/30"
           >
+            {isLoginLoading && (
+              <Oval
+                height={20}
+                width={20}
+                color="#FFFFFF"
+                visible={true}
+                secondaryColor="#4285F4"
+                strokeWidth={4}
+                ariaLabel="oval-loading"
+              />
+            )}
             Login
           </button>
           <button
             onClick={() => {
               handleSignIn();
             }}
+            disabled={isGoogleLoading}
             className="flex gap-[5px] mt-[10px] w-full items-center bg-white/50 hover:bg-white/70 border-2 border-gray-200 justify-center rounded-[5px] py-[5px] px-[20px]"
           >
-            <Image
-              src="/Images/google.png"
-              width={24}
-              height={24}
-              alt="google"
-            />
+            {!isGoogleLoading ? (
+              <Image
+                src="/Images/google.png"
+                width={24}
+                height={24}
+                alt="google"
+              />
+            ) : (
+              <Oval
+                height={24}
+                width={24}
+                color="#4285F4"
+                visible={true}
+                secondaryColor="#4285F4"
+                strokeWidth={4}
+                ariaLabel="oval-loading"
+              />
+            )}
             <div className="text-[16px] sm:text-[18px] font-semibold">
               Log In with Google
             </div>

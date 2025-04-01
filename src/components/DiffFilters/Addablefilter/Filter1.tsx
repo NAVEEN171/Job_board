@@ -94,7 +94,6 @@ const Filter1: React.FC<Filter1type> = ({
         closestFilter.setAttribute("data-closed", "false");
       }
     }, 200);
-    console.log(job);
     let jobtitle_duplicate = [...jobtitle];
     jobtitle_duplicate = jobtitle_duplicate.filter((jobs) => {
       return jobs !== job;

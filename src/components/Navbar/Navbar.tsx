@@ -1,6 +1,6 @@
 import store from "@/store";
 import { useRouter } from "next/navigation";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Authactions } from "@/store/Substores/Authslice";
 
@@ -8,8 +8,35 @@ const Navbar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   type RootState = ReturnType<typeof store.getState>;
+  useEffect(() => {
+    if (Authactions.getCookie("userId")?.payload) {
+      dispatch(Authactions.setloggedIn(true));
+    }
+  }, []);
+
+  // Add effect to handle outside clicks
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent): void => {
+      if (
+        isOpen &&
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node) &&
+        menuButtonRef.current &&
+        !menuButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const logoutHandler = () => {
     dispatch(Authactions.setUserId(null));
@@ -26,6 +53,7 @@ const Navbar = () => {
     if (RefreshToken) {
       dispatch(Authactions.deleteCookie("refreshToken"));
     }
+    router.push("/");
   };
 
   const toggleMenu = () => {
@@ -48,6 +76,7 @@ const Navbar = () => {
         {/* Hamburger menu for xs screens */}
         <div className="xs:block hidden">
           <button
+            ref={menuButtonRef}
             onClick={toggleMenu}
             className="flex flex-col justify-center items-center w-10 h-10 rounded hover:bg-sky-500 group"
           >
@@ -74,6 +103,7 @@ const Navbar = () => {
         </div>
 
         <div
+          ref={sidebarRef}
           className={`fixed top-0 left-0 h-screen w-3/5 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 md:hidden ${
             isOpen ? "translate-x-0" : "-translate-x-full"
           }`}

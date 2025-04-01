@@ -76,9 +76,9 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
         // Convert the file to base64
         const base64String = await convertPDFToBase64(selectedFile);
         setBase64PDF(base64String);
-        console.log("Base64 PDF:", base64String); // You can remove this log in production
+        // console.log("Base64 PDF:", base64String); // You can remove this log in production
       } catch (error) {
-        console.log("Error converting file to base64:", error);
+        // console.log("Error converting file to base64:", error);
       }
     }
   };
@@ -94,7 +94,7 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
     if (!file || !base64PDF || desc === "") {
       setErrorShow("Please provide both a resume and a job description.");
       if (timeoutRef.current) {
-        console.log(timeoutRef.current);
+        // console.log(timeoutRef.current);
         clearTimeout(timeoutRef.current);
       }
 
@@ -102,7 +102,7 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
         setErrorShow("");
       }, 3000);
       setLoading(false);
-      console.log("done");
+      // console.log("done");
       return;
     }
 
@@ -137,7 +137,7 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
       if (data && data.sections) {
         setSections(data.sections);
       } else {
-        console.log("Invalid response format");
+        // console.log("Invalid response format");
       }
     } catch (error) {
       setErrorShow(

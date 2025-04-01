@@ -32,7 +32,7 @@ export async function GET(
       userData.user.accessToken = accessToken;
       userData.user.refreshToken = refreshToken;
 
-      console.log(userData);
+      // console.log(userData);
       return NextResponse.json(
         { message: "succesfully verified", data: userData.user },
         { status: 200 }

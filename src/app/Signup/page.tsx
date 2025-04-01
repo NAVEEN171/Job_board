@@ -10,6 +10,7 @@ import { Authactions } from "@/store/Substores/Authslice";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useGoogleLogin } from "@react-oauth/google";
+import { Oval } from "react-loader-spinner";
 
 const page = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,8 @@ const page = () => {
   const [confirmpassword, setconfirmpassword] = useState<string>("");
   const [username, setusername] = useState<string>("");
   const [errorshow, seterrorshow] = useState<string>("");
+  const [isSignUpLoading, setIsSignUpLoading] = useState<boolean>(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   type signupErrorstype = {
@@ -99,34 +102,26 @@ const page = () => {
   };
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
-    const { updatedErrors, isValid } = validateFields();
-    console.log(isValid);
-    if (isValid) {
-      let response = await fetch("/api/auth/Sign-up", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          username,
-          confirmpassword,
-        }),
-      });
-      if (response.ok) {
-        let data = await response.json();
-        console.log(data);
-        seterrorshow(data.message);
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-        timeoutRef.current = setTimeout(() => {
-          seterrorshow("");
-        }, 3000);
-      } else {
-        let data = await response.json();
-        if (data.message) {
+    try {
+      setIsSignUpLoading(true);
+      const { updatedErrors, isValid } = validateFields();
+      // console.log(isValid);
+      if (isValid) {
+        let response = await fetch("/api/auth/Sign-up", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            username,
+            confirmpassword,
+          }),
+        });
+        if (response.ok) {
+          let data = await response.json();
+          // console.log(data);
           seterrorshow(data.message);
           if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -134,14 +129,31 @@ const page = () => {
           timeoutRef.current = setTimeout(() => {
             seterrorshow("");
           }, 3000);
-        }
+        } else {
+          let data = await response.json();
+          if (data.message) {
+            seterrorshow(data.message);
+            if (timeoutRef.current) {
+              clearTimeout(timeoutRef.current);
+            }
+            timeoutRef.current = setTimeout(() => {
+              seterrorshow("");
+            }, 3000);
+          }
 
-        console.log(data);
+          // console.log(data);
+        }
       }
+    } catch (err) {
+      // console.log(err);
+    } finally {
+      setIsSignUpLoading(false);
     }
   };
   const handleSignIn = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
+      setIsGoogleLoading(true);
+
       try {
         const response = await fetch("/api/auth/[...nextauth]", {
           method: "POST",
@@ -189,11 +201,14 @@ const page = () => {
         }
       } catch (error) {
         seterrorshow("Network error");
+      } finally {
+        setIsGoogleLoading(false);
       }
     },
     flow: "implicit",
     onError: () => {
       seterrorshow("Login Failed");
+      setIsSignUpLoading(false);
     },
   });
 
@@ -361,27 +376,52 @@ const page = () => {
             </Link>
           </div>
           <button
+            disabled={isSignUpLoading}
             onClick={(e) => {
               submitHandler(e);
             }}
             type="submit"
             className="text-white text-[16px] sm:text-[18px] text-center w-full rounded-[5px] py-[5px] px-[20px]
-           bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 font-semibold transition-all duration-300 shadow-lg shadow-blue-500/30"
+           bg-gradient-to-r flex items-center justify-center gap-2 from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 font-semibold transition-all duration-300 shadow-lg shadow-blue-500/30"
           >
+            {isSignUpLoading && (
+              <Oval
+                height={20}
+                width={20}
+                color="#FFFFFF"
+                visible={true}
+                secondaryColor="#4285F4"
+                strokeWidth={4}
+                ariaLabel="oval-loading"
+              />
+            )}
             Sign Up
           </button>
           <button
+            disabled={isGoogleLoading}
             onClick={() => {
               handleSignIn();
             }}
             className="flex gap-[5px] mt-[10px] w-full items-center bg-white/50 hover:bg-white/70 border-2 border-gray-200 justify-center rounded-[5px] py-[5px] px-[20px]"
           >
-            <Image
-              src="/Images/google.png"
-              width={24}
-              height={24}
-              alt="google"
-            />
+            {!isGoogleLoading ? (
+              <Image
+                src="/Images/google.png"
+                width={24}
+                height={24}
+                alt="google"
+              />
+            ) : (
+              <Oval
+                height={24}
+                width={24}
+                color="#4285F4"
+                visible={true}
+                secondaryColor="#4285F4"
+                strokeWidth={4}
+                ariaLabel="oval-loading"
+              />
+            )}
             <div className="text-[16px] sm:text-[18px] font-semibold">
               Sign Up with Google
             </div>

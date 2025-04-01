@@ -41,12 +41,6 @@ const page = ({ params }: JobPageProps) => {
   };
 
   useEffect(() => {
-    if (Authactions.getCookie("userId")?.payload) {
-      dispatch(Authactions.setloggedIn(true));
-    }
-  }, []);
-  useEffect(() => {
-    console.log(jobId);
     if (!jobId) {
       return;
     }
@@ -111,7 +105,7 @@ const page = ({ params }: JobPageProps) => {
               )}
               {currentJob.company_data?.linkedin_link && (
                 <Link
-                  className="px-[10px] py-[5px] rounded-[5px] bg-[#EFF8FF] text-[#3A90FF]  border-2 border-[#B2DDFF] "
+                  className="px-[10px] py-[5px] rounded-[5px] xs:font-xs bg-[#EFF8FF] text-[#3A90FF]  border-2 border-[#B2DDFF] "
                   target="_blank"
                   href={currentJob.company_data.linkedin_link}
                 >
@@ -119,7 +113,7 @@ const page = ({ params }: JobPageProps) => {
                 </Link>
               )}
             </div>
-            <div className="flex gap-[10px] font-medium xs:font-sm text-base max-w-[80%] flex-wrap">
+            <div className="flex gap-[10px] font-medium xs:font-xs text-base w-full md:max-w-[80%] flex-wrap">
               {currentJob.job_board && (
                 <div className="px-[10px] py-[5px] cursor-pointer rounded-[5px] border border-1 border-[#C8C8C8]">
                   {currentJob.job_board}

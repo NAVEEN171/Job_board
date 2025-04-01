@@ -14,7 +14,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
   const { email, username, password, confirmpassword } = body;
   const dbConn = await ConnectToDB();
-  console.log("connected toDB");
+  // console.log("connected toDB");
   try {
     let data;
     if (!email || !username || !password || !confirmpassword) {
@@ -24,12 +24,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
     }
     let hashedpassword = await bcrypt.hash(password, 10);
-    console.log(hashedpassword);
     let exisitinguser;
     if (dbConn) {
       const userscollection = await dbConn.connection.collection("users");
       exisitinguser = await userscollection.findOne({ email: email });
-      console.log(exisitinguser);
       if (exisitinguser) {
         return NextResponse.json(
           { message: "email already exists" },

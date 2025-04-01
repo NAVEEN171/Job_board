@@ -5,7 +5,6 @@ import bcrypt from "bcrypt";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
-  console.log(body);
 
   const { password, token } = body;
   let hashedpassword = await bcrypt.hash(password, 10);

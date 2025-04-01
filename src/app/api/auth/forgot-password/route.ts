@@ -55,7 +55,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
     }
     const token = await generateToken();
-    console.log("token");
+    // console.log("token");
     let sendmail;
     if (token) {
       sendmail = await passwordResetMail(token, email);
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       }
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return NextResponse.json(
       {
         message: "some thing went wrong !please try again",

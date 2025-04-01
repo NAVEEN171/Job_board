@@ -69,25 +69,25 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
 
   const handlePopState = () => {
     const params = new URLSearchParams(window.location.search);
-    console.log("paramsList is ");
+    // console.log("paramsList is ");
 
     let paramsList = [{ param: titleModified, values: Selectedvalues.current }];
 
     paramsList.forEach((Each) => {
       if (params.has(Each.param)) {
         let currentList = params.get(Each.param)?.split(",");
-        console.log(currentList);
+        // console.log(currentList);
         if (
           currentList &&
           (Each.values.length !== currentList.length ||
             !Each.values.every((value, index) => value === currentList[index]))
         ) {
           if (Each.values.length > currentList.length) {
-            console.log("hey");
+            // console.log("hey");
 
             handlelocationback("Backspace");
           } else {
-            console.log("hey2");
+            // console.log("hey2");
 
             setlocationhandler(
               currentList[currentList.length - 1],
@@ -137,7 +137,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
     }, 200);
 
     let newlocations = [...Selectedvalues.current];
-    console.log(IndustryDropDown);
+    // console.log(IndustryDropDown);
     let changedstr = loc.replace(/\(Select All\)/g, "").trim();
     if (newlocations.includes(changedstr)) {
       return;
@@ -170,7 +170,7 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
     let newlocations = [...SelectedIndustries];
     newlocations = newlocations.filter((location) => location !== loc);
     setSelectedIndustries(newlocations);
-    console.log("len :" + SelectedIndustries.length);
+    // console.log("len :" + SelectedIndustries.length);
 
     let locations = [...IndustryDropDown];
     locations.push(loc);

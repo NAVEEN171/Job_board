@@ -55,7 +55,7 @@ export async function googleAuthentication(accessToken: string) {
       };
 
       const result = await userCollection.insertOne(newUser);
-      console.log(result);
+      // console.log(result);
 
       user = { ...newUser, _id: result.insertedId };
     }
@@ -66,8 +66,8 @@ export async function googleAuthentication(accessToken: string) {
       process.env.JWT_REFRESH_TOKEN!,
       { expiresIn: "4m" }
     );
-    console.log("access token is");
-    console.log(token);
+    // console.log("access token is");
+    // console.log(token);
 
     return {
       id: user._id.toString(),
@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
   try {
     const { token } = await req.json();
     const user = await googleAuthentication(token);
-    console.log(user);
+    // console.log(user);
 
     if (!user.message) {
       return NextResponse.json({

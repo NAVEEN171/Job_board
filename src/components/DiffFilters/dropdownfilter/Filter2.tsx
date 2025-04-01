@@ -70,8 +70,8 @@ const Filter2: React.FC<Filter2type> = ({
 
   const handlePopState = () => {
     const params = new URLSearchParams(window.location.search);
-    console.log("paramsList is ");
-    console.log(titleModified);
+    // console.log("paramsList is ");
+    // console.log(titleModified);
 
     let paramsList = [
       {
@@ -84,18 +84,18 @@ const Filter2: React.FC<Filter2type> = ({
     paramsList.forEach((Each) => {
       if (params.has(Each.param)) {
         let currentList = params.get(Each.param)?.split(",");
-        console.log(currentList);
+        // console.log(currentList);
         if (
           currentList &&
           (Each.values.length !== currentList.length ||
             !Each.values.every((value, index) => value === currentList[index]))
         ) {
           if (Each.values.length > currentList.length) {
-            console.log("hey");
+            // console.log("hey");
 
             handlelocationback("Backspace");
           } else {
-            console.log("hey2");
+            // console.log("hey2");
 
             setlocationhandler(
               currentList[currentList.length - 1],
@@ -120,7 +120,7 @@ const Filter2: React.FC<Filter2type> = ({
   }, []);
 
   useEffect(() => {
-    console.log(Selectlocationtypes);
+    // console.log(Selectlocationtypes);
   }, [Selectlocationtypes]);
 
   useEffect(() => {
@@ -144,7 +144,7 @@ const Filter2: React.FC<Filter2type> = ({
   }, [locationvalue]);
 
   const setlocationhandler = (loc: string, e: EventTarget | null) => {
-    console.log(e);
+    // console.log(e);
     let clickedelement = e as HTMLElement | null; // Ensure it's cast safely
     let closestFilter: HTMLElement | null = null; // Initialize to null explicitly
 
@@ -162,8 +162,8 @@ const Filter2: React.FC<Filter2type> = ({
     }, 200);
     let locations = [...locationdroptype.current];
     locations = locations.filter((location) => location !== loc);
-    console.log("locations are:");
-    console.log(locations);
+    // console.log("locations are:");
+    // console.log(locations);
     setlocationtype(locations);
     let newlocations = [...Selectedvalues.current];
 
@@ -190,10 +190,10 @@ const Filter2: React.FC<Filter2type> = ({
 
     let newlocations = [...Selectlocationtypes];
     newlocations = newlocations.filter((location) => location !== loc);
-    console.log("array is ");
-    console.log(newlocations);
+    // console.log("array is ");
+    // console.log(newlocations);
     setSelectlocationtypes(newlocations);
-    console.log("len :" + Selectlocationtypes.length);
+    // console.log("len :" + Selectlocationtypes.length);
 
     let locations = [...LocationTypes];
     locations = locations.filter(
@@ -203,8 +203,8 @@ const Filter2: React.FC<Filter2type> = ({
   };
 
   const handlelocationback = (e: string) => {
-    console.log(e);
-    console.log(Selectlocationtypes);
+    // console.log(e);
+    // console.log(Selectlocationtypes);
 
     if (
       e === "Backspace" &&

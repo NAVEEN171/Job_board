@@ -99,12 +99,12 @@ const AuthSlice = createSlice({
         expirationMinutes: number;
       }>
     ) {
-      console.log("I am working");
+      // console.log("I am working");
       const { name, value, expirationMinutes } = action.payload;
       const date = new Date();
       date.setTime(date.getTime() + expirationMinutes * 60 * 1000);
       const expires = "expires=" + date.toUTCString();
-      console.log(name, value, expirationMinutes);
+      // console.log(name, value, expirationMinutes);
 
       document.cookie = `${name}=${value}; ${expires}; path=/`;
     },
@@ -117,12 +117,12 @@ const AuthSlice = createSlice({
         expirationDays: number;
       }>
     ) {
-      console.log("I am working");
+      // console.log("I am working");
       const { name, value, expirationDays } = action.payload;
       const date = new Date();
       date.setTime(date.getTime() + expirationDays * 24 * 60 * 60 * 1000);
       const expires = "expires=" + date.toUTCString();
-      console.log(name, value, expirationDays);
+      // console.log(name, value, expirationDays);
 
       document.cookie = `${name}=${value}; ${expires}; path=/`;
     },

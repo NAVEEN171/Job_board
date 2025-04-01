@@ -73,7 +73,6 @@ const FilterSlice = createSlice({
       state.EmpTypedropdown = action.payload;
     },
     setSelectedIndustries(state, action: PayloadAction<string[]>) {
-      console.log("Industries are running");
       state.SelectedIndustries = action.payload;
     },
 

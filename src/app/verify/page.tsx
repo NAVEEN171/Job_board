@@ -23,7 +23,7 @@ const page = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log(token);
+      // console.log(token);
       setloading(true);
       let response = await fetch(`api/verify/${token}`);
       let data;
@@ -77,7 +77,7 @@ const page = () => {
       fetchData();
     }
   }, [token]);
-  console.log(params.get("token"));
+  // console.log(params.get("token"));
   return (
     <div className="w-full  h-screen">
       <div className="error container absolute top-[10px] flex flex-col items-center">

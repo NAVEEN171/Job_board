@@ -8,6 +8,7 @@ import { IoEyeOffOutline } from "react-icons/io5";
 import { useSearchParams } from "next/navigation";
 import { FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { Oval } from "react-loader-spinner";
 
 const page = () => {
   const [errorshow, seterrorshow] = useState<string>("");
@@ -17,6 +18,7 @@ const page = () => {
   const [token, settoken] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const params = useSearchParams();
   const [showConfirmPassword, setConfirmShowPassword] =
@@ -75,54 +77,61 @@ const page = () => {
     return { updatedErrors, isValid: true };
   };
   const submitHandler = async (e: FormEvent) => {
-    e.preventDefault();
-    let valid = validateFields();
+    try {
+      e.preventDefault();
+      setIsLoading(true);
+      let valid = validateFields();
 
-    if (valid.isValid && status) {
-      let response = await fetch("/api/auth/update-password", {
-        method: "POST",
-        headers: {
-          "content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token,
-          password,
-        }),
-      });
-      let data = await response.json();
-      if (response.ok) {
-        seterrorshow(data.message);
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-        timeoutRef.current = setTimeout(() => {
-          seterrorshow("");
-          router.push("/Login");
-        }, 2000);
-      } else {
-        seterrorshow(data.message);
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-        timeoutRef.current = setTimeout(() => {
-          seterrorshow("");
-          if (response.status === 404) {
-            router.push("/Forgot-password");
+      if (valid.isValid && status) {
+        let response = await fetch("/api/auth/update-password", {
+          method: "POST",
+          headers: {
+            "content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token,
+            password,
+          }),
+        });
+        let data = await response.json();
+        if (response.ok) {
+          seterrorshow(data.message);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
           }
-        }, 3000);
+          timeoutRef.current = setTimeout(() => {
+            seterrorshow("");
+            router.push("/Login");
+          }, 2000);
+        } else {
+          seterrorshow(data.message);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+          timeoutRef.current = setTimeout(() => {
+            seterrorshow("");
+            if (response.status === 404) {
+              router.push("/Forgot-password");
+            }
+          }, 3000);
+        }
       }
+    } catch (err) {
+      // console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log(params);
+    // console.log(params);
     if (params && params.has("token")) {
       settoken(params.get("token"));
     }
   }, [params]);
 
   useEffect(() => {
-    console.log(token);
+    // console.log(token);
     const fetchData = async () => {
       let response = await fetch(`/api/auth/validate/${token}`);
       let data = await response.json();
@@ -269,12 +278,23 @@ const page = () => {
               submitHandler(e);
             }}
             type="submit"
-            disabled={!status}
+            disabled={!status || isLoading}
             className={`text-white ${
               status ? "cursor-pointer" : "cursor-not-allowed"
             } text-[16px] sm:text-[18px] text-center w-full rounded-[5px] py-[5px] px-[20px]
-           bg-gradient-to-r mt-[10px] from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 font-semibold transition-all duration-300 shadow-lg shadow-blue-500/30`}
+           bg-gradient-to-r flex items-center justify-center gap-2 mt-[10px] from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 font-semibold transition-all duration-300 shadow-lg shadow-blue-500/30`}
           >
+            {isLoading && (
+              <Oval
+                height={20}
+                width={20}
+                color="#FFFFFF"
+                visible={true}
+                secondaryColor="#4285F4"
+                strokeWidth={4}
+                ariaLabel="oval-loading"
+              />
+            )}
             {status ? "Submit" : "verifying ..."}
           </button>
 

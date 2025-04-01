@@ -44,7 +44,6 @@ export async function POST(request: NextRequest) {
 
     // Extract text from PDF
     const extractedText = await extractTextFromPDF(base64Content);
-    console.log("Extracted Text:", extractedText);
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({
@@ -82,8 +81,6 @@ export async function POST(request: NextRequest) {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-
-    console.log("Raw response:", text);
 
     // Clean the response text
     let cleanJson = text

@@ -85,7 +85,7 @@ export const passwordResetMail = async (
          <p>This link will expire in 15 minutes.</p>
         <a class="magiclink" href="${resetLink}">${resetLink}</a>
         <p class="or-element">or</p>
-        <a class="verify" href="${resetLink}">Verify your account</a>
+        <a class="verify" href="${resetLink}">Reset password</a>
         <p>If you didn't request this link, please ignore this email.</p>
       </div>
     </body>
@@ -94,7 +94,7 @@ export const passwordResetMail = async (
     };
     const info = await transporter.sendMail(mailOptions);
     if (info.messageId) {
-      console.log("Email is successfully sent", info.messageId);
+      // console.log("Email is successfully sent", info.messageId);
 
       return true;
     } else {

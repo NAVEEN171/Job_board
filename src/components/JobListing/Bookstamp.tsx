@@ -31,7 +31,6 @@ const Bookstamp: React.FC<BookstampProps> = ({ jobId }) => {
     let response = await fetch(`/api/get-user/${userId}`);
     let data = await response.json();
     if (response.ok && data.user) {
-      console.log(data.user);
       dispatch(Authactions.setUser(data.user));
     }
   }
@@ -58,7 +57,6 @@ const Bookstamp: React.FC<BookstampProps> = ({ jobId }) => {
         getUserData();
       }
     } catch (err) {
-      console.log(err);
     } finally {
       setBookmark(false);
     }
