@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { Providers } from "@/providers/Providers";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "FlexiBoard",
@@ -20,6 +21,9 @@ export default function RootLayout({
       {/* <head>
         <script src="https://unpkg.com/react-scan/dist/auto.global.js"></script>
       </head> */}
+
+      <Analytics />
+      <SpeedInsights />
 
       <Providers>
         <body suppressHydrationWarning>{children}</body>
