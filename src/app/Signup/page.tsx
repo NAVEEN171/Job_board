@@ -170,10 +170,10 @@ const page = () => {
             dispatch(Authactions.deleteCookie("userId"));
           }
           dispatch(
-            Authactions.setCookieInMinutes({
+            Authactions.setCookie({
               name: "accessToken",
               value: data.user.accessToken,
-              expirationMinutes: 15,
+              expirationDays: 1,
             })
           );
           dispatch(

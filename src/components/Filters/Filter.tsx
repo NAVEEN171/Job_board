@@ -309,6 +309,9 @@ const Filter = () => {
           updateJobsData("", "");
           // console.log("Authentication required!");
           dispatch(Authactions.setloggedIn(false));
+          if (accessToken) {
+            dispatch(Authactions.deleteCookie("accessToken"));
+          }
 
           // if (timeoutRef.current) {
           //   clearTimeout(timeoutRef.current);
@@ -339,10 +342,10 @@ const Filter = () => {
         if (response.ok) {
           // console.log(data);
           dispatch(
-            Authactions.setCookieInMinutes({
+            Authactions.setCookie({
               name: "accessToken",
               value: data.accessToken,
-              expirationMinutes: 4,
+              expirationDays: 1,
             })
           );
           let jobsStatus = await updateJobsData(data.accessToken, refreshToken);
