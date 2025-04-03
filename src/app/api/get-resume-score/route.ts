@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     // Analyze the extracted text
     const prompt = `Analyze this resume against the job description as an ATS expert. Return only a valid JSON response with no markdown formatting or code blocks.
-    Give score like SCORE:75 or unable to score then Score:N/A
+    Give score like SCORE:75 or unable to score then Score:N/A.Please give the respective sections according to the jobdescription Provided and Resume content (Remember this )
     Job Description: ${desc}
     Resume Content: ${extractedText}
     

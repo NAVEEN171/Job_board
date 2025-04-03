@@ -66,19 +66,28 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
         console.error("Failed to copy:", err);
       });
   };
-
   const selectFileHandler: FileChangeHandler = async (e) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      setFile(selectedFile);
 
-      try {
-        // Convert the file to base64
-        const base64String = await convertPDFToBase64(selectedFile);
-        setBase64PDF(base64String);
-        // console.log("Base64 PDF:", base64String); // You can remove this log in production
-      } catch (error) {
-        // console.log("Error converting file to base64:", error);
+      // Check if the selected file is a PDF
+      if (selectedFile.type === "application/pdf") {
+        setFile(selectedFile);
+
+        try {
+          // Convert the file to base64
+          const base64String = await convertPDFToBase64(selectedFile);
+          setBase64PDF(base64String);
+        } catch (error) {}
+      } else {
+        setErrorShow("Please upload a PDF format Resume");
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+          setErrorShow("");
+        }, 3000);
       }
     }
   };
@@ -94,7 +103,6 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
     if (!file || !base64PDF || desc === "") {
       setErrorShow("Please provide both a resume and a job description.");
       if (timeoutRef.current) {
-        // console.log(timeoutRef.current);
         clearTimeout(timeoutRef.current);
       }
 
