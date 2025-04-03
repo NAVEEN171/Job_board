@@ -15,8 +15,8 @@ const page = () => {
     <div className="flex items-center min-h-screen justify-between gap-10 flex-col">
       <div className="flex flex-col w-full items-center gap-10">
         <Navbar />
-        <div className="w-[90%] md:flex-row flex flex-col ">
-          <div className=" w-full md:w-[20%] flex flex-col gap-7">
+        <div className="w-[90%] md:flex-row flex flex-col  gap-2">
+          <div className=" w-full md:w-[30%] flex flex-col gap-7">
             <div className="text-2xl font-bold cursor-pointer">My Account</div>
             <div
               onClick={() => {
