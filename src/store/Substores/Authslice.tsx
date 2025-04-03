@@ -106,7 +106,9 @@ const AuthSlice = createSlice({
       const expires = "expires=" + date.toUTCString();
       // console.log(name, value, expirationMinutes);
 
-      document.cookie = `${name}=${value}; ${expires}; path=/`;
+      document.cookie = `${name}=${value}; ${expires}; path=/;  ${
+        JSON.parse(process.env.NEXT_PUBLIC_IS_PRODUCTION!) ? "Secure;" : ""
+      }  SameSite=Strict`;
     },
 
     setCookie(
@@ -124,7 +126,9 @@ const AuthSlice = createSlice({
       const expires = "expires=" + date.toUTCString();
       // console.log(name, value, expirationDays);
 
-      document.cookie = `${name}=${value}; ${expires}; path=/`;
+      document.cookie = `${name}=${value}; ${expires}; path=/;  ${
+        JSON.parse(process.env.NEXT_PUBLIC_IS_PRODUCTION!) ? "Secure;" : ""
+      }  SameSite=Strict`;
     },
     setUserId(state, action: PayloadAction<string | null>) {
       state.UserId = action.payload;

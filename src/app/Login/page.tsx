@@ -100,10 +100,10 @@ const page = () => {
             dispatch(Authactions.deleteCookie("userId"));
           }
           dispatch(
-            Authactions.setCookieInMinutes({
+            Authactions.setCookie({
               name: "userId",
               value: data.user._id,
-              expirationMinutes: 4,
+              expirationDays: 1,
             })
           );
 
@@ -114,14 +114,14 @@ const page = () => {
             Authactions.setCookieInMinutes({
               name: "accessToken",
               value: data.user.accessToken,
-              expirationMinutes: 4,
+              expirationMinutes: 15,
             })
           );
           dispatch(
-            Authactions.setCookieInMinutes({
+            Authactions.setCookie({
               name: "refreshToken",
               value: data.user.refreshToken,
-              expirationMinutes: 4,
+              expirationDays: 1,
             })
           );
 
@@ -174,21 +174,21 @@ const page = () => {
             Authactions.setCookieInMinutes({
               name: "accessToken",
               value: data.user.accessToken,
-              expirationMinutes: 4,
+              expirationMinutes: 15,
             })
           );
           dispatch(
-            Authactions.setCookieInMinutes({
+            Authactions.setCookie({
               name: "refreshToken",
               value: data.user.refreshToken,
-              expirationMinutes: 4,
+              expirationDays: 1,
             })
           );
           dispatch(
-            Authactions.setCookieInMinutes({
+            Authactions.setCookie({
               name: "userId",
               value: data.user.id,
-              expirationMinutes: 4,
+              expirationDays: 1,
             })
           );
           if (data.user?.id?.length) {

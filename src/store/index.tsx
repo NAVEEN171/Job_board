@@ -19,6 +19,7 @@ import { Authreducer } from "./Substores/Authslice";
 //dispatch(FilterActions.setExperiencevalue)
 
 //configuring the store so that it states can be accessed
+
 const store = configureStore({
   reducer: {
     Filter: Filterslicereducer,
@@ -26,6 +27,8 @@ const store = configureStore({
     Auth: Authreducer,
   },
 });
+
+console.log(typeof JSON.parse(process.env.NEXT_PUBLIC_IS_PRODUCTION!));
 
 //passing the reducer functions
 

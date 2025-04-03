@@ -27,7 +27,7 @@ export async function GET(
       const refreshToken = await jwt.sign(
         { user: userData.user },
         process.env.JWT_REFRESH_TOKEN!,
-        { expiresIn: "4m" }
+        { expiresIn: "1d" }
       );
       userData.user.accessToken = accessToken;
       userData.user.refreshToken = refreshToken;

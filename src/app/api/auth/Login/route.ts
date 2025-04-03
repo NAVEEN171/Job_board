@@ -40,7 +40,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           const refreshToken = await jwt.sign(
             { user: exisitinguser },
             process.env.JWT_REFRESH_TOKEN!,
-            { expiresIn: "4m" }
+            { expiresIn: "1d" }
           );
           exisitinguser.accessToken = accessToken;
           exisitinguser.refreshToken = refreshToken;

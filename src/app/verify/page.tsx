@@ -39,21 +39,21 @@ const page = () => {
               Authactions.setCookieInMinutes({
                 name: "accessToken",
                 value: data.data.accessToken,
-                expirationMinutes: 4,
+                expirationMinutes: 15,
               })
             );
             dispatch(
-              Authactions.setCookieInMinutes({
+              Authactions.setCookie({
                 name: "refreshToken",
                 value: data.data.refreshToken,
-                expirationMinutes: 4,
+                expirationDays: 1,
               })
             );
             dispatch(
-              Authactions.setCookieInMinutes({
+              Authactions.setCookie({
                 name: "userId",
                 value: data.data?._id,
-                expirationMinutes: 4,
+                expirationDays: 1,
               })
             );
           }
