@@ -249,6 +249,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
           $options: "i",
         },
       }));
+      let changedDesc = jobtitle.map((job: string) => ({
+        requirements_summary: {
+          $regex: job,
+          $options: "i",
+        },
+      }));
+      changedJobTitle = [...changedJobTitle, ...changedDesc];
+
       matchConditions.push({ $or: changedJobTitle });
     }
     if (selectedLocationTypes.length) {
