@@ -250,7 +250,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         },
       }));
       let changedDesc = jobtitle.map((job: string) => ({
-        requirements_summary: {
+        description: {
           $regex: job,
           $options: "i",
         },

@@ -215,7 +215,7 @@ const page = () => {
 
   return (
     <div className="h-[100vh] relative w-full flex bg-gradient-to-r from-indigo-50 via-blue-100 to-purple-100 bg-opacity-90">
-      <div className="errorsshower px-3 absolute w-full top-2 flex flex-col items-center gap-[10px]">
+      <div className="errorsshower px-3 fixed w-full top-2 flex flex-col items-center gap-[10px]">
         {errorshow && (
           <div
             style={{

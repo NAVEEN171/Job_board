@@ -165,7 +165,7 @@ const ResumeTailor: React.FC<ResumeTailorProps> = () => {
 
   return (
     <div className="flex flex-col relative ">
-      <div className="errorsshower px-3 w-full fixed top-2 flex flex-col items-center gap-[10px]">
+      <div className="errorsshower fixed px-3 w-full  top-2 flex flex-col items-center gap-[10px]">
         {errorshow && (
           <div
             style={{

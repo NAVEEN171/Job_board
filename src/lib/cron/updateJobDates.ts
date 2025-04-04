@@ -28,7 +28,7 @@ async function updateJobDates() {
     }
 
     // Get the jobs collection
-    const jobsCollection = await dbConn.connection.collection("jobs");
+    const jobsCollection = dbConn.connection.collection("jobs");
 
     // Fetch all job IDs
     const allJobIds = await jobsCollection
