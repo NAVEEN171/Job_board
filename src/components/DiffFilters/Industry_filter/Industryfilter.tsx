@@ -172,10 +172,10 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
     setSelectedIndustries(newlocations);
     // console.log("len :" + SelectedIndustries.length);
 
-    let locations = [...IndustryDropDown];
-    locations.push(loc);
-    locations.sort();
-    setIndustryDropDown(locations);
+    // let locations = [...IndustryDropDown];
+    // locations.push(loc);
+    // locations.sort();
+    // setIndustryDropDown(locations);
   };
 
   const changehandler = (ID1: string, ID2: string) => {
@@ -226,6 +226,13 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
       }
     }
   };
+
+  useEffect(() => {
+    if (activeDropdown !== "filter-8" && isSmallScreen && expandedIndustry) {
+      setIndustrySubcategory([]);
+      setExpandedIndustry(null);
+    }
+  }, [activeDropdown]);
 
   const handleSubcategoryClick = (e: React.MouseEvent, subcategory: string) => {
     e.stopPropagation(); // Prevent the click from affecting parent elements
@@ -310,7 +317,6 @@ const Industryfilter: React.FC<IndustryFilterType> = ({
                 <div key={index + "loc"} className="industry-item">
                   <div
                     onMouseEnter={() => handleIndustryHover(industry)}
-                    onMouseLeave={() => handleIndustryLeave()}
                     onClick={(e) => {
                       if (isSmallScreen) {
                         handleIndustryClick(e, industry);
