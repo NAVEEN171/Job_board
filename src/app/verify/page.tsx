@@ -80,7 +80,7 @@ const page = () => {
   // console.log(params.get("token"));
   return (
     <div className="w-full  h-screen">
-      <div className="error container absolute top-[10px] flex flex-col items-center">
+      <div className="error z-40 container absolute top-[10px] flex flex-col items-center">
         {errorshow && (
           <div
             style={{
