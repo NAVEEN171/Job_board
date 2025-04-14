@@ -10,8 +10,8 @@ type OptionStateType = {
 const initialOptionState: OptionStateType = {
   visa: false,
   remote: false,
-  NoExperience: false,
-  NoSalary: false,
+  NoExperience: true,
+  NoSalary: true,
 };
 
 const OptionsSlice = createSlice({

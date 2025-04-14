@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { jwtverification } from "@/middlewares/Auth/validateToken";
 import { subDays, format, parseISO } from "date-fns";
+import { setupDatabaseIndexes } from "../setup-indexes/setup-db-indexes";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
@@ -332,8 +333,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
     }
 
+    // await setupDatabaseIndexes();
+
     let jobsCollection = await dbConn.connection.collection("jobs");
-    let jobs = await jobsCollection.aggregate(pipeline).toArray();
+    let jobs = await jobsCollection
+      .aggregate(pipeline, { allowDiskUse: true })
+      .toArray();
     let totalJobs = jobs[0]?.totalCount || 0;
 
     let maxPaginationCount = Math.floor(totalJobs / 10);
