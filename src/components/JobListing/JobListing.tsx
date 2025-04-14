@@ -84,21 +84,27 @@ const JobListing = () => {
                 <div className="locations-date w-fit  sm:font-semibold  font-bold  text-sm sm:text-base">
                   {Job.locations &&
                     Job.locations.length > 0 &&
-                    Job.locations[0].city !== "" && (
+                    Job.locations[0].city &&
+                    Job.locations[0].region !== "null" && (
                       <div className="w-fit">{Job.locations[0].city}</div>
                     )}
                   <div className="flex flex-wrap w-fit">
                     {Job.locations &&
                       Job.locations.length > 0 &&
-                      Job.locations[0].region && (
+                      Job.locations[0].region &&
+                      Job.locations[0].region !== "null" && (
                         <div>{`${Job.locations[0].region} `}</div>
                       )}
                     {Job.locations &&
                       Job.locations.length > 0 &&
-                      Job.locations[0].country && (
-                        <div>{` ${Job.locations[0].region ? "," : ""} ${
-                          Job.locations[0].country
-                        } `}</div>
+                      Job.locations[0].country &&
+                      Job.locations[0].country !== "null" && (
+                        <div>{` ${
+                          Job.locations[0].region &&
+                          Job.locations[0].region !== "null"
+                            ? ","
+                            : ""
+                        } ${Job.locations[0].country} `}</div>
                       )}
                   </div>
                   <div className="text-gray-400 w-fit font-medium mt-2">
